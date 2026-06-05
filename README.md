@@ -37,8 +37,7 @@ AIGC/
 │   ├── src/
 │   │   ├── main/java/       # Java source code
 │   │   └── resources/       # Configuration files
-│   ├── pom.xml              # Maven configuration
-│   └── README.md            # Backend documentation
+│   └── pom.xml              # Maven configuration
 │
 ├── XiaoBan/                 # Android Client
 │   ├── app/src/             # Application source code
@@ -46,8 +45,6 @@ AIGC/
 │   └── README.md            # Frontend documentation
 │
 ├── Phase*.md                # Development documentation
-├── debug.md                 # Bug fix checklist
-├── BUG_FIX_SUMMARY.md       # Bug fix summary
 ├── .gitignore               # Git ignore file
 └── README.md                # This file
 ```
@@ -263,7 +260,7 @@ Thanks to the following technologies and services:
 ## 📞 Contact
 
 - **GitHub Issues**: [Submit Issue](https://github.com/BenjaminSHI4008/Intelligent-elderly-care-companion-products/issues)
-- **Email**: support@xiaoban.com
+- **Email**: mustbenjamin4008@foxmail.com
 
 ---
 
