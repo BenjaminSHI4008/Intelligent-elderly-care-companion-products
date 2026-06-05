@@ -1,0 +1,56 @@
+# ===== Claude AI =====
+.claude/
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ===== 后端 xiaoban-server =====
+xiaoban-server/target/
+xiaoban-server/.mvn/
+xiaoban-server/*.log
+xiaoban-server/logs/
+
+# ===== 前端 XiaoBan =====
+XiaoBan/.gradle/
+XiaoBan/build/
+XiaoBan/app/build/
+XiaoBan/local.properties
+XiaoBan/captures/
+XiaoBan/.externalNativeBuild/
+XiaoBan/.cxx/
+
+# ===== 通用 =====
+*.class
+*.jar
+!XiaoBan/app/libs/Msc.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# ===== 环境变量和敏感文件 =====
+.env
+*.env
+application-prod.yml
+application-local.yml
+
+# ===== 讯飞SDK压缩包（不需要提交，太大了）=====
+Android_iat*
+*.aar
+!XiaoBan/app/libs/*.jar
+
+# ===== 编译产物 =====
+out/
+gen/
+bin/

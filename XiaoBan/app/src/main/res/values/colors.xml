@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 老人端适老化配色方案 -->
+    <color name="primary">#3AAFA9</color>
+    <color name="primary_dark">#2B7A78</color>
+    <color name="urgent_red">#E84855</color>
+    <color name="background">#F0F7F4</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#666666</color>
+    <color name="white">#FFFFFF</color>
+    <color name="ripple_color">#4D3AAFA9</color>
+
+    <!-- 子女端现代化配色方案 -->
+    <color name="child_primary">#1A3C5E</color>
+    <color name="child_secondary">#2B7A78</color>
+    <color name="child_accent">#2B5F8A</color>
+    <color name="child_warning">#FFB74D</color>
+    <color name="child_danger">#E84855</color>
+    <color name="child_success">#4CAF50</color>
+    <color name="child_background">#F8FAFB</color>
+    <color name="child_card_bg">#FFFFFF</color>
+    <color name="child_text_primary">#1A3C5E</color>
+    <color name="child_text_secondary">#888888</color>
+    <color name="child_border">#EEF2F7</color>
+
+    <!-- 消息气泡颜色 -->
+    <color name="bubble_elder">#3AAFA9</color>
+    <color name="bubble_ai">#FFFFFF</color>
+    <color name="bubble_correction">#E3F2FD</color>
+
+    <!-- 安全提示颜色 -->
+    <color name="warning_bg">#FFF3E0</color>
+    <color name="warning_border">#FFB74D</color>
+    <color name="warning_text">#E65100</color>
+
+    <!-- 消息卡片颜色 -->
+    <color name="message_voice_bg">#E8F5E9</color>
+    <color name="message_photo_bg">#FFF3E0</color>
+    <color name="message_text_bg">#F5F5F5</color>
+    <color name="unread_indicator">#3AAFA9</color>
+
+    <!-- 状态标签颜色 -->
+    <color name="tag_pending">#FFF3E0</color>
+    <color name="tag_pending_text">#E65100</color>
+    <color name="tag_confirmed">#E8F5E9</color>
+    <color name="tag_confirmed_text">#2E7D32</color>
+    <color name="tag_attention">#FFEBEE</color>
+    <color name="tag_attention_text">#C62828</color>
+</resources>
