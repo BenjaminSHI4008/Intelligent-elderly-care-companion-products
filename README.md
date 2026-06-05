@@ -221,16 +221,6 @@ Main Endpoints:
 
 For detailed bug fixes, see `debug.md` and `BUG_FIX_SUMMARY.md`.
 
-## 📄 Development Documentation
-
-- `Phase1.md` - Requirements analysis and prototype design
-- `Phase2.md` - Technical architecture and API design
-- `Phase3.md` - Implementation details and test reports
-- `debug.md` - Bug checklist
-- `BUG_FIX_SUMMARY.md` - Bug fix summary
-- `xiaoban-server/README.md` - Detailed backend documentation
-- `XiaoBan/README.md` - Android client detailed documentation
-
 ## 🤝 Contributing
 
 Issues and Pull Requests are welcome!
