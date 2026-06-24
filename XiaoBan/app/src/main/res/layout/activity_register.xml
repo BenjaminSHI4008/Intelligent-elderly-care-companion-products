@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册"
+        android:textSize="28sp"
+        android:textColor="@color/primary"
+        android:layout_marginBottom="32dp" />
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:hint="手机号"
+        android:inputType="phone"
+        android:maxLength="11"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:hint="密码"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:hint="昵称（选填）"
+        android:layout_marginBottom="16dp" />
+
+    <RadioGroup
+        android:id="@+id/rg_role"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <RadioButton
+            android:id="@+id/rb_elder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我是老人"
+            android:checked="true"
+            android:layout_marginEnd="32dp" />
+
+        <RadioButton
+            android:id="@+id/rb_child"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我是子女" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="注册"
+        android:backgroundTint="@color/primary"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>
