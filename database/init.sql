@@ -14,6 +14,8 @@ CREATE TABLE `user` (
   `password_hash` VARCHAR(128) NOT NULL COMMENT '密码哈希',
   `role` ENUM('elder', 'child') NOT NULL COMMENT '角色：elder老人/child子女',
   `nickname` VARCHAR(50) DEFAULT '' COMMENT '昵称（老人端显示称谓如"妈妈"）',
+  `gender` VARCHAR(10) DEFAULT '' COMMENT '性别',
+  `birthday` VARCHAR(10) DEFAULT '' COMMENT '生日 yyyy-MM-dd',
   `avatar_url` VARCHAR(255) DEFAULT '' COMMENT '头像URL',
   `device_model` VARCHAR(100) DEFAULT '' COMMENT '设备型号',
   `last_active_at` DATETIME DEFAULT NULL COMMENT '最后活跃时间',

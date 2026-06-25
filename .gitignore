@@ -26,6 +26,7 @@ XiaoBan/.cxx/
 # ===== 通用 =====
 *.class
 *.jar
+!XiaoBan/gradle/wrapper/gradle-wrapper.jar
 !XiaoBan/app/libs/Msc.jar
 *.war
 *.nar

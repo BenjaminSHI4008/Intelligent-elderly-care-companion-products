@@ -1,5 +1,6 @@
 package com.xiaoban.app.child;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +11,9 @@ import android.widget.LinearLayout;
 import androidx.cardview.widget.CardView;
 
 import com.xiaoban.app.R;
+import com.xiaoban.app.auth.LoginActivity;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.util.SharedPrefUtil;
 
 import java.util.Calendar;
 
@@ -172,9 +175,7 @@ public class ChildHomeActivity extends BaseActivity {
      */
     private void setupClickListeners() {
         // 设置按钮
-        btnSettings.setOnClickListener(v -> {
-            // TODO: 跳转到设置页面
-        });
+        btnSettings.setOnClickListener(v -> showLogoutDialog());
 
         // 待确认卡片点击
         cardPending.setOnClickListener(v -> {
@@ -228,9 +229,23 @@ public class ChildHomeActivity extends BaseActivity {
         });
 
         // 底部导航 - 设置
-        navSettings.setOnClickListener(v -> {
-            // TODO: 跳转到设置页面
-        });
+        navSettings.setOnClickListener(v -> showLogoutDialog());
+    }
+
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("设置")
+                .setMessage("确定要退出登录吗？")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("退出登录", (dialog, which) -> logout())
+                .show();
+    }
+
+    private void logout() {
+        SharedPrefUtil.clear(this);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
