@@ -2,8 +2,10 @@ package com.xiaoban.app.base;
 
 public class Constants {
 
-    // 后端API地址（请替换为实际服务器地址）
-    public static final String BASE_URL = "http://your_server_ip:8080/";
+    // 后端API地址
+    // Android 模拟器使用 10.0.2.2 访问宿主机(电脑)的 localhost
+    // 真机调试时改为电脑的局域网 IP，例如 http://192.168.1.100:8080/
+    public static final String BASE_URL = "http://10.0.2.2:8080/";
 
     // SharedPreferences keys
     public static final String SP_NAME = "xiaoban_sp";
@@ -26,4 +28,5 @@ public class Constants {
     public static final String PUSH_TYPE_CORRECTION = "correction";
     public static final String PUSH_TYPE_FAMILY_MSG = "family_msg";
     public static final String PUSH_TYPE_REMINDER = "reminder";
+    public static final String PUSH_TYPE_BIND_SUCCESS = "bind_success";
 }

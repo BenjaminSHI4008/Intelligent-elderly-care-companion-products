@@ -2,6 +2,7 @@ package com.xiaoban.app.network;
 
 import android.content.Context;
 
+import com.xiaoban.app.BuildConfig;
 import com.xiaoban.app.base.Constants;
 
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,9 @@ public class ApiClient {
 
     private ApiClient(Context context) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(BuildConfig.DEBUG
+                ? HttpLoggingInterceptor.Level.BASIC
+                : HttpLoggingInterceptor.Level.NONE);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new TokenInterceptor(context))

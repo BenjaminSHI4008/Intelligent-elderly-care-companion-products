@@ -5,6 +5,7 @@ import android.app.Application;
 import cn.jpush.android.api.JPushInterface;
 import com.iflytek.cloud.SpeechUtility;
 import com.xiaoban.app.util.SharedPrefUtil;
+import com.xiaoban.app.voice.VoiceManager;
 
 public class BaseApplication extends Application {
 
@@ -15,8 +16,9 @@ public class BaseApplication extends Application {
         super.onCreate();
         instance = this;
 
-        // 讯飞SDK初始化 — 必须在Application的onCreate中执行
+        // 讯飞 SDK 必须在 Application 中初始化一次
         SpeechUtility.createUtility(this, "appid=" + Constants.IFLYTEK_APP_ID);
+        VoiceManager.getInstance().init(this);
 
         // 初始化极光推送
         JPushInterface.setDebugMode(true);

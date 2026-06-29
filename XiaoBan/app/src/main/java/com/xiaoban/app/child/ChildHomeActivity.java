@@ -5,50 +5,49 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
 import com.xiaoban.app.R;
 import com.xiaoban.app.auth.LoginActivity;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.model.BindingRelationItem;
+import com.xiaoban.app.network.ApiCallback;
+import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.BindNotificationHelper;
 import com.xiaoban.app.util.SharedPrefUtil;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 子女端首页
- * 显示父母设备状态、今日摘要、待确认对话、快捷操作
  */
 public class ChildHomeActivity extends BaseActivity {
 
-    // 顶部栏
     private TextView tvDeviceStatus;
+    private TextView tvBindCount;
     private ImageView btnSettings;
 
-    // 状态卡片
     private TextView tvChatCount;
     private TextView tvMood;
     private TextView tvLastActive;
 
-    // 待确认卡片
     private CardView cardPending;
     private TextView tvPendingTime;
     private TextView tvPendingContent;
 
-    // 今日摘要卡片
     private CardView cardDaily;
     private TextView tvReportDate;
     private TextView tvDailySummary;
 
-    // 快捷操作卡片
     private CardView cardReminder;
     private CardView cardMessage;
     private CardView cardHistory;
     private CardView cardBind;
 
-    // 底部导航
     private LinearLayout navHome;
     private LinearLayout navChat;
     private LinearLayout navRemind;
@@ -60,43 +59,35 @@ public class ChildHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_child_home);
 
         initViews();
-        loadDeviceStatus();
+        loadBoundElders();
         loadTodayStats();
         loadPendingConfirm();
         loadDailySummary();
         setupClickListeners();
     }
 
-    /**
-     * 初始化视图组件
-     */
     private void initViews() {
-        // 顶部栏
         tvDeviceStatus = findViewById(R.id.tv_device_status);
+        tvBindCount = findViewById(R.id.tv_bind_count);
         btnSettings = findViewById(R.id.btn_settings);
 
-        // 状态卡片
         tvChatCount = findViewById(R.id.tv_chat_count);
         tvMood = findViewById(R.id.tv_mood);
         tvLastActive = findViewById(R.id.tv_last_active);
 
-        // 待确认卡片
         cardPending = findViewById(R.id.card_pending);
         tvPendingTime = findViewById(R.id.tv_pending_time);
         tvPendingContent = findViewById(R.id.tv_pending_content);
 
-        // 今日摘要卡片
         cardDaily = findViewById(R.id.card_daily);
         tvReportDate = findViewById(R.id.tv_report_date);
         tvDailySummary = findViewById(R.id.tv_daily_summary);
 
-        // 快捷操作卡片
         cardReminder = findViewById(R.id.card_reminder);
         cardMessage = findViewById(R.id.card_message);
         cardHistory = findViewById(R.id.card_history);
         cardBind = findViewById(R.id.card_bind);
 
-        // 底部导航
         navHome = findViewById(R.id.nav_home);
         navChat = findViewById(R.id.nav_chat);
         navRemind = findViewById(R.id.nav_remind);
@@ -104,131 +95,96 @@ public class ChildHomeActivity extends BaseActivity {
     }
 
     /**
-     * 加载设备状态
+     * 从 API 加载已绑定老人，替换顶部 mock 文案。
      */
-    private void loadDeviceStatus() {
-        // TODO: 从API获取设备状态
-        // 模拟数据
-        boolean isOnline = true;
-        String deviceName = "妈妈的设备";
+    private void loadBoundElders() {
+        ApiClient.getInstance(this).getApi().getBindRelations()
+                .enqueue(new ApiCallback<List<BindingRelationItem>>() {
+                    @Override
+                    public void onSuccess(List<BindingRelationItem> data) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> updateBoundElderUi(data));
+                    }
 
-        String statusText = deviceName + " · " + (isOnline ? "在线" : "离线");
-        tvDeviceStatus.setText(statusText);
+                    @Override
+                    public void onNetworkError(String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            tvDeviceStatus.setText("暂未绑定老人 · 点击添加");
+                            tvBindCount.setText("去绑定");
+                        });
+                    }
+                });
     }
 
-    /**
-     * 加载今日统计数据
-     */
-    private void loadTodayStats() {
-        // TODO: 从API获取今日统计
-        // 模拟数据
-        int chatCount = 8;
-        String mood = "😊"; // 情绪：😊开心 😐一般 😢难过 😰焦虑
-        String lastActiveTime = "10:18";
+    private void updateBoundElderUi(List<BindingRelationItem> relations) {
+        int count = BindNotificationHelper.countActiveRelations(relations);
+        String elderNames = BindNotificationHelper.formatElderNamesForChild(relations);
 
-        tvChatCount.setText(String.valueOf(chatCount));
-        tvMood.setText(mood);
-        tvLastActive.setText(lastActiveTime);
-    }
-
-    /**
-     * 加载待确认对话
-     */
-    private void loadPendingConfirm() {
-        // TODO: 从API获取待确认对话列表
-        // 模拟数据
-        boolean hasPending = true;
-
-        if (hasPending) {
-            cardPending.setVisibility(View.VISIBLE);
-
-            // 设置待确认对话内容
-            String pendingTime = "今天 10:20";
-            String pendingContent = "妈妈问了降压药的服用时间，AI已回答但建议您确认用药信息。";
-
-            tvPendingTime.setText(pendingTime);
-            tvPendingContent.setText(pendingContent);
-        } else {
-            cardPending.setVisibility(View.GONE);
+        if (count == 0 || elderNames == null) {
+            tvDeviceStatus.setText("暂未绑定老人 · 点击添加");
+            tvBindCount.setText("去绑定");
+            return;
         }
+
+        if (count == 1) {
+            tvDeviceStatus.setText(elderNames + " · 已绑定");
+        } else {
+            tvDeviceStatus.setText(elderNames + " · 已绑定" + count + "位");
+        }
+        tvBindCount.setText("已绑定 " + count + " 位");
     }
 
-    /**
-     * 加载今日摘要
-     */
+    private void loadTodayStats() {
+        // TODO: 接入日报/对话统计 API
+        tvChatCount.setText("-");
+        tvMood.setText("-");
+        tvLastActive.setText("-");
+    }
+
+    private void loadPendingConfirm() {
+        // TODO: 接入待确认对话 API
+        cardPending.setVisibility(View.GONE);
+    }
+
     private void loadDailySummary() {
-        // TODO: 从API获取今日摘要
-        // 模拟数据
+        // TODO: 接入智能日报 API
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        String dateText = month + "月" + day + "日";
-        String summaryText = "妈妈今天问了2次关于头晕的问题（建议关注）；主动聊天3次，情绪状态良好；提及膝盖疼，建议近期安排就医。";
-
-        tvReportDate.setText(dateText);
-        tvDailySummary.setText(summaryText);
+        tvReportDate.setText(month + "月" + day + "日");
+        tvDailySummary.setText("绑定老人后，可在此查看智能日报摘要");
     }
 
-    /**
-     * 设置点击事件监听器
-     */
     private void setupClickListeners() {
-        // 设置按钮
         btnSettings.setOnClickListener(v -> showLogoutDialog());
 
-        // 待确认卡片点击
-        cardPending.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildCorrectActivity.class);
-            startActivity(intent);
-        });
+        cardPending.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildCorrectActivity.class)));
 
-        // 今日摘要卡片点击
-        cardDaily.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildDailyReportActivity.class);
-            startActivity(intent);
-        });
+        cardDaily.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildDailyReportActivity.class)));
 
-        // 快捷操作 - 远程提醒
-        cardReminder.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildReminderActivity.class);
-            startActivity(intent);
-        });
+        cardReminder.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildReminderActivity.class)));
 
-        // 快捷操作 - 发消息
-        cardMessage.setOnClickListener(v -> {
-            // TODO: 跳转到发消息页面
-        });
+        cardMessage.setOnClickListener(v -> showToast("发消息功能开发中"));
 
-        // 快捷操作 - 历史日报
-        cardHistory.setOnClickListener(v -> {
-            // TODO: 跳转到历史日报列表
-        });
+        cardHistory.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildDailyReportActivity.class)));
 
-        // 快捷操作 - 设备管理
-        cardBind.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildBindActivity.class);
-            startActivity(intent);
-        });
+        cardBind.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildBindActivity.class)));
 
-        // 底部导航 - 首页（当前页）
-        navHome.setOnClickListener(v -> {
-            // 已在首页，不做操作
-        });
+        navHome.setOnClickListener(v -> { });
 
-        // 底部导航 - 对话
-        navChat.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildCorrectActivity.class);
-            startActivity(intent);
-        });
+        navChat.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildCorrectActivity.class)));
 
-        // 底部导航 - 提醒
-        navRemind.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ChildReminderActivity.class);
-            startActivity(intent);
-        });
+        navRemind.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildReminderActivity.class)));
 
-        // 底部导航 - 设置
         navSettings.setOnClickListener(v -> showLogoutDialog());
     }
 
@@ -251,10 +207,6 @@ public class ChildHomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // 页面恢复时刷新数据
-        loadDeviceStatus();
-        loadTodayStats();
-        loadPendingConfirm();
-        loadDailySummary();
+        loadBoundElders();
     }
 }

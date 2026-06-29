@@ -1,9 +1,12 @@
 package com.xiaoban.app.network;
 
 import com.xiaoban.app.model.ApiResponse;
+import com.xiaoban.app.model.BindingRelationItem;
+import com.xiaoban.app.model.BindVerifyResult;
 import com.xiaoban.app.model.ChatResponse;
 import com.xiaoban.app.model.Conversation;
 import com.xiaoban.app.model.DailyReport;
+import com.xiaoban.app.model.GenerateCodeResponse;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.model.Reminder;
 import com.xiaoban.app.model.User;
@@ -71,16 +74,16 @@ public interface ApiService {
 
     // === 绑定 ===
     @POST("api/bind/generate-code")
-    Call<ApiResponse<Map<String, String>>> generateCode();
+    Call<ApiResponse<GenerateCodeResponse>> generateCode();
 
     @POST("api/bind/verify-code")
-    Call<ApiResponse<Map<String, Object>>> verifyCode(@Body Map<String, String> body);
+    Call<ApiResponse<BindVerifyResult>> verifyCode(@Body Map<String, String> body);
 
     @POST("api/bind/bluetooth")
     Call<ApiResponse<Void>> bindBluetooth(@Body Map<String, Long> body);
 
     @GET("api/bind/relations")
-    Call<ApiResponse<List<Map<String, Object>>>> getBindRelations();
+    Call<ApiResponse<List<BindingRelationItem>>> getBindRelations();
 
     @DELETE("api/bind/{relationId}")
     Call<ApiResponse<Void>> unbind(@Path("relationId") long relationId);

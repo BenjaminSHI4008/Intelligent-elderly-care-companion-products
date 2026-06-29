@@ -14,10 +14,12 @@ import androidx.core.app.ActivityCompat;
 
 import com.xiaoban.app.R;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.model.ChatResponse;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.BindNotificationHelper;
 import com.xiaoban.app.util.PermissionUtil;
 import com.xiaoban.app.util.TimeUtil;
 import com.xiaoban.app.voice.VoiceManager;
@@ -35,6 +37,8 @@ public class ElderHomeActivity extends BaseActivity {
     private TextView tvDate;
     private TextView tvWeather;
     private View cardMessage;
+    private View cardBind;
+    private TextView tvBindHint;
     private TextView tvMessagePreview;
     private View unreadDot;
     private View voiceButtonCard;
@@ -45,6 +49,7 @@ public class ElderHomeActivity extends BaseActivity {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable messageCheckRunnable;
+    private boolean bindBaselineInitialized = false;
 
     private static final int REQUEST_CALL_PERMISSION = 100;
     private static final String EMERGENCY_PHONE = "10086";
@@ -55,12 +60,12 @@ public class ElderHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_elder_home);
 
         PermissionUtil.checkPermissions(this);
-        VoiceManager.getInstance().init(this);
 
         initViews();
         setupListeners();
         updateDateWeather();
         loadLatestMessage();
+        loadBindStatus(false);
         playWelcomeMessage();
         startMessagePolling();
     }
@@ -69,6 +74,8 @@ public class ElderHomeActivity extends BaseActivity {
         tvDate = findViewById(R.id.tv_date);
         tvWeather = findViewById(R.id.tv_weather);
         cardMessage = findViewById(R.id.card_message);
+        cardBind = findViewById(R.id.card_bind);
+        tvBindHint = findViewById(R.id.tv_bind_hint);
         tvMessagePreview = findViewById(R.id.tv_message_preview);
         unreadDot = findViewById(R.id.unread_dot);
         voiceButtonCard = findViewById(R.id.voice_button_card);
@@ -81,6 +88,10 @@ public class ElderHomeActivity extends BaseActivity {
     private void setupListeners() {
         cardMessage.setOnClickListener(v -> {
             startActivity(new Intent(this, ElderMessageActivity.class));
+        });
+
+        cardBind.setOnClickListener(v -> {
+            startActivity(new Intent(this, ElderBindActivity.class));
         });
 
         voiceButton.setVoiceCallback(new VoiceRecognizer.Callback() {
@@ -122,6 +133,31 @@ public class ElderHomeActivity extends BaseActivity {
         String dateStr = TimeUtil.getTodayDate();
         tvDate.setText(dateStr);
         tvWeather.setText("多云 18°C");
+    }
+
+    private void loadBindStatus(boolean announce) {
+        ApiClient.getInstance(this).getApi().getBindRelations()
+                .enqueue(new ApiCallback<List<BindingRelationItem>>() {
+                    @Override
+                    public void onSuccess(List<BindingRelationItem> data) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            if (announce && bindBaselineInitialized) {
+                                BindNotificationHelper.processBindings(
+                                        ElderHomeActivity.this, data, true);
+                            } else if (!bindBaselineInitialized) {
+                                BindNotificationHelper.processBindings(
+                                        ElderHomeActivity.this, data, false);
+                                bindBaselineInitialized = true;
+                            }
+
+                            int count = BindNotificationHelper.countActiveRelations(data);
+                            tvBindHint.setText(count > 0
+                                    ? "已绑定 " + count + " 位家人 ›"
+                                    : "查看绑定码 ›");
+                        });
+                    }
+                });
     }
 
     private void loadLatestMessage() {
@@ -179,16 +215,37 @@ public class ElderHomeActivity extends BaseActivity {
         body.put("text", text);
         body.put("sessionId", sessionId);
 
+        tvVoiceHint.setText("小伴思考中...");
         ApiClient.getInstance(this).getApi().chat(body).enqueue(new ApiCallback<ChatResponse>() {
             @Override
             public void onSuccess(ChatResponse data) {
+                if (isFinishing()) return;
                 runOnUiThread(() -> {
+                    tvVoiceHint.setText("按住说话");
                     Intent intent = new Intent(ElderHomeActivity.this, ElderChatActivity.class);
                     intent.putExtra("userQuestion", text);
                     intent.putExtra("aiAnswer", data.getAnswer());
                     intent.putExtra("category", data.getCategory());
                     intent.putExtra("sessionId", sessionId);
                     startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onBusinessError(int code, String message) {
+                if (isFinishing()) return;
+                runOnUiThread(() -> {
+                    tvVoiceHint.setText("按住说话");
+                    showToast(message);
+                });
+            }
+
+            @Override
+            public void onNetworkError(String message) {
+                if (isFinishing()) return;
+                runOnUiThread(() -> {
+                    tvVoiceHint.setText("按住说话");
+                    showToast("对话失败，请检查网络");
                 });
             }
         });
@@ -230,12 +287,16 @@ public class ElderHomeActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        loadBindStatus(true);
+        loadLatestMessage();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        VoiceManager.getInstance().destroy();
-        if (messageCheckRunnable != null) {
-            handler.removeCallbacks(messageCheckRunnable);
-        }
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override

@@ -2,9 +2,6 @@ package com.xiaoban.app.voice;
 
 import android.content.Context;
 
-import com.iflytek.cloud.SpeechUtility;
-import com.xiaoban.app.base.Constants;
-
 public class VoiceManager {
 
     private static VoiceManager instance;
@@ -27,7 +24,6 @@ public class VoiceManager {
 
     public void init(Context context) {
         if (initialized) return;
-        SpeechUtility.createUtility(context, "appid=" + Constants.IFLYTEK_APP_ID);
         recognizer = new VoiceRecognizer();
         recognizer.init(context);
         synthesizer = new VoiceSynthesizer();
