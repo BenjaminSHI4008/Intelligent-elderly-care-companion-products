@@ -108,8 +108,8 @@ public class AuthServiceImpl implements AuthService {
         if (request.getBirthday() != null) {
             user.setBirthday(request.getBirthday());
         }
-        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
-            user.setPasswordHash(passwordEncoder.encode(request.getPassword().trim()));
+        if (request.getEmergencyContact() != null) {
+            user.setEmergencyContact(request.getEmergencyContact());
         }
 
         userMapper.updateById(user);
@@ -124,6 +124,7 @@ public class AuthServiceImpl implements AuthService {
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .birthday(user.getBirthday())
+                .emergencyContact(user.getEmergencyContact())
                 .avatarUrl(user.getAvatarUrl())
                 .deviceModel(user.getDeviceModel())
                 .lastActiveAt(user.getLastActiveAt())

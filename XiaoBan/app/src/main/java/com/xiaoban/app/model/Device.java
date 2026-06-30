@@ -10,6 +10,7 @@ public class Device {
     private String elderName;
     private String bluetoothAddress;
     private String firmwareVersion;
+    private String bindTypeLabel;
 
     public Device() {}
 
@@ -39,6 +40,9 @@ public class Device {
     public String getFirmwareVersion() { return firmwareVersion; }
     public void setFirmwareVersion(String firmwareVersion) { this.firmwareVersion = firmwareVersion; }
 
+    public String getBindTypeLabel() { return bindTypeLabel; }
+    public void setBindTypeLabel(String bindTypeLabel) { this.bindTypeLabel = bindTypeLabel; }
+
     public boolean isOnline() { return "online".equals(status); }
 
     public String getStatusText() { return isOnline() ? "在线" : "离线"; }
@@ -49,11 +53,12 @@ public class Device {
 
     public String getFormattedBindTime() {
         if (bindTime == null || bindTime.isEmpty()) return "未知";
-        return "绑定于 " + bindTime;
+        String date = bindTime.length() >= 10 ? bindTime.substring(0, 10) : bindTime;
+        return "绑定于 " + date;
     }
 
     public String getFormattedDeviceId() {
-        if (deviceId == null || deviceId.isEmpty()) return "未知设备";
-        return "设备ID: " + deviceId;
+        if (deviceId == null || deviceId.isEmpty()) return "未知账户";
+        return "账户ID: " + deviceId;
     }
 }

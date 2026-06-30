@@ -16,6 +16,7 @@ CREATE TABLE `user` (
   `nickname` VARCHAR(50) DEFAULT '' COMMENT '昵称（老人端显示称谓如"妈妈"）',
   `gender` VARCHAR(10) DEFAULT '' COMMENT '性别',
   `birthday` VARCHAR(10) DEFAULT '' COMMENT '生日 yyyy-MM-dd',
+  `emergency_contact` VARCHAR(20) DEFAULT '' COMMENT '紧急联系人电话',
   `avatar_url` VARCHAR(255) DEFAULT '' COMMENT '头像URL',
   `device_model` VARCHAR(100) DEFAULT '' COMMENT '设备型号',
   `last_active_at` DATETIME DEFAULT NULL COMMENT '最后活跃时间',

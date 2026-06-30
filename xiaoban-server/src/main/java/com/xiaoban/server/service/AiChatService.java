@@ -2,11 +2,12 @@ package com.xiaoban.server.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xiaoban.server.config.properties.AiDashscopeProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -39,25 +40,16 @@ public class AiChatService {
             - 如果老人说"没事，就想跟你聊聊"，开心地陪聊，可以聊天气、养生、回忆等话题
             """;
 
-    @Value("${ai.api-key}")
-    private String apiKey;
-
-    @Value("${ai.base-url}")
-    private String baseUrl;
-
-    @Value("${ai.model}")
-    private String model;
-
-    @Value("${ai.max-tokens:500}")
-    private int maxTokens;
-
-    @Value("${ai.temperature:0.7}")
-    private double temperature;
-
+    private final AiDashscopeProperties aiConfig;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     public String chat(String userMessage, String category) {
+        if (!aiConfig.isEnabled() || !StringUtils.hasText(aiConfig.getApiKey())) {
+            log.warn("DashScope AI 未启用或未配置 api-key");
+            return "AI 服务暂未配置，请联系管理员";
+        }
+
         try {
             String systemPrompt = SYSTEM_PROMPT;
             if ("health".equals(category)) {
@@ -65,21 +57,21 @@ public class AiChatService {
             }
 
             Map<String, Object> requestBody = Map.of(
-                    "model", model,
+                    "model", aiConfig.getModel(),
                     "messages", List.of(
                             Map.of("role", "system", "content", systemPrompt),
                             Map.of("role", "user", "content", userMessage)
                     ),
-                    "max_tokens", maxTokens,
-                    "temperature", temperature
+                    "max_tokens", aiConfig.getMaxTokens(),
+                    "temperature", aiConfig.getTemperature()
             );
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(apiKey);
+            headers.setBearerAuth(aiConfig.getApiKey());
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    baseUrl,
+                    aiConfig.getBaseUrl(),
                     HttpMethod.POST,
                     new HttpEntity<>(requestBody, headers),
                     String.class

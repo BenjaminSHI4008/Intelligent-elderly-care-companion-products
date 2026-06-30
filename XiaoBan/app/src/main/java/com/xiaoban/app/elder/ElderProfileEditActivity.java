@@ -24,19 +24,19 @@ import java.util.regex.Pattern;
 public class ElderProfileEditActivity extends BaseActivity {
 
     private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
+    private static final String BIRTHDAY_PLACEHOLDER = "填写生日完善信息";
 
     private TextView tvAvatar;
     private TextView tvGenderValue;
     private TextView tvBirthdayValue;
     private TextView tvPhoneValue;
-    private TextView tvPasswordValue;
+    private TextView tvEmergencyContactValue;
     private View rowGender;
     private View rowBirthday;
     private View rowPhone;
-    private View rowPassword;
+    private View rowEmergencyContact;
     private View btnBack;
     private View btnSave;
-    private String newPassword = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +53,25 @@ public class ElderProfileEditActivity extends BaseActivity {
         tvGenderValue = findViewById(R.id.tv_gender_value);
         tvBirthdayValue = findViewById(R.id.tv_birthday_value);
         tvPhoneValue = findViewById(R.id.tv_phone_value);
-        tvPasswordValue = findViewById(R.id.tv_password_value);
+        tvEmergencyContactValue = findViewById(R.id.tv_emergency_contact_value);
         rowGender = findViewById(R.id.row_gender);
         rowBirthday = findViewById(R.id.row_birthday);
         rowPhone = findViewById(R.id.row_phone);
-        rowPassword = findViewById(R.id.row_password);
+        rowEmergencyContact = findViewById(R.id.row_emergency_contact);
         btnBack = findViewById(R.id.btn_back);
         btnSave = findViewById(R.id.btn_save);
     }
 
     private void loadCachedValues() {
         String nickname = SharedPrefUtil.getString(this, Constants.SP_NICKNAME, "");
+        String role = SharedPrefUtil.getString(this, Constants.SP_ROLE, "");
         String displayName = nickname == null || nickname.isEmpty() ? "小" : nickname;
         tvAvatar.setText(displayName.substring(0, 1));
         tvGenderValue.setText(SharedPrefUtil.getString(this, Constants.SP_GENDER, ""));
         setBirthdayValue(SharedPrefUtil.getString(this, Constants.SP_BIRTHDAY, ""));
         tvPhoneValue.setText(SharedPrefUtil.getString(this, Constants.SP_PHONE, ""));
+        tvEmergencyContactValue.setText(SharedPrefUtil.getString(this, Constants.SP_EMERGENCY_CONTACT, ""));
+        rowEmergencyContact.setVisibility("child".equals(role) ? View.GONE : View.VISIBLE);
     }
 
     private void setupListeners() {
@@ -76,7 +79,7 @@ public class ElderProfileEditActivity extends BaseActivity {
         rowGender.setOnClickListener(v -> showGenderDialog());
         rowBirthday.setOnClickListener(v -> showBirthdayDialog());
         rowPhone.setOnClickListener(v -> showPhoneDialog());
-        rowPassword.setOnClickListener(v -> showPasswordDialog());
+        rowEmergencyContact.setOnClickListener(v -> showEmergencyContactDialog());
         btnSave.setOnClickListener(v -> saveProfile());
     }
 
@@ -124,49 +127,32 @@ public class ElderProfileEditActivity extends BaseActivity {
     }
 
     private void showPhoneDialog() {
+        showPhoneInputDialog("修改手机号", "请输入手机号", tvPhoneValue);
+    }
+
+    private void showEmergencyContactDialog() {
+        showPhoneInputDialog("修改紧急联系人", "请输入紧急联系人电话", tvEmergencyContactValue);
+    }
+
+    private void showPhoneInputDialog(String title, String hint, TextView targetView) {
         EditText editText = new EditText(this);
-        editText.setHint("请输入手机号");
+        editText.setHint(hint);
         editText.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
         editText.setSingleLine(true);
-        editText.setText(tvPhoneValue.getText());
+        editText.setText(targetView.getText());
         editText.setSelection(editText.getText().length());
         editText.setPadding(32, 28, 32, 28);
 
         new AlertDialog.Builder(this)
-                .setTitle("修改手机号")
+                .setTitle(title)
                 .setView(editText)
-                .setPositiveButton("保存", (dialog, which) -> tvPhoneValue.setText(editText.getText().toString().trim()))
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void showPasswordDialog() {
-        EditText editText = new EditText(this);
-        editText.setHint("请输入新密码");
-        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT
-                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        editText.setSingleLine(true);
-        editText.setPadding(32, 28, 32, 28);
-
-        new AlertDialog.Builder(this)
-                .setTitle("修改密码")
-                .setMessage("保存后，下次登录需使用新密码。")
-                .setView(editText)
-                .setPositiveButton("保存", (dialog, which) -> {
-                    String password = editText.getText().toString().trim();
-                    if (password.isEmpty()) {
-                        showToast("密码不能为空");
-                        return;
-                    }
-                    newPassword = password;
-                    tvPasswordValue.setText("已修改，待保存");
-                })
+                .setPositiveButton("保存", (dialog, which) -> targetView.setText(editText.getText().toString().trim()))
                 .setNegativeButton("取消", null)
                 .show();
     }
 
     private void setBirthdayValue(String value) {
-        tvBirthdayValue.setText(value == null || value.isEmpty() ? "填写生日完善信息" : value);
+        tvBirthdayValue.setText(value == null || value.isEmpty() ? BIRTHDAY_PLACEHOLDER : value);
     }
 
     private int parseInt(String value, int defaultValue) {
@@ -179,7 +165,7 @@ public class ElderProfileEditActivity extends BaseActivity {
 
     private void saveProfile() {
         String birthday = tvBirthdayValue.getText().toString();
-        if ("填写生日完善信息".equals(birthday)) {
+        if (BIRTHDAY_PLACEHOLDER.equals(birthday)) {
             birthday = "";
         }
 
@@ -189,12 +175,18 @@ public class ElderProfileEditActivity extends BaseActivity {
             return;
         }
 
+        String emergencyContact = tvEmergencyContactValue.getText().toString().trim();
+        if (!emergencyContact.isEmpty() && !Pattern.compile("^\\d{3,20}$").matcher(emergencyContact).matches()) {
+            showToast("请输入有效的紧急联系人电话");
+            return;
+        }
+
         Map<String, String> body = new HashMap<>();
         body.put("phone", phone);
         body.put("gender", tvGenderValue.getText().toString().trim());
         body.put("birthday", birthday);
-        if (!newPassword.isEmpty()) {
-            body.put("password", newPassword);
+        if (rowEmergencyContact.getVisibility() == View.VISIBLE) {
+            body.put("emergencyContact", emergencyContact);
         }
 
         ApiClient.getInstance(this).getApi().updateProfile(body).enqueue(new ApiCallback<User>() {
@@ -204,6 +196,7 @@ public class ElderProfileEditActivity extends BaseActivity {
                     SharedPrefUtil.putString(ElderProfileEditActivity.this, Constants.SP_PHONE, user.getPhone());
                     SharedPrefUtil.putString(ElderProfileEditActivity.this, Constants.SP_GENDER, user.getGender());
                     SharedPrefUtil.putString(ElderProfileEditActivity.this, Constants.SP_BIRTHDAY, user.getBirthday());
+                    SharedPrefUtil.putString(ElderProfileEditActivity.this, Constants.SP_EMERGENCY_CONTACT, user.getEmergencyContact());
                     showToast("已保存");
                     finish();
                 });

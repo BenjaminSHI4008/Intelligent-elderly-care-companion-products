@@ -19,6 +19,7 @@ public class UserProfileVO {
     private String nickname;
     private String gender;
     private String birthday;
+    private String emergencyContact;
     private String avatarUrl;
     private String deviceModel;
     private LocalDateTime lastActiveAt;

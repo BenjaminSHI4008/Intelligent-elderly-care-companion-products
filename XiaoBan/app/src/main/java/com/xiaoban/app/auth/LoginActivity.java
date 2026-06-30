@@ -51,6 +51,7 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
+        showToast("正在登录...");
         Map<String, String> body = new HashMap<>();
         body.put("phone", phone);
         body.put("password", password);

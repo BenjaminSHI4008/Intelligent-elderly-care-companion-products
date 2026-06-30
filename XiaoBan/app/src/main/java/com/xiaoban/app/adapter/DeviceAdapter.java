@@ -86,6 +86,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             tvDeviceName.setText(device.getName());
             tvDeviceId.setText(device.getFormattedDeviceId());
             tvBindTime.setText(device.getFormattedBindTime());
+            if (device.getBindTypeLabel() != null && !device.getBindTypeLabel().isEmpty()) {
+                tvBindTime.setText(device.getFormattedBindTime() + " · " + device.getBindTypeLabel());
+            }
             tvStatus.setText(device.getStatusText());
 
             if (device.isOnline()) {

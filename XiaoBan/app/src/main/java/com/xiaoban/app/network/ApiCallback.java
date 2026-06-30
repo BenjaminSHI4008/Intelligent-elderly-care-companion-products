@@ -2,8 +2,11 @@ package com.xiaoban.app.network;
 
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.xiaoban.app.base.BaseApplication;
 import com.xiaoban.app.model.ApiResponse;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,7 +24,12 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
                 onBusinessError(body.getCode(), body.getMessage());
             }
         } else {
-            onBusinessError(response.code(), "请求失败");
+            ApiResponse<?> errorBody = parseErrorBody(response);
+            if (errorBody != null) {
+                onBusinessError(errorBody.getCode(), errorBody.getMessage());
+            } else {
+                onBusinessError(response.code(), "请求失败");
+            }
         }
     }
 
@@ -38,5 +46,17 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
 
     public void onNetworkError(String message) {
         Toast.makeText(BaseApplication.getInstance(), "网络异常，请检查网络连接", Toast.LENGTH_SHORT).show();
+    }
+
+    private ApiResponse<?> parseErrorBody(Response<ApiResponse<T>> response) {
+        if (response.errorBody() == null) {
+            return null;
+        }
+
+        try {
+            return new Gson().fromJson(response.errorBody().string(), ApiResponse.class);
+        } catch (IOException | RuntimeException e) {
+            return null;
+        }
     }
 }

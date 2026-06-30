@@ -1,0 +1,114 @@
+# =============================================================================
+# 小伴 XiaoBan — 统一外部服务与运行配置（模板）
+# =============================================================================
+# 使用方式：
+#   1. 复制本文件为项目根目录 config.yaml：  cp config.yaml.example config.yaml
+#   2. 填写下方 API Key 与数据库密码
+#   3. 重启后端（IDEA 或 xiaoban-server/run.sh）
+#
+# 环境变量可覆盖敏感项，详见 requirements.txt
+# =============================================================================
+
+meta:
+  config-version: "1.1.0"
+  project-version: "1.1.0"
+  description: "小伴 MVP — 外部 API 与基础设施统一配置"
+
+# -----------------------------------------------------------------------------
+# 基础设施（非第三方 API，但与环境强相关）
+# -----------------------------------------------------------------------------
+infrastructure:
+  server:
+    port: 8080
+    address: "0.0.0.0"
+  database:
+    host: localhost
+    port: 3306
+    name: xiaoban_mvp
+    username: root
+    # 生产环境请用环境变量 DB_PASSWORD 覆盖
+    password: ${DB_PASSWORD:123456}
+    params: "useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai"
+  upload:
+    dir: uploads
+
+# -----------------------------------------------------------------------------
+# 后端外部服务 API（修改本节后重启后端即可）
+# -----------------------------------------------------------------------------
+external-services:
+
+  # [AI 对话] 阿里云通义千问 DashScope
+  ai-dashscope:
+    service-name: "阿里云通义千问 DashScope"
+    description: "老人端 AI 语音对话大模型"
+    doc-url: "https://dashscope.aliyun.com/"
+    enabled: true
+    api-key: ${AI_API_KEY:your-dashscope-api-key}
+    base-url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    model: "qwen-turbo"
+    max-tokens: 500
+    temperature: 0.7
+
+  # [消息推送] 极光推送 JPush
+  jpush:
+    service-name: "极光推送 JPush"
+    description: "健康告警、绑定成功、家属消息等 Android 推送"
+    doc-url: "https://www.jiguang.cn/"
+    enabled: true
+    app-key: ${JPUSH_APP_KEY:your-jpush-app-key}
+    master-secret: ${JPUSH_MASTER_SECRET:your-jpush-master-secret}
+
+  # [天气服务] 高德地图 Web 服务 API
+  amap-weather:
+    service-name: "高德地图天气 API"
+    description: "老人端首页天气展示（Web 服务 Key）"
+    doc-url: "https://lbs.amap.com/api/webservice/summary"
+    enabled: true
+    api-key: ${AMAP_WEATHER_KEY:your-amap-web-service-key}
+    default-city-code: "440100"
+
+  # [身份认证] JWT（内置，非第三方）
+  jwt-auth:
+    service-name: "JWT 身份认证"
+    description: "用户登录 Token 签发与校验"
+    doc-url: "https://github.com/jwtk/jjwt"
+    enabled: true
+    secret: ${JWT_SECRET:your-jwt-secret-at-least-32-chars}
+    expiration-ms: 604800000
+
+# -----------------------------------------------------------------------------
+# 客户端 SDK 参考（Android 端，不在后端加载，仅供团队对照维护）
+# -----------------------------------------------------------------------------
+client-sdk-reference:
+
+  iflytek-voice:
+    service-name: "科大讯飞语音 SDK"
+    description: "Android 语音识别(ASR)与语音合成(TTS)"
+    doc-url: "https://www.xfyun.cn/"
+    config-file: "XiaoBan/app/src/main/java/com/xiaoban/app/base/Constants.java"
+    field: "IFLYTEK_APP_ID"
+    app-id: "your-iflytek-app-id"
+
+  jpush-android:
+    service-name: "极光推送 Android SDK"
+    description: "须与 external-services.jpush.app-key 保持一致"
+    doc-url: "https://www.jiguang.cn/"
+    config-files:
+      - "XiaoBan/app/src/main/java/com/xiaoban/app/base/Constants.java"
+      - "XiaoBan/app/build.gradle"
+    app-key: "your-jpush-app-key"
+
+  amap-location:
+    service-name: "高德 Android 定位 SDK"
+    description: "老人端定位（与天气 Web Key 不同）"
+    doc-url: "https://lbs.amap.com/"
+    config-files:
+      - "XiaoBan/app/src/main/java/com/xiaoban/app/base/Constants.java"
+      - "XiaoBan/app/src/main/AndroidManifest.xml"
+    api-key: "your-amap-android-key"
+
+  android-backend:
+    service-name: "Android 后端 API 地址"
+    description: "模拟器用 10.0.2.2；真机改为电脑 WLAN IP"
+    config-file: "XiaoBan/app/build.gradle"
+    debug-base-url: "http://10.0.2.2:8080/"
