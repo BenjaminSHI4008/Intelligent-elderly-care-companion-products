@@ -18,10 +18,13 @@ import com.xiaoban.app.util.SharedPrefUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import cn.jpush.android.api.JPushInterface;
 
 public class RegisterActivity extends BaseActivity {
+
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
 
     private EditText etPhone, etPassword, etNickname;
     private RadioGroup rgRole;
@@ -51,6 +54,13 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
+        if (!PHONE_PATTERN.matcher(phone).matches()) {
+            etPhone.requestFocus();
+            etPhone.setError("请输入11位有效手机号");
+            showToast("手机号必须为11位数字，且以1开头、第二位为3-9");
+            return;
+        }
+
         Map<String, String> body = new HashMap<>();
         body.put("phone", phone);
         body.put("password", password);
@@ -64,6 +74,7 @@ public class RegisterActivity extends BaseActivity {
                 SharedPrefUtil.putLong(RegisterActivity.this, Constants.SP_USER_ID, user.getUserId());
                 SharedPrefUtil.putString(RegisterActivity.this, Constants.SP_ROLE, user.getRole());
                 SharedPrefUtil.putString(RegisterActivity.this, Constants.SP_NICKNAME, user.getNickname());
+                SharedPrefUtil.putString(RegisterActivity.this, Constants.SP_PHONE, phone);
 
                 JPushInterface.setAlias(RegisterActivity.this, 0, String.valueOf(user.getUserId()));
 

@@ -17,6 +17,7 @@ public class PermissionUtil {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CALL_PHONE
     };

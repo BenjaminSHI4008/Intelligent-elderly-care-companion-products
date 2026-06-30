@@ -32,8 +32,10 @@ public class PushReceiver extends BroadcastReceiver {
             String content = bundle.getString(JPushInterface.EXTRA_ALERT);
             String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
             PushNotificationHandler.handleNotificationArrived(context, title, content, extras);
-        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(action)) {
-            Log.i(TAG, "Notification opened");
+        } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(action) && bundle != null) {
+            String title = bundle.getString(JPushInterface.EXTRA_NOTIFICATION_TITLE);
+            String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+            PushNavigationHelper.openFromNotification(context, title, extras);
         }
     }
 }

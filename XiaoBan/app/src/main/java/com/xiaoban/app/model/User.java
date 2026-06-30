@@ -16,6 +16,15 @@ public class User {
     @SerializedName("nickname")
     private String nickname;
 
+    @SerializedName("gender")
+    private String gender;
+
+    @SerializedName("birthday")
+    private String birthday;
+
+    @SerializedName("emergencyContact")
+    private String emergencyContact;
+
     @SerializedName("phone")
     private String phone;
 
@@ -26,6 +35,9 @@ public class User {
     public long getUserId() { return userId; }
     public String getRole() { return role; }
     public String getNickname() { return nickname; }
+    public String getGender() { return gender; }
+    public String getBirthday() { return birthday; }
+    public String getEmergencyContact() { return emergencyContact; }
     public String getPhone() { return phone; }
     public String getAvatarUrl() { return avatarUrl; }
 }

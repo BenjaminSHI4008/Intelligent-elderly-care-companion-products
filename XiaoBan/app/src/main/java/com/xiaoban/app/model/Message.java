@@ -42,6 +42,19 @@ public class Message {
     private static final SimpleDateFormat DATE_FORMAT =
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 
+    public static Message mock(long id, String senderName, String msgType, String content,
+                               int duration, boolean isRead, String createdAt) {
+        Message message = new Message();
+        message.id = id;
+        message.senderName = senderName;
+        message.msgType = msgType;
+        message.content = content;
+        message.duration = duration;
+        message.isRead = isRead ? 1 : 0;
+        message.createdAt = createdAt;
+        return message;
+    }
+
     public long getId() { return id; }
     public long getSenderId() { return senderId; }
     public long getReceiverId() { return receiverId; }

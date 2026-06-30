@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.xiaoban.app.base.Constants;
 import com.xiaoban.app.util.BindNotificationHelper;
+import com.xiaoban.app.util.FamilyMessageNotifier;
 import com.xiaoban.app.voice.VoiceManager;
 
 import org.json.JSONObject;
@@ -30,6 +31,11 @@ public final class PushNotificationHandler {
         }
 
         if (TextUtils.isEmpty(extrasJson)) {
+            if (isFamilyMessageNotification(title)) {
+                VoiceManager.getInstance().getSynthesizer().speak(
+                        "您的家人给您发了一条消息", null);
+                FamilyMessageNotifier.notifyReceived();
+            }
             return;
         }
 
@@ -54,6 +60,7 @@ public final class PushNotificationHandler {
             case Constants.PUSH_TYPE_FAMILY_MSG:
                 VoiceManager.getInstance().getSynthesizer().speak(
                         "您的家人给您发了一条消息", null);
+                FamilyMessageNotifier.notifyReceived();
                 break;
             case Constants.PUSH_TYPE_REMINDER:
                 String content = json.optString("content", "");
@@ -78,5 +85,9 @@ public final class PushNotificationHandler {
 
     private static boolean isBindSuccessNotification(String title, String content) {
         return title != null && title.contains("绑定成功");
+    }
+
+    private static boolean isFamilyMessageNotification(String title) {
+        return "小伴消息".equals(title);
     }
 }

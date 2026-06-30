@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaoban.server.common.BusinessException;
 import com.xiaoban.server.common.ResultCode;
 import com.xiaoban.server.dto.LoginRequest;
+import com.xiaoban.server.dto.ProfileUpdateRequest;
 import com.xiaoban.server.dto.RegisterRequest;
 import com.xiaoban.server.entity.User;
 import com.xiaoban.server.mapper.UserMapper;
@@ -76,11 +77,54 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(ResultCode.NOT_FOUND);
         }
 
+        return toProfileVO(user);
+    }
+
+    @Override
+    public UserProfileVO updateProfile(Long userId, ProfileUpdateRequest request) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException(ResultCode.NOT_FOUND);
+        }
+
+        if (request.getPhone() != null && !request.getPhone().equals(user.getPhone())) {
+            Long count = userMapper.selectCount(
+                    new LambdaQueryWrapper<User>()
+                            .eq(User::getPhone, request.getPhone())
+                            .ne(User::getUserId, userId)
+            );
+            if (count > 0) {
+                throw new BusinessException(ResultCode.PHONE_ALREADY_EXISTS);
+            }
+            user.setPhone(request.getPhone());
+        }
+
+        if (request.getNickname() != null) {
+            user.setNickname(request.getNickname());
+        }
+        if (request.getGender() != null) {
+            user.setGender(request.getGender());
+        }
+        if (request.getBirthday() != null) {
+            user.setBirthday(request.getBirthday());
+        }
+        if (request.getEmergencyContact() != null) {
+            user.setEmergencyContact(request.getEmergencyContact());
+        }
+
+        userMapper.updateById(user);
+        return toProfileVO(user);
+    }
+
+    private UserProfileVO toProfileVO(User user) {
         return UserProfileVO.builder()
                 .userId(user.getUserId())
                 .phone(user.getPhone())
                 .role(user.getRole())
                 .nickname(user.getNickname())
+                .gender(user.getGender())
+                .birthday(user.getBirthday())
+                .emergencyContact(user.getEmergencyContact())
                 .avatarUrl(user.getAvatarUrl())
                 .deviceModel(user.getDeviceModel())
                 .lastActiveAt(user.getLastActiveAt())

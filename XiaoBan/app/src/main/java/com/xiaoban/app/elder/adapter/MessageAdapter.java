@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xiaoban.app.R;
 import com.xiaoban.app.model.Message;
+import com.xiaoban.app.util.ImageUrlUtil;
 import com.xiaoban.app.util.TimeUtil;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private OnMessageClickListener listener;
 
     public interface OnMessageClickListener {
+        void onMessageClick(Message message);
         void onVoiceClick(Message message);
         void onPhotoClick(Message message);
     }
@@ -39,6 +43,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void addMessage(Message message) {
         messages.add(0, message);
         notifyItemInserted(0);
+    }
+
+    public Message getLatestMessage() {
+        return messages.isEmpty() ? null : messages.get(0);
     }
 
     @NonNull
@@ -80,6 +88,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             tvTime.setText(TimeUtil.formatMessageTime(message.getCreateTime()));
             unreadIndicator.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
             unreadDot.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onMessageClick(message);
+            });
 
             contentContainer.removeAllViews();
             LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
@@ -105,6 +116,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 case "photo":
                     View photoView = inflater.inflate(R.layout.message_content_photo, contentContainer, false);
                     ImageView ivPhoto = photoView.findViewById(R.id.iv_photo_thumbnail);
+                    if (message.getMediaUrl() != null && !message.getMediaUrl().isEmpty()) {
+                        Glide.with(itemView.getContext())
+                                .load(ImageUrlUtil.resolve(message.getMediaUrl()))
+                                .centerCrop()
+                                .into(ivPhoto);
+                    } else {
+                        ivPhoto.setImageResource(R.drawable.bg_message_photo);
+                    }
                     photoView.setOnClickListener(v -> {
                         if (listener != null) listener.onPhotoClick(message);
                     });

@@ -7,7 +7,7 @@ public enum ResultCode {
     UNAUTHORIZED(401, "未登录或令牌已过期"),
     FORBIDDEN(403, "无权限访问"),
     NOT_FOUND(404, "资源不存在"),
-    PHONE_ALREADY_EXISTS(4001, "该手机号已注册"),
+    PHONE_ALREADY_EXISTS(4001, "该手机号已注册，请直接登录"),
     LOGIN_FAILED(4002, "手机号或密码错误"),
     BIND_CODE_INVALID(4003, "绑定码无效或已过期"),
     BIND_CODE_USED(4004, "绑定码已被使用"),

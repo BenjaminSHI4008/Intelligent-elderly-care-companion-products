@@ -23,15 +23,20 @@ android {
 
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
-                JPUSH_APPKEY : "your_jpush_appkey",
+                JPUSH_APPKEY : "8bc0c3218b934e9a4f38b32a",
                 JPUSH_CHANNEL: "default"
         ]
     }
 
     buildTypes {
+        debug {
+            // 真机调试：改为电脑 WLAN 局域网 IP；模拟器可改为 http://10.0.2.2:8080/
+            buildConfigField "String", "BASE_URL", '"http://192.168.43.31:8080/"'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", '"http://192.168.43.31:8080/"'
         }
     }
 
@@ -67,6 +72,9 @@ dependencies {
     // 极光推送
     implementation 'cn.jiguang.sdk:jpush:5.2.0'
     implementation 'cn.jiguang.sdk:jcore:4.2.0'
+
+    // 高德定位SDK
+    implementation 'com.amap.api:location:latest.integration'
 
     // 科大讯飞语音SDK
     implementation files('libs/Msc.jar')

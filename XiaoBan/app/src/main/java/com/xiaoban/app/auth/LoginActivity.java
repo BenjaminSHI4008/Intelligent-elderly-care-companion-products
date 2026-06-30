@@ -62,6 +62,7 @@ public class LoginActivity extends BaseActivity {
                 SharedPrefUtil.putLong(LoginActivity.this, Constants.SP_USER_ID, user.getUserId());
                 SharedPrefUtil.putString(LoginActivity.this, Constants.SP_ROLE, user.getRole());
                 SharedPrefUtil.putString(LoginActivity.this, Constants.SP_NICKNAME, user.getNickname());
+                SharedPrefUtil.putString(LoginActivity.this, Constants.SP_PHONE, phone);
 
                 JPushInterface.setAlias(LoginActivity.this, 0, String.valueOf(user.getUserId()));
 

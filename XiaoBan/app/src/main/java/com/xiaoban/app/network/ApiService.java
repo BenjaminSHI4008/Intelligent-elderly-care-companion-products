@@ -10,10 +10,12 @@ import com.xiaoban.app.model.GenerateCodeResponse;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.model.Reminder;
 import com.xiaoban.app.model.User;
+import com.xiaoban.app.model.WeatherInfo;
 
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -28,6 +30,9 @@ public interface ApiService {
 
     @GET("api/auth/profile")
     Call<ApiResponse<User>> getProfile();
+
+    @PUT("api/auth/profile")
+    Call<ApiResponse<User>> updateProfile(@Body Map<String, String> body);
 
     // === 对话 ===
     @POST("api/voice/chat")
@@ -55,6 +60,10 @@ public interface ApiService {
 
     @PUT("api/messages/{id}/read")
     Call<ApiResponse<Void>> markRead(@Path("id") long id);
+
+    @Multipart
+    @POST("api/upload/image")
+    Call<ApiResponse<String>> uploadImage(@Part MultipartBody.Part file);
 
     // === 提醒 ===
     @POST("api/reminder/create")
@@ -91,4 +100,8 @@ public interface ApiService {
     // === 日报 ===
     @GET("api/report/daily")
     Call<ApiResponse<List<DailyReport>>> getDailyReport(@Query("elderId") long elderId, @Query("date") String date);
+
+    // === 天气 ===
+    @GET("api/weather/current")
+    Call<ApiResponse<WeatherInfo>> getCurrentWeather(@Query("city") String city);
 }

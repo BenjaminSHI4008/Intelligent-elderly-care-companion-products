@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import com.xiaoban.app.R;
 import com.xiaoban.app.auth.LoginActivity;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.elder.ElderProfileActivity;
 import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
@@ -94,9 +95,6 @@ public class ChildHomeActivity extends BaseActivity {
         navSettings = findViewById(R.id.nav_settings);
     }
 
-    /**
-     * 从 API 加载已绑定老人，替换顶部 mock 文案。
-     */
     private void loadBoundElders() {
         ApiClient.getInstance(this).getApi().getBindRelations()
                 .enqueue(new ApiCallback<List<BindingRelationItem>>() {
@@ -148,7 +146,6 @@ public class ChildHomeActivity extends BaseActivity {
     }
 
     private void loadDailySummary() {
-        // TODO: 接入智能日报 API
         Calendar calendar = Calendar.getInstance();
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -169,7 +166,8 @@ public class ChildHomeActivity extends BaseActivity {
         cardReminder.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildReminderActivity.class)));
 
-        cardMessage.setOnClickListener(v -> showToast("发消息功能开发中"));
+        cardMessage.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildSendMessageActivity.class)));
 
         cardHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildDailyReportActivity.class)));
@@ -185,7 +183,8 @@ public class ChildHomeActivity extends BaseActivity {
         navRemind.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildReminderActivity.class)));
 
-        navSettings.setOnClickListener(v -> showLogoutDialog());
+        navSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, ElderProfileActivity.class)));
     }
 
     private void showLogoutDialog() {

@@ -123,18 +123,7 @@ public class ElderChatActivity extends BaseActivity {
                 });
             }
 
-            @Override
-            public void onBusinessError(int code, String message) {
-                if (isFinishing()) return;
-                runOnUiThread(() -> {
-                    showThinking(false);
-                    showToast(message);
-                });
-            }
-
-            @Override
             public void onNetworkError(String errorMsg) {
-                if (isFinishing()) return;
                 runOnUiThread(() -> {
                     showThinking(false);
                     showToast("对话失败：" + errorMsg);

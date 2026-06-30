@@ -16,7 +16,7 @@ public class BaseApplication extends Application {
         super.onCreate();
         instance = this;
 
-        // 讯飞 SDK 必须在 Application 中初始化一次
+        // 讯飞SDK初始化 — 必须在Application的onCreate中执行
         SpeechUtility.createUtility(this, "appid=" + Constants.IFLYTEK_APP_ID);
         VoiceManager.getInstance().init(this);
 

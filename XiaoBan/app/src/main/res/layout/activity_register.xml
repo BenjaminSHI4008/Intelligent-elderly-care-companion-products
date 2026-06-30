@@ -20,6 +20,7 @@
         android:layout_height="56dp"
         android:hint="手机号"
         android:inputType="phone"
+        android:maxLength="11"
         android:layout_marginBottom="16dp" />
 
     <EditText
