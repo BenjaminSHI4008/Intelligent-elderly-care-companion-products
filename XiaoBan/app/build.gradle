@@ -30,8 +30,8 @@ android {
 
     buildTypes {
         debug {
-            // 真机调试：改为电脑 WLAN 局域网 IP；模拟器可改为 http://10.0.2.2:8080/
-            buildConfigField "String", "BASE_URL", '"http://192.168.43.31:8080/"'
+            // 模拟器访问宿主机：10.0.2.2；真机调试时改为电脑 WLAN IP（ipconfig 查看）
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:8080/"'
         }
         release {
             minifyEnabled false

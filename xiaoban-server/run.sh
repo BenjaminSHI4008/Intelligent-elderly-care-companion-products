@@ -26,13 +26,25 @@ JAVA_VERSION=$(java -version 2>&1 | head -1)
 echo "[INFO] Java: ${JAVA_VERSION}"
 
 if [[ -z "${DB_PASSWORD:-}" ]]; then
-  echo "[WARN] 未设置 DB_PASSWORD，将使用 application.yml 默认值"
+  echo "[WARN] 未设置 DB_PASSWORD，将使用 config.yaml 默认值"
 fi
+
+# --- config.yaml 检查 ---
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+CONFIG_FILE="${XIAOBAN_CONFIG_PATH:-${REPO_ROOT}/config.yaml}"
+if [[ ! -f "$CONFIG_FILE" ]]; then
+  echo "[ERROR] 未找到 config.yaml: ${CONFIG_FILE}"
+  echo "[HINT]  请执行: cp config.yaml.example config.yaml  并填写 API Key"
+  echo "[HINT]  详见 requirements.txt"
+  exit 1
+fi
+echo "[INFO] 配置文件: ${CONFIG_FILE}"
+
 if [[ -z "${JWT_SECRET:-}" ]]; then
-  echo "[WARN] 未设置 JWT_SECRET，生产环境请务必配置"
+  echo "[WARN] 未设置 JWT_SECRET，生产环境请务必在 config.yaml 或环境变量中配置"
 fi
 if [[ -z "${AI_API_KEY:-}" ]]; then
-  echo "[WARN] 未设置 AI_API_KEY，AI 对话功能将不可用"
+  echo "[WARN] 未设置 AI_API_KEY，AI 对话功能将不可用（可在 config.yaml 配置）"
 fi
 
 # --- 端口占用检查 ---

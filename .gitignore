@@ -43,6 +43,7 @@ Thumbs.db
 # ===== 环境变量和敏感文件 =====
 .env
 *.env
+config.yaml
 application-prod.yml
 application-local.yml
 

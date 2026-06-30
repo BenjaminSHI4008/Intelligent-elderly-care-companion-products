@@ -1,5 +1,6 @@
 package com.xiaoban.server.security;
 
+import com.xiaoban.server.config.properties.JwtAuthProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,12 +12,10 @@ class JwtUtilTest {
 
     @BeforeEach
     void setUp() {
-        jwtUtil = new JwtUtil();
-        // 通过反射注入 secret（@Value 在单元测试中不生效）
-        org.springframework.test.util.ReflectionTestUtils.setField(
-                jwtUtil, "secret", "test-jwt-secret-key-at-least-32-chars-long");
-        org.springframework.test.util.ReflectionTestUtils.setField(
-                jwtUtil, "expiration", 3600000L);
+        JwtAuthProperties props = new JwtAuthProperties();
+        props.setSecret("test-jwt-secret-key-at-least-32-chars-long");
+        props.setExpirationMs(3_600_000L);
+        jwtUtil = new JwtUtil(props);
     }
 
     @Test

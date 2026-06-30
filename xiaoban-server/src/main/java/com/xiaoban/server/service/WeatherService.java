@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xiaoban.server.common.BusinessException;
 import com.xiaoban.server.common.ResultCode;
-import com.xiaoban.server.config.WeatherProperties;
+import com.xiaoban.server.config.properties.AmapWeatherProperties;
 import com.xiaoban.server.vo.WeatherVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,9 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class WeatherService {
 
-    private static final String PLACEHOLDER_KEY = "dev-placeholder";
+    private static final String PLACEHOLDER_PREFIX = "your-";
 
-    private final WeatherProperties weatherProperties;
+    private final AmapWeatherProperties weatherConfig;
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
@@ -28,11 +28,11 @@ public class WeatherService {
 
         try {
             String cityCode = !StringUtils.hasText(city)
-                    ? weatherProperties.getDefaultCity()
+                    ? weatherConfig.getDefaultCityCode()
                     : city.trim();
 
             String url = "https://restapi.amap.com/v3/weather/weatherInfo"
-                    + "?key=" + weatherProperties.getAmapKey()
+                    + "?key=" + weatherConfig.getApiKey()
                     + "&city=" + cityCode
                     + "&extensions=base";
 
@@ -70,10 +70,13 @@ public class WeatherService {
     }
 
     private void validateAmapKey() {
-        String key = weatherProperties.getAmapKey();
-        if (!StringUtils.hasText(key) || PLACEHOLDER_KEY.equals(key)) {
+        if (!weatherConfig.isEnabled()) {
+            throw new BusinessException(ResultCode.SERVER_ERROR.getCode(), "天气服务已禁用");
+        }
+        String key = weatherConfig.getApiKey();
+        if (!StringUtils.hasText(key) || key.startsWith(PLACEHOLDER_PREFIX)) {
             throw new BusinessException(ResultCode.SERVER_ERROR.getCode(),
-                    "天气服务未配置，请设置环境变量 AMAP_WEATHER_KEY");
+                    "天气服务未配置，请修改 config.yaml -> external-services.amap-weather.api-key");
         }
     }
 }
