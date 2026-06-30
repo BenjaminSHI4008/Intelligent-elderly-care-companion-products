@@ -1,0 +1,54 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/xiaoban_mvp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+upload:
+  dir: uploads
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  secret: ${JWT_SECRET:xiaoban-test-secret-2026}
+  expiration: 604800000
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+ai:
+  provider: dashscope
+  api-key: ${AI_API_KEY:sk-ws-H.REXLEYX.tcxY.MEQCIDJb4lUKt1X-TJg_5n4Ne7uU01gqP7A6YPGagzQ411JEAiABwX9mE-OwF11fdksf3mVJQuTONyS6FeWsjM0jtvirxw}
+  model: qwen-turbo
+  base-url: https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+  max-tokens: 500
+  temperature: 0.7
+
+jpush:
+  app-key: ${JPUSH_APP_KEY:8bc0c3218b934e9a4f38b32a}
+  master-secret: ${JPUSH_MASTER_SECRET:5fff0d5fb5f83636beb069ae}
+
+weather:
+  amap-key: ${AMAP_WEATHER_KEY:1cda37a88854dbb8b4ea30ccefdf9476}
+  default-city: 440100
