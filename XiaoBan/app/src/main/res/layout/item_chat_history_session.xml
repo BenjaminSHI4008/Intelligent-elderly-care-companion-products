@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="88dp"
+    android:orientation="vertical"
+    android:paddingStart="18dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="18dp"
+    android:paddingBottom="12dp">
+
+    <TextView
+        android:id="@+id/tv_history_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="降压药服用时间"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_history_meta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="07-01 10:30 · 2轮对话"
+        android:textColor="@color/primary_dark"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_history_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="小伴，我降压药什么时候吃？"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp" />
+
+</LinearLayout>

@@ -31,6 +31,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.replayListener = listener;
     }
 
+    public void clearMessages() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
     public void addElderMessage(String text) {
         items.add(new ChatItem(TYPE_ELDER, text, null));
         notifyItemInserted(items.size() - 1);

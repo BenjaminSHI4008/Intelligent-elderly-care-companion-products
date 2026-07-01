@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +29,9 @@ public class VoiceButton extends View {
     private static final int COLOR_NORMAL = 0xFF3AAFA9;
     private static final int COLOR_PRESSED = 0xFF2B7A78;
     private static final int COLOR_RIPPLE = 0x4D3AAFA9;
+    private static final float LARGE_BUTTON_MIN_DP = 140f;
+    private static final float LARGE_BUTTON_TEXT_SP = 28f;
+    private static final float SMALL_BUTTON_TEXT_SP = 12f;
 
     private VoiceRecognizer.Callback voiceCallback;
     private AnimatorSet rippleAnimator;
@@ -58,8 +62,9 @@ public class VoiceButton extends View {
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(0xFFFFFFFF);
-        textPaint.setTextSize(48f);
+        textPaint.setTextSize(spToPx(LARGE_BUTTON_TEXT_SP));
         textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTypeface(Typeface.DEFAULT_BOLD);
     }
 
     public void setVoiceCallback(VoiceRecognizer.Callback callback) {
@@ -85,6 +90,10 @@ public class VoiceButton extends View {
 
     private void drawCircleButton(Canvas canvas, float cx, float cy) {
         float radius = Math.min(cx, cy) * 0.85f;
+        float diameterDp = Math.min(getWidth(), getHeight()) / getResources().getDisplayMetrics().density;
+        textPaint.setTextSize(spToPx(diameterDp >= LARGE_BUTTON_MIN_DP
+                ? LARGE_BUTTON_TEXT_SP
+                : SMALL_BUTTON_TEXT_SP));
 
         if (isRecording && rippleRadius > 0) {
             ripplePaint.setAlpha((int) (77 * (1 - rippleRadius / (radius * 1.5f))));
@@ -95,6 +104,10 @@ public class VoiceButton extends View {
         canvas.drawCircle(cx, cy, radius, circlePaint);
 
         canvas.drawText(displayText, cx, cy + textPaint.getTextSize() / 3, textPaint);
+    }
+
+    private float spToPx(float sp) {
+        return sp * getResources().getDisplayMetrics().scaledDensity;
     }
 
     private void drawRectangleButton(Canvas canvas, float width, float height) {

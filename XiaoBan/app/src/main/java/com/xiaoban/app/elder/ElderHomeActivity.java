@@ -316,10 +316,6 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
 
     private void openAiChatHistory() {
         Intent intent = new Intent(this, ElderChatActivity.class);
-        intent.putExtra("sessionId", "mock-ai-history");
-        intent.putExtra("userQuestion", "小伴，我降压药什么时候吃？");
-        intent.putExtra("aiAnswer", "降压药一般建议每天早上起床后服用，饭前饭后都可以，但最好固定时间。不过每个人的情况不一样，最好问问医生哦。");
-        intent.putExtra("category", "health");
         startActivity(intent);
     }
 
@@ -343,9 +339,16 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
     }
 
     private void sendVoiceChat(String text) {
+        String question = text == null ? "" : text.trim();
+        if (question.isEmpty()) {
+            tvVoiceHint.setText("按住说话");
+            showToast("没有识别到语音内容");
+            return;
+        }
+
         String sessionId = UUID.randomUUID().toString();
         Map<String, String> body = new HashMap<>();
-        body.put("text", text);
+        body.put("text", question);
         body.put("sessionId", sessionId);
 
         tvVoiceHint.setText("小伴思考中...");
@@ -356,10 +359,11 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                 runOnUiThread(() -> {
                     tvVoiceHint.setText("按住说话");
                     Intent intent = new Intent(ElderHomeActivity.this, ElderChatActivity.class);
-                    intent.putExtra("userQuestion", text);
+                    intent.putExtra("userQuestion", question);
                     intent.putExtra("aiAnswer", data.getAnswer());
                     intent.putExtra("category", data.getCategory());
                     intent.putExtra("sessionId", sessionId);
+                    intent.putExtra("openHistoryPanel", false);
                     startActivity(intent);
                 });
             }
