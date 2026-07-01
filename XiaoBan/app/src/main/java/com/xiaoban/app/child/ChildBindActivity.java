@@ -1,15 +1,7 @@
 package com.xiaoban.app.child;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,10 +11,13 @@ import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.xiaoban.app.R;
 import com.xiaoban.app.adapter.DeviceAdapter;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.model.BindVerifyResult;
+import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.model.Device;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
@@ -31,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ChildBindActivity extends BaseActivity {
 
@@ -40,10 +34,9 @@ public class ChildBindActivity extends BaseActivity {
     private CardView cardBluetooth;
     private CardView cardCode;
     private ImageView ivBack;
+    private SwipeRefreshLayout swipeRefresh;
 
     private DeviceAdapter adapter;
-    private BluetoothAdapter bluetoothAdapter;
-    private List<BluetoothDevice> discoveredDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +45,6 @@ public class ChildBindActivity extends BaseActivity {
 
         initViews();
         initAdapter();
-        initBluetooth();
         loadDevices();
     }
 
@@ -62,10 +54,18 @@ public class ChildBindActivity extends BaseActivity {
         cardBluetooth = findViewById(R.id.card_bluetooth);
         cardCode = findViewById(R.id.card_code);
         ivBack = findViewById(R.id.iv_back);
+        swipeRefresh = findViewById(R.id.swipe_refresh);
 
         ivBack.setOnClickListener(v -> finish());
-        cardBluetooth.setOnClickListener(v -> startBluetoothScan());
+        cardBluetooth.setOnClickListener(v ->
+                showToast("蓝牙绑定即将推出，请使用设备码绑定"));
         cardCode.setOnClickListener(v -> showDeviceCodeDialog());
+        cardBluetooth.setAlpha(0.55f);
+
+        if (swipeRefresh != null) {
+            swipeRefresh.setColorSchemeResources(R.color.child_primary);
+            swipeRefresh.setOnRefreshListener(() -> loadDevices());
+        }
     }
 
     private void initAdapter() {
@@ -86,35 +86,47 @@ public class ChildBindActivity extends BaseActivity {
         });
     }
 
-    private void initBluetooth() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            Toast.makeText(this, "您的设备不支持蓝牙", Toast.LENGTH_SHORT).show();
-            cardBluetooth.setEnabled(false);
-        }
-    }
-
     private void loadDevices() {
         ApiClient.getInstance(this).getApi().getBindRelations()
-            .enqueue(new ApiCallback<List<Map<String, Object>>>() {
-                @Override
-                public void onSuccess(List<Map<String, Object>> data) {
-                    runOnUiThread(() -> parseDevices(data));
-                }
-            });
+                .enqueue(new ApiCallback<List<BindingRelationItem>>() {
+                    @Override
+                    public void onSuccess(List<BindingRelationItem> data) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            if (swipeRefresh != null) {
+                                swipeRefresh.setRefreshing(false);
+                            }
+                            parseDevices(data);
+                        });
+                    }
+
+                    @Override
+                    public void onNetworkError(String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            if (swipeRefresh != null) {
+                                swipeRefresh.setRefreshing(false);
+                            }
+                            showToast("加载失败，请下拉刷新重试");
+                        });
+                    }
+                });
     }
 
-    private void parseDevices(List<Map<String, Object>> data) {
+    private void parseDevices(List<BindingRelationItem> data) {
         List<Device> devices = new ArrayList<>();
         if (data != null) {
-            for (Map<String, Object> item : data) {
+            for (BindingRelationItem item : data) {
+                if (!"active".equals(item.getStatus())) {
+                    continue;
+                }
                 Device device = new Device();
-                device.setId(String.valueOf(item.get("id")));
-                device.setName(item.containsKey("elderNickname") ?
-                    String.valueOf(item.get("elderNickname")) : "未知设备");
-                device.setDeviceId(String.valueOf(item.getOrDefault("deviceId", "")));
+                device.setId(String.valueOf(item.getId()));
+                device.setName(item.getDisplayNameForChild());
+                device.setDeviceId(String.valueOf(item.getElderId()));
                 device.setStatus("online");
-                device.setBindTime(String.valueOf(item.getOrDefault("createdAt", "")));
+                device.setBindTime(item.getBindTime() != null ? item.getBindTime() : "");
+                device.setBindTypeLabel(item.getBindTypeLabel());
                 devices.add(device);
             }
         }
@@ -122,112 +134,21 @@ public class ChildBindActivity extends BaseActivity {
         updateEmptyView(devices.isEmpty());
     }
 
-    private void startBluetoothScan() {
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 1);
-            return;
-        }
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("扫描蓝牙设备")
-                .setMessage("正在搜索附近的小伴设备...")
-                .create();
-        dialog.show();
-
-        discoveredDevices.clear();
-
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        if (pairedDevices != null) {
-            for (BluetoothDevice device : pairedDevices) {
-                if (device.getName() != null && device.getName().contains("XiaoBan")) {
-                    discoveredDevices.add(device);
-                }
-            }
-        }
-
-        if (bluetoothAdapter.isDiscovering()) {
-            bluetoothAdapter.cancelDiscovery();
-        }
-        bluetoothAdapter.startDiscovery();
-
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(bluetoothReceiver, filter);
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            bluetoothAdapter.cancelDiscovery();
-            try { unregisterReceiver(bluetoothReceiver); } catch (Exception ignored) {}
-            dialog.dismiss();
-            showBluetoothDeviceList();
-        }, 3000);
-    }
-
-    private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device != null && device.getName() != null && device.getName().contains("XiaoBan")) {
-                    if (!discoveredDevices.contains(device)) {
-                        discoveredDevices.add(device);
-                    }
-                }
-            }
-        }
-    };
-
-    private void showBluetoothDeviceList() {
-        if (discoveredDevices.isEmpty()) {
-            Toast.makeText(this, "未发现小伴设备", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] deviceNames = new String[discoveredDevices.size()];
-        for (int i = 0; i < discoveredDevices.size(); i++) {
-            deviceNames[i] = discoveredDevices.get(i).getName() + "\n" +
-                    discoveredDevices.get(i).getAddress();
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle("选择设备")
-                .setItems(deviceNames, (dialog, which) -> {
-                    bindBluetoothDevice(discoveredDevices.get(which));
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void bindBluetoothDevice(BluetoothDevice device) {
-        Map<String, Long> body = new HashMap<>();
-        body.put("elderId", 1L);
-
-        ApiClient.getInstance(this).getApi().bindBluetooth(body)
-            .enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(ChildBindActivity.this, "绑定成功", Toast.LENGTH_SHORT).show();
-                        loadDevices();
-                    });
-                }
-            });
-    }
-
     private void showDeviceCodeDialog() {
         EditText etCode = new EditText(this);
-        etCode.setHint("请输入6位设备码");
+        etCode.setHint("请输入6位绑定码");
         etCode.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
         etCode.setMaxLines(1);
         etCode.setPadding(32, 32, 32, 32);
 
         new AlertDialog.Builder(this)
                 .setTitle("设备码绑定")
-                .setMessage("在设备端打开「绑定设置」查看绑定码")
+                .setMessage("请老人在「绑定家人」页面查看绑定码")
                 .setView(etCode)
                 .setPositiveButton("绑定", (dialog, which) -> {
                     String code = etCode.getText().toString().trim();
                     if (code.length() != 6) {
-                        Toast.makeText(this, "请输入6位设备码", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "请输入6位绑定码", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     bindDeviceByCode(code);
@@ -241,25 +162,42 @@ public class ChildBindActivity extends BaseActivity {
         body.put("code", code);
 
         ApiClient.getInstance(this).getApi().verifyCode(body)
-            .enqueue(new ApiCallback<Map<String, Object>>() {
-                @Override
-                public void onSuccess(Map<String, Object> data) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(ChildBindActivity.this, "绑定成功", Toast.LENGTH_SHORT).show();
-                        loadDevices();
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<BindVerifyResult>() {
+                    @Override
+                    public void onSuccess(BindVerifyResult data) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            String name = data != null ? data.getDisplayName() : "老人";
+                            Toast.makeText(ChildBindActivity.this,
+                                    "已成功绑定「" + name + "」", Toast.LENGTH_LONG).show();
+                            loadDevices();
+                        });
+                    }
+
+                    @Override
+                    public void onBusinessError(int code, String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> showToast(message));
+                    }
+
+                    @Override
+                    public void onNetworkError(String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> showToast("绑定失败，请检查网络"));
+                    }
+                });
     }
 
     private void showDeviceDetailDialog(Device device) {
-        String details = "设备名称：" + device.getName() + "\n" +
-                "设备ID：" + device.getDeviceId() + "\n" +
-                "绑定时间：" + device.getBindTime() + "\n" +
-                "在线状态：" + device.getStatusText();
+        String bindType = device.getBindTypeLabel() != null ? device.getBindTypeLabel() : "设备码绑定";
+        String details = "称呼：" + device.getName() + "\n"
+                + "账户ID：" + device.getDeviceId() + "\n"
+                + "绑定方式：" + bindType + "\n"
+                + "绑定时间：" + device.getFormattedBindTime() + "\n"
+                + "状态：" + device.getStatusText();
 
         new AlertDialog.Builder(this)
-                .setTitle("设备详情")
+                .setTitle("老人账户详情")
                 .setMessage(details)
                 .setPositiveButton("确定", null)
                 .show();
@@ -277,16 +215,23 @@ public class ChildBindActivity extends BaseActivity {
     private void unbindDevice(Device device) {
         long relationId = Long.parseLong(device.getId());
         ApiClient.getInstance(this).getApi().unbind(relationId)
-            .enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    runOnUiThread(() -> {
-                        adapter.removeDevice(device.getId());
-                        Toast.makeText(ChildBindActivity.this, "已解绑", Toast.LENGTH_SHORT).show();
-                        updateEmptyView(adapter.getItemCount() == 0);
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            adapter.removeDevice(device.getId());
+                            Toast.makeText(ChildBindActivity.this, "已解绑", Toast.LENGTH_SHORT).show();
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+
+                    @Override
+                    public void onBusinessError(int code, String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> showToast(message));
+                    }
+                });
     }
 
     private void updateEmptyView(boolean isEmpty) {
@@ -300,10 +245,8 @@ public class ChildBindActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (bluetoothAdapter != null && bluetoothAdapter.isDiscovering()) {
-            bluetoothAdapter.cancelDiscovery();
-        }
+    protected void onResume() {
+        super.onResume();
+        loadDevices();
     }
 }

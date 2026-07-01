@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -47,14 +49,36 @@
         <activity android:name=".elder.ElderHomeActivity" />
         <activity android:name=".elder.ElderChatActivity" />
         <activity android:name=".elder.ElderMessageActivity" />
+        <activity android:name=".elder.ElderMessageDetailActivity" />
         <activity android:name=".elder.ElderProfileActivity" />
         <activity android:name=".elder.ElderProfileEditActivity" />
+        <activity android:name=".elder.ElderBindActivity" />
 
         <activity android:name=".child.ChildHomeActivity" />
         <activity android:name=".child.ChildDailyReportActivity" />
         <activity android:name=".child.ChildCorrectActivity" />
         <activity android:name=".child.ChildReminderActivity" />
         <activity android:name=".child.ChildBindActivity" />
+        <activity android:name=".child.ChildSendMessageActivity" />
+
+        <receiver
+            android:name=".push.PushReceiver"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="${JPUSH_CHANNEL}" />
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="${JPUSH_APPKEY}" />
 
     </application>
 

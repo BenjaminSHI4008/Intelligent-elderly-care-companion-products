@@ -22,6 +22,9 @@ public class User {
     @SerializedName("birthday")
     private String birthday;
 
+    @SerializedName("emergencyContact")
+    private String emergencyContact;
+
     @SerializedName("phone")
     private String phone;
 
@@ -34,6 +37,7 @@ public class User {
     public String getNickname() { return nickname; }
     public String getGender() { return gender; }
     public String getBirthday() { return birthday; }
+    public String getEmergencyContact() { return emergencyContact; }
     public String getPhone() { return phone; }
     public String getAvatarUrl() { return avatarUrl; }
 }

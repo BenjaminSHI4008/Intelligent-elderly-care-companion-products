@@ -27,6 +27,7 @@ public class ElderProfileActivity extends BaseActivity {
     private TextView tvPhone;
     private TextView tvGender;
     private TextView tvBirthday;
+    private TextView tvEmergencyContact;
     private TextView tvUserId;
     private TextView tvEditNicknameHint;
     private TextView tvEditAccount;
@@ -51,6 +52,7 @@ public class ElderProfileActivity extends BaseActivity {
         tvPhone = findViewById(R.id.tv_phone);
         tvGender = findViewById(R.id.tv_gender);
         tvBirthday = findViewById(R.id.tv_birthday);
+        tvEmergencyContact = findViewById(R.id.tv_emergency_contact);
         tvUserId = findViewById(R.id.tv_user_id);
         tvEditNicknameHint = findViewById(R.id.tv_edit_nickname_hint);
         tvEditAccount = findViewById(R.id.tv_edit_account);
@@ -87,9 +89,27 @@ public class ElderProfileActivity extends BaseActivity {
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_NICKNAME, user.getNickname());
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_GENDER, user.getGender());
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_BIRTHDAY, user.getBirthday());
+                    SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_EMERGENCY_CONTACT, user.getEmergencyContact());
                     updateProfile(user.getNickname(), user.getPhone(), user.getRole(), user.getUserId());
                     updateAccountInfo();
                 });
+            }
+
+            @Override
+            public void onBusinessError(int code, String message) {
+                runOnUiThread(() -> {
+                    if (code == 401) {
+                        showToast("登录已过期，请重新登录");
+                        logout();
+                    } else {
+                        showToast(message == null || message.isEmpty() ? "获取用户信息失败" : message);
+                    }
+                });
+            }
+
+            @Override
+            public void onNetworkError(String message) {
+                runOnUiThread(() -> showToast("无法连接服务器，请检查网络或后端服务"));
             }
         });
     }
@@ -99,13 +119,20 @@ public class ElderProfileActivity extends BaseActivity {
         tvNickname.setText(displayName);
         tvAvatar.setText(displayName.substring(0, 1));
         tvRole.setText("elder".equals(role) ? "老人端" : "子女端");
-        tvPhone.setText("手机号：" + (phone == null || phone.isEmpty() ? "未获取" : phone));
+        tvPhone.setText("手机号：" + displayValue(phone));
         tvUserId.setText("用户ID：" + (userId > 0 ? String.valueOf(userId) : "--"));
     }
 
     private void updateAccountInfo() {
-        tvGender.setText("性别：" + SharedPrefUtil.getString(this, Constants.SP_GENDER, ""));
-        tvBirthday.setText("生日：" + SharedPrefUtil.getString(this, Constants.SP_BIRTHDAY, ""));
+        String role = SharedPrefUtil.getString(this, Constants.SP_ROLE, "");
+        tvGender.setText("性别：" + displayValue(SharedPrefUtil.getString(this, Constants.SP_GENDER, "")));
+        tvBirthday.setText("生日：" + displayValue(SharedPrefUtil.getString(this, Constants.SP_BIRTHDAY, "")));
+        tvEmergencyContact.setVisibility("child".equals(role) ? View.GONE : View.VISIBLE);
+        tvEmergencyContact.setText("紧急联系人：" + displayValue(SharedPrefUtil.getString(this, Constants.SP_EMERGENCY_CONTACT, "")));
+    }
+
+    private String displayValue(String value) {
+        return value == null || value.trim().isEmpty() ? "未填写" : value;
     }
 
     private void showNicknameDialog() {
@@ -143,6 +170,7 @@ public class ElderProfileActivity extends BaseActivity {
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_PHONE, user.getPhone());
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_GENDER, user.getGender());
                     SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_BIRTHDAY, user.getBirthday());
+                    SharedPrefUtil.putString(ElderProfileActivity.this, Constants.SP_EMERGENCY_CONTACT, user.getEmergencyContact());
                     updateProfile(user.getNickname(), user.getPhone(), user.getRole(), user.getUserId());
                     updateAccountInfo();
                     showToast("名字已修改");

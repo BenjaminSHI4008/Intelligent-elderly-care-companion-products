@@ -1,6 +1,7 @@
 package com.xiaoban.server.controller;
 
 import com.xiaoban.server.common.Result;
+import com.xiaoban.server.dto.FamilyMessageVO;
 import com.xiaoban.server.dto.MessageSendRequest;
 import com.xiaoban.server.entity.FamilyMessage;
 import com.xiaoban.server.service.FamilyMessageService;
@@ -30,7 +31,7 @@ public class MessageController {
 
     @Operation(summary = "获取收到的消息")
     @GetMapping("/received")
-    public Result<List<FamilyMessage>> received(
+    public Result<List<FamilyMessageVO>> received(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             Authentication auth) {
@@ -40,8 +41,9 @@ public class MessageController {
 
     @Operation(summary = "标记已读")
     @PutMapping("/{id}/read")
-    public Result<Void> markRead(@PathVariable Long id) {
-        familyMessageService.markRead(id);
+    public Result<Void> markRead(@PathVariable Long id, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        familyMessageService.markRead(id, userId);
         return Result.success();
     }
 }

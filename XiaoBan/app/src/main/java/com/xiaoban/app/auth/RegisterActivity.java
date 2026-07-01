@@ -61,6 +61,7 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
+        showToast("正在注册...");
         Map<String, String> body = new HashMap<>();
         body.put("phone", phone);
         body.put("password", password);

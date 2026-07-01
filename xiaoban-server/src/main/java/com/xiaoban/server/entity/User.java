@@ -32,6 +32,8 @@ public class User {
 
     private String birthday;
 
+    private String emergencyContact;
+
     private String avatarUrl;
 
     private String deviceModel;

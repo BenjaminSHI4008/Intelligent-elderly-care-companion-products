@@ -518,6 +518,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_bind_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"

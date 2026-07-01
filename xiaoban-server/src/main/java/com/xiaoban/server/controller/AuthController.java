@@ -1,6 +1,8 @@
 package com.xiaoban.server.controller;
 
+import com.xiaoban.server.common.BusinessException;
 import com.xiaoban.server.common.Result;
+import com.xiaoban.server.common.ResultCode;
 import com.xiaoban.server.dto.LoginRequest;
 import com.xiaoban.server.dto.ProfileUpdateRequest;
 import com.xiaoban.server.dto.RegisterRequest;
@@ -37,6 +39,10 @@ public class AuthController {
     @Operation(summary = "获取当前用户信息")
     @GetMapping("/profile")
     public Result<UserProfileVO> getProfile(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof Long)) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+
         Long userId = (Long) authentication.getPrincipal();
         return Result.success(authService.getProfile(userId));
     }
@@ -45,6 +51,10 @@ public class AuthController {
     @PutMapping("/profile")
     public Result<UserProfileVO> updateProfile(@Valid @RequestBody ProfileUpdateRequest request,
                                                Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof Long)) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+
         Long userId = (Long) authentication.getPrincipal();
         return Result.success(authService.updateProfile(userId, request));
     }

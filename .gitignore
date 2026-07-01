@@ -26,6 +26,7 @@ XiaoBan/.cxx/
 # ===== 通用 =====
 *.class
 *.jar
+!XiaoBan/gradle/wrapper/gradle-wrapper.jar
 !XiaoBan/app/libs/Msc.jar
 *.war
 *.nar
@@ -42,6 +43,7 @@ Thumbs.db
 # ===== 环境变量和敏感文件 =====
 .env
 *.env
+config.yaml
 application-prod.yml
 application-local.yml
 

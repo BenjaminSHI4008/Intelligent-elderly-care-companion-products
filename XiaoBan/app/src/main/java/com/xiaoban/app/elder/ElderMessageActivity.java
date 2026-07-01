@@ -1,5 +1,6 @@
 package com.xiaoban.app.elder;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -9,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xiaoban.app.R;
 import com.xiaoban.app.base.BaseActivity;
 import com.xiaoban.app.elder.adapter.MessageAdapter;
+import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.FamilyMessageNotifier;
+import com.xiaoban.app.util.TimeUtil;
 import com.xiaoban.app.voice.VoiceManager;
 import com.xiaoban.app.voice.VoiceRecognizer;
 import com.xiaoban.app.widget.VoiceButton;
@@ -20,12 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ElderMessageActivity extends BaseActivity {
+public class ElderMessageActivity extends BaseActivity implements FamilyMessageNotifier.Listener {
 
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private VoiceButton voiceReplyButton;
     private View btnBack;
+    private boolean announceUnreadOnLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +40,6 @@ public class ElderMessageActivity extends BaseActivity {
         initViews();
         setupRecyclerView();
         setupVoiceButton();
-        loadMessages();
     }
 
     private void initViews() {
@@ -46,30 +50,49 @@ public class ElderMessageActivity extends BaseActivity {
         btnBack.setOnClickListener(v -> finish());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadMessages(announceUnreadOnLoad);
+        announceUnreadOnLoad = false;
+        FamilyMessageNotifier.addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        FamilyMessageNotifier.removeListener(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onFamilyMessageReceived() {
+        if (isFinishing()) {
+            return;
+        }
+        loadMessages(false);
+    }
+
     private void setupRecyclerView() {
         messageAdapter = new MessageAdapter();
         messageAdapter.setOnMessageClickListener(new MessageAdapter.OnMessageClickListener() {
             @Override
+            public void onMessageClick(Message message) {
+                openMessageDetail(message);
+            }
+
+            @Override
             public void onVoiceClick(Message message) {
-                playVoiceMessage(message);
+                openMessageDetail(message);
             }
 
             @Override
             public void onPhotoClick(Message message) {
-                showPhotoFullscreen(message);
+                openMessageDetail(message);
             }
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(messageAdapter);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                markVisibleMessagesAsRead();
-            }
-        });
     }
 
     private void setupVoiceButton() {
@@ -90,14 +113,14 @@ public class ElderMessageActivity extends BaseActivity {
         });
     }
 
-    private void loadMessages() {
+    private void loadMessages(boolean announceUnread) {
         ApiClient.getInstance(this).getApi().getMessages(1, 20).enqueue(new ApiCallback<List<Message>>() {
             @Override
             public void onSuccess(List<Message> data) {
                 runOnUiThread(() -> {
                     if (data != null) {
                         messageAdapter.setMessages(data);
-                        if (!data.isEmpty() && !data.get(0).isRead()) {
+                        if (announceUnread && !data.isEmpty() && !data.get(0).isRead()) {
                             playNewMessageNotification(data.get(0));
                         }
                     }
@@ -106,56 +129,80 @@ public class ElderMessageActivity extends BaseActivity {
         });
     }
 
-    private void playVoiceMessage(Message message) {
-        if ("voice".equals(message.getType())) {
-            VoiceManager.getInstance().getSynthesizer().speak(message.getContent(), null);
-            markAsRead(message);
-        }
-    }
-
-    private void showPhotoFullscreen(Message message) {
-        showToast("查看照片：" + message.getContent());
+    private void openMessageDetail(Message message) {
         markAsRead(message);
+        Intent intent = new Intent(this, ElderMessageDetailActivity.class);
+        intent.putExtra("messageId", message.getId());
+        intent.putExtra("senderName", message.getSenderName());
+        intent.putExtra("messageType", message.getType());
+        intent.putExtra("content", message.getContent());
+        intent.putExtra("mediaUrl", message.getMediaUrl());
+        intent.putExtra("duration", message.getDuration());
+        intent.putExtra("time", TimeUtil.formatMessageTime(message.getCreateTime()));
+        startActivity(intent);
     }
 
     private void sendReply(String text) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("content", text);
-        body.put("type", "voice");
-
-        ApiClient.getInstance(this).getApi().sendMessage(body).enqueue(new ApiCallback<Void>() {
+        ApiClient.getInstance(this).getApi().getBindRelations().enqueue(new ApiCallback<List<BindingRelationItem>>() {
             @Override
-            public void onSuccess(Void data) {
-                runOnUiThread(() -> showToast("已发送回复"));
+            public void onSuccess(List<BindingRelationItem> data) {
+                Long receiverId = resolveReplyReceiverId(data);
+                if (receiverId == null) {
+                    runOnUiThread(() -> showToast("暂未绑定家人，无法回复"));
+                    return;
+                }
+
+                Map<String, Object> body = new HashMap<>();
+                body.put("receiverId", receiverId);
+                body.put("msgType", "text");
+                body.put("content", text);
+
+                ApiClient.getInstance(ElderMessageActivity.this).getApi().sendMessage(body)
+                        .enqueue(new ApiCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void data) {
+                                runOnUiThread(() -> showToast("已发送回复"));
+                            }
+
+                            @Override
+                            public void onNetworkError(String errorMsg) {
+                                runOnUiThread(() -> showToast("发送失败：" + errorMsg));
+                            }
+                        });
             }
 
-            public void onNetworkError(String errorMsg) {
-                runOnUiThread(() -> showToast("发送失败：" + errorMsg));
+            @Override
+            public void onNetworkError(String message) {
+                runOnUiThread(() -> showToast("发送失败：无法获取绑定关系"));
             }
         });
+    }
+
+    private Long resolveReplyReceiverId(List<BindingRelationItem> relations) {
+        Message latest = messageAdapter.getLatestMessage();
+        if (latest != null && latest.getSenderId() > 0) {
+            return latest.getSenderId();
+        }
+        if (relations == null) {
+            return null;
+        }
+        for (BindingRelationItem relation : relations) {
+            if ("active".equals(relation.getStatus()) && relation.getChildId() > 0) {
+                return relation.getChildId();
+            }
+        }
+        return null;
     }
 
     private void markAsRead(Message message) {
         if (!message.isRead()) {
             message.setRead(true);
+            messageAdapter.notifyDataSetChanged();
             ApiClient.getInstance(this).getApi().markRead(message.getId()).enqueue(new ApiCallback<Void>() {
                 @Override
                 public void onSuccess(Void data) {
                 }
             });
-        }
-    }
-
-    private void markVisibleMessagesAsRead() {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        if (layoutManager != null) {
-            int firstVisible = layoutManager.findFirstVisibleItemPosition();
-            int lastVisible = layoutManager.findLastVisibleItemPosition();
-
-            for (int i = firstVisible; i <= lastVisible; i++) {
-                if (i >= 0 && i < messageAdapter.getItemCount()) {
-                }
-            }
         }
     }
 
@@ -176,10 +223,7 @@ public class ElderMessageActivity extends BaseActivity {
     }
 
     public void handleNewMessagePush(Message message) {
-        runOnUiThread(() -> {
-            messageAdapter.addMessage(message);
-            playNewMessageNotification(message);
-        });
+        loadMessages(false);
     }
 
     @Override

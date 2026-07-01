@@ -35,10 +35,15 @@
             android:layout_marginEnd="24dp" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/top_bar">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -141,13 +146,13 @@
                             android:layout_height="wrap_content"
                             android:text="蓝牙扫描绑定"
                             android:textSize="16sp"
-                            android:textColor="@color/child_primary"
+                            android:textColor="@color/child_text_secondary"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="扫描附近的智能设备"
+                            android:text="即将推出，请使用设备码绑定"
                             android:textSize="14sp"
                             android:textColor="#757575"
                             android:layout_marginTop="4dp" />
@@ -245,11 +250,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="• 蓝牙绑定：确保设备蓝牙已开启，并在2米范围内\n• 设备码绑定：在设备端打开「绑定设置」查看绑定码\n• 一个设备可以绑定多个子女账号\n• 解绑后可重新绑定，历史数据不会丢失"
+                    android:text="• 设备码绑定：在老人手机打开「绑定家人」查看绑定码\n• 一个老人可以绑定多个子女账号\n• 解绑后可重新绑定，历史数据不会丢失"
                     android:textSize="13sp"
                     android:textColor="#757575"
                     android:lineSpacingExtra="4dp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </RelativeLayout>

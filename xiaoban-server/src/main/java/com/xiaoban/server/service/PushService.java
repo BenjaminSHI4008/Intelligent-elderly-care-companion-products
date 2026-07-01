@@ -11,12 +11,13 @@ import cn.jpush.api.push.model.audience.Audience;
 import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xiaoban.server.config.properties.JpushProperties;
 import com.xiaoban.server.entity.BindingRelation;
 import com.xiaoban.server.mapper.BindingRelationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,19 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PushService {
 
-    @Value("${jpush.app-key}")
-    private String appKey;
-
-    @Value("${jpush.master-secret}")
-    private String masterSecret;
-
+    private final JpushProperties jpushConfig;
     private final BindingRelationMapper bindingRelationMapper;
 
     public void pushToUser(Long userId, String title, String content, Map<String, String> extras) {
+        if (!jpushConfig.isEnabled()
+                || !StringUtils.hasText(jpushConfig.getAppKey())
+                || !StringUtils.hasText(jpushConfig.getMasterSecret())) {
+            log.warn("JPush 未启用或未配置 app-key / master-secret，跳过推送 userId={}", userId);
+            return;
+        }
+
         try {
-            JPushClient client = new JPushClient(masterSecret, appKey);
+            JPushClient client = new JPushClient(jpushConfig.getMasterSecret(), jpushConfig.getAppKey());
             PushPayload.Builder builder = PushPayload.newBuilder()
                     .setPlatform(Platform.android())
                     .setAudience(Audience.alias(String.valueOf(userId)))
@@ -48,21 +51,27 @@ public class PushService {
                                     .build())
                             .build())
                     .setOptions(Options.newBuilder().setApnsProduction(false).build());
-            PushResult result = client.sendPush(builder.build());
-            log.info("推送到用户{}成功: {}", userId, result);
+
+            PushPayload payload = builder.build();
+            PushResult result = client.sendPush(payload);
+            log.info("JPush 推送成功 userId={} msgId={}", userId, result.msg_id);
         } catch (APIConnectionException | APIRequestException e) {
-            log.error("推送到用户{}失败", userId, e);
+            log.error("JPush 推送失败 userId={}", userId, e);
         }
     }
 
     public void pushToElderFamily(Long elderId, String title, String content) {
+        pushToBoundChildren(elderId, title, content, Map.of("elderId", String.valueOf(elderId)));
+    }
+
+    public void pushToBoundChildren(Long elderId, String title, String content, Map<String, String> extras) {
         List<BindingRelation> relations = bindingRelationMapper.selectList(
                 new LambdaQueryWrapper<BindingRelation>()
                         .eq(BindingRelation::getElderId, elderId)
                         .eq(BindingRelation::getStatus, "active")
         );
         for (BindingRelation relation : relations) {
-            pushToUser(relation.getChildId(), title, content, Map.of("elderId", String.valueOf(elderId)));
+            pushToUser(relation.getChildId(), title, content, extras);
         }
     }
 }

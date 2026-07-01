@@ -11,11 +11,12 @@ public class ProfileUpdateRequest {
 
     private String nickname;
 
-    private String password;
-
     @Pattern(regexp = "^$|^(男|女)$", message = "性别只能选择男或女")
     private String gender;
 
     @Pattern(regexp = "^$|^\\d{4}-\\d{2}-\\d{2}$", message = "生日格式应为yyyy-MM-dd")
     private String birthday;
+
+    @Pattern(regexp = "^$|^\\d{3,20}$", message = "紧急联系人电话格式不正确")
+    private String emergencyContact;
 }
