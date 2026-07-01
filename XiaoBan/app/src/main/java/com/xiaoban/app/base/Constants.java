@@ -19,9 +19,9 @@ public class Constants {
     public static final String SP_BIRTHDAY = "birthday";
     public static final String SP_EMERGENCY_CONTACT = "emergency_contact";
 
-# 外部 SDK 配置对照项目根目录 config.yaml -> client-sdk-reference
+    // 外部 SDK 配置对照项目根目录 config.yaml -> client-sdk-reference
     // 科大讯飞 AppID — 见 config.yaml client-sdk-reference.iflytek-voice
-    public static final String IFLYTEK_APP_ID = "0a9e1284";
+    public static final String IFLYTEK_APP_ID = "ff9c84ad";
 
     // 极光推送 AppKey — 须与 config.yaml external-services.jpush.app-key 一致
     public static final String JPUSH_APP_KEY = "8bc0c3218b934e9a4f38b32a";
