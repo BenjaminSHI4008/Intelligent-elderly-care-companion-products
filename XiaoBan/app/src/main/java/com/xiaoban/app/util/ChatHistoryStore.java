@@ -54,9 +54,40 @@ public class ChatHistoryStore {
         return null;
     }
 
+    public static boolean deleteSession(Context context, String sessionId) {
+        if (sessionId == null || sessionId.isEmpty()) {
+            return false;
+        }
+
+        JSONArray sessions = readSessions(context);
+        JSONArray nextSessions = new JSONArray();
+        boolean deleted = false;
+
+        for (int i = 0; i < sessions.length(); i++) {
+            JSONObject sessionJson = sessions.optJSONObject(i);
+            if (sessionJson == null) {
+                continue;
+            }
+            if (sessionId.equals(sessionJson.optString("sessionId"))) {
+                deleted = true;
+                continue;
+            }
+            nextSessions.put(sessionJson);
+        }
+
+        if (deleted) {
+            getPreferences(context).edit()
+                    .putString(KEY_CHAT_HISTORY, nextSessions.toString())
+                    .apply();
+        }
+        return deleted;
+    }
+
     public static void addExchange(Context context, String sessionId, String userQuestion,
                                    String aiAnswer, String category) {
-        if (sessionId == null || sessionId.isEmpty() || userQuestion == null || aiAnswer == null) {
+        if (sessionId == null || sessionId.isEmpty()
+                || !hasMeaningfulText(userQuestion)
+                || !hasMeaningfulText(aiAnswer)) {
             return;
         }
 
@@ -81,11 +112,11 @@ public class ChatHistoryStore {
             if (currentSession == null) {
                 currentSession = new JSONObject();
                 currentSession.put("sessionId", sessionId);
-                currentSession.put("title", buildTitle(userQuestion, aiAnswer));
+                currentSession.put("title", buildTitle(userQuestion.trim(), aiAnswer.trim()));
                 currentSession.put("createdAt", now);
                 currentSession.put("messages", new JSONArray());
             } else if (currentSession.optString("title").isEmpty()) {
-                currentSession.put("title", buildTitle(userQuestion, aiAnswer));
+                currentSession.put("title", buildTitle(userQuestion.trim(), aiAnswer.trim()));
             }
 
             currentSession.put("updatedAt", now);
@@ -95,8 +126,8 @@ public class ChatHistoryStore {
                 messages = new JSONArray();
             }
             JSONObject message = new JSONObject();
-            message.put("userQuestion", userQuestion);
-            message.put("aiAnswer", aiAnswer);
+            message.put("userQuestion", userQuestion.trim());
+            message.put("aiAnswer", aiAnswer.trim());
             message.put("category", category == null ? "normal" : category);
             message.put("createdAt", now);
             messages.put(message);
@@ -187,6 +218,22 @@ public class ChatHistoryStore {
             text = cleanTitleSource(aiAnswer);
         }
         return trimTitle(text, "新的对话");
+    }
+
+    private static boolean hasMeaningfulText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return false;
+        }
+
+        String value = text.trim();
+        for (int offset = 0; offset < value.length(); ) {
+            int codePoint = value.codePointAt(offset);
+            if (Character.isLetterOrDigit(codePoint)) {
+                return true;
+            }
+            offset += Character.charCount(codePoint);
+        }
+        return false;
     }
 
     private static String cleanTitleSource(String source) {

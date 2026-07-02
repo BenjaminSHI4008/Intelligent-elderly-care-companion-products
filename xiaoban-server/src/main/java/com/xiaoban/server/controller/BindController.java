@@ -1,6 +1,8 @@
 package com.xiaoban.server.controller;
 
 import com.xiaoban.server.common.Result;
+import com.xiaoban.server.common.BusinessException;
+import com.xiaoban.server.common.ResultCode;
 import com.xiaoban.server.dto.VerifyCodeRequest;
 import com.xiaoban.server.entity.User;
 import com.xiaoban.server.mapper.UserMapper;
@@ -57,6 +59,9 @@ public class BindController {
     public Result<List<BindingRelationVO>> relations(Authentication auth) {
         Long userId = (Long) auth.getPrincipal();
         User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
         return Result.success(bindService.getRelationDetails(userId, user.getRole()));
     }
 

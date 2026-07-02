@@ -37,12 +37,18 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addElderMessage(String text) {
-        items.add(new ChatItem(TYPE_ELDER, text, null));
+        if (!hasMeaningfulText(text)) {
+            return;
+        }
+        items.add(new ChatItem(TYPE_ELDER, text.trim(), null));
         notifyItemInserted(items.size() - 1);
     }
 
     public void addAiMessage(String text, String category) {
-        items.add(new ChatItem(TYPE_AI, text, category));
+        if (!hasMeaningfulText(text)) {
+            return;
+        }
+        items.add(new ChatItem(TYPE_AI, text.trim(), category));
         notifyItemInserted(items.size() - 1);
 
         if ("health".equals(category)) {
@@ -55,8 +61,27 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addCorrectionMessage(String senderName, String text) {
-        items.add(new ChatItem(TYPE_CORRECTION, "您" + senderName + "说，" + text, null));
+        if (!hasMeaningfulText(text)) {
+            return;
+        }
+        items.add(new ChatItem(TYPE_CORRECTION, "您" + senderName + "说，" + text.trim(), null));
         notifyItemInserted(items.size() - 1);
+    }
+
+    private static boolean hasMeaningfulText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return false;
+        }
+
+        String value = text.trim();
+        for (int offset = 0; offset < value.length(); ) {
+            int codePoint = value.codePointAt(offset);
+            if (Character.isLetterOrDigit(codePoint)) {
+                return true;
+            }
+            offset += Character.charCount(codePoint);
+        }
+        return false;
     }
 
     @Override

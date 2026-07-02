@@ -18,14 +18,23 @@ import java.util.List;
 public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.HistoryViewHolder> {
 
     private final List<ChatHistorySession> sessions = new ArrayList<>();
-    private OnSessionClickListener listener;
+    private OnSessionClickListener sessionClickListener;
+    private OnSessionDeleteListener sessionDeleteListener;
 
     public interface OnSessionClickListener {
         void onSessionClick(ChatHistorySession session);
     }
 
+    public interface OnSessionDeleteListener {
+        void onSessionDelete(ChatHistorySession session);
+    }
+
     public void setOnSessionClickListener(OnSessionClickListener listener) {
-        this.listener = listener;
+        this.sessionClickListener = listener;
+    }
+
+    public void setOnSessionDeleteListener(OnSessionDeleteListener listener) {
+        this.sessionDeleteListener = listener;
     }
 
     public void setSessions(List<ChatHistorySession> newSessions) {
@@ -47,7 +56,7 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
     @Override
     public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         ChatHistorySession session = sessions.get(position);
-        holder.bind(session, listener);
+        holder.bind(session, sessionClickListener, sessionDeleteListener);
     }
 
     @Override
@@ -59,22 +68,30 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         TextView tvTitle;
         TextView tvMeta;
         TextView tvPreview;
+        View btnDelete;
 
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tv_history_title);
             tvMeta = itemView.findViewById(R.id.tv_history_meta);
             tvPreview = itemView.findViewById(R.id.tv_history_preview);
+            btnDelete = itemView.findViewById(R.id.btn_delete_history);
         }
 
-        void bind(ChatHistorySession session, OnSessionClickListener listener) {
+        void bind(ChatHistorySession session, OnSessionClickListener clickListener,
+                  OnSessionDeleteListener deleteListener) {
             tvTitle.setText(session.getTitle());
             tvMeta.setText(ChatHistoryStore.formatDisplayTime(session.getUpdatedAt())
                     + " · " + session.getMessageCount() + "轮对话");
             tvPreview.setText(session.getPreview());
             itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onSessionClick(session);
+                if (clickListener != null) {
+                    clickListener.onSessionClick(session);
+                }
+            });
+            btnDelete.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onSessionDelete(session);
                 }
             });
         }

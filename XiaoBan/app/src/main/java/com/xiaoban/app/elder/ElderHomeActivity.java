@@ -268,6 +268,17 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                     }
 
                     @Override
+                    public void onBusinessError(int code, String message) {
+                        if (isFinishing()) return;
+                        runOnUiThread(() -> {
+                            if (!bindBaselineInitialized) {
+                                bindBaselineInitialized = true;
+                            }
+                            tvBindHint.setText("查看绑定码 ›");
+                        });
+                    }
+
+                    @Override
                     public void onNetworkError(String message) {
                         // 首页静默失败，避免启动时反复弹 Toast
                     }
@@ -294,6 +305,15 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
             @Override
             public void onNetworkError(String message) {
                 // 首页静默失败，保留默认文案
+            }
+
+            @Override
+            public void onBusinessError(int code, String message) {
+                if (isFinishing()) return;
+                runOnUiThread(() -> {
+                    tvMessagePreview.setText("暂无未读家人消息");
+                    unreadDot.setVisibility(View.GONE);
+                });
             }
         });
     }
@@ -340,7 +360,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
 
     private void sendVoiceChat(String text) {
         String question = text == null ? "" : text.trim();
-        if (question.isEmpty()) {
+        if (!hasMeaningfulText(question)) {
             tvVoiceHint.setText("按住说话");
             showToast("没有识别到语音内容");
             return;
@@ -386,6 +406,22 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                 });
             }
         });
+    }
+
+    private boolean hasMeaningfulText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return false;
+        }
+
+        String value = text.trim();
+        for (int offset = 0; offset < value.length(); ) {
+            int codePoint = value.codePointAt(offset);
+            if (Character.isLetterOrDigit(codePoint)) {
+                return true;
+            }
+            offset += Character.charCount(codePoint);
+        }
+        return false;
     }
 
     private void makeEmergencyCall() {

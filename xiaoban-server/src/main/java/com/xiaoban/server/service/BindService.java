@@ -122,11 +122,17 @@ public class BindService {
     }
 
     public List<BindingRelation> getRelations(Long userId, String role) {
+        if (userId == null || role == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+
         LambdaQueryWrapper<BindingRelation> query = new LambdaQueryWrapper<>();
         if ("elder".equals(role)) {
             query.eq(BindingRelation::getElderId, userId);
-        } else {
+        } else if ("child".equals(role)) {
             query.eq(BindingRelation::getChildId, userId);
+        } else {
+            throw new BusinessException(ResultCode.FORBIDDEN);
         }
         query.orderByDesc(BindingRelation::getBindTime);
         return bindingRelationMapper.selectList(query);
