@@ -51,6 +51,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
     private TextView tvVoiceHint;
     private VoiceButton voiceButton;
     private View btnEmergency;
+    private View btnBindShortcut;
     private View btnProfile;
     private TextView tvProfileInitial;
     private View welcomeBubble;
@@ -91,7 +92,9 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         voiceButtonCard = findViewById(R.id.voice_button_card);
         tvVoiceHint = findViewById(R.id.tv_voice_hint);
         voiceButton = findViewById(R.id.voice_button);
+        voiceButton.setDrawContent(false);
         btnEmergency = findViewById(R.id.btn_emergency);
+        btnBindShortcut = findViewById(R.id.btn_bind_shortcut);
         btnProfile = findViewById(R.id.btn_profile);
         tvProfileInitial = findViewById(R.id.tv_profile_initial);
         welcomeBubble = findViewById(R.id.welcome_bubble);
@@ -104,8 +107,9 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         cardMessage.setOnClickListener(v ->
                 startActivity(new Intent(this, ElderMessageActivity.class)));
 
-        cardBind.setOnClickListener(v ->
-                startActivity(new Intent(this, ElderBindActivity.class)));
+        cardBind.setOnClickListener(v -> openBindPage());
+
+        btnBindShortcut.setOnClickListener(v -> openBindPage());
 
         cardAiChatHistory.setOnClickListener(v -> openAiChatHistory());
 
@@ -142,6 +146,10 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         });
 
         btnEmergency.setOnClickListener(v -> makeEmergencyCall());
+    }
+
+    private void openBindPage() {
+        startActivity(new Intent(this, ElderBindActivity.class));
     }
 
     private void updateProfileInitial() {
@@ -261,6 +269,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                             }
 
                             int count = BindNotificationHelper.countActiveRelations(data);
+                            updateBindEntryState(count);
                             tvBindHint.setText(count > 0
                                     ? "已绑定 " + count + " 位家人 ›"
                                     : "查看绑定码 ›");
@@ -274,6 +283,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                             if (!bindBaselineInitialized) {
                                 bindBaselineInitialized = true;
                             }
+                            showBindEntryFallback();
                             tvBindHint.setText("查看绑定码 ›");
                         });
                     }
@@ -281,8 +291,22 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                     @Override
                     public void onNetworkError(String message) {
                         // 首页静默失败，避免启动时反复弹 Toast
+                        if (isFinishing()) return;
+                        runOnUiThread(ElderHomeActivity.this::showBindEntryFallback);
                     }
                 });
+    }
+
+    private void updateBindEntryState(int count) {
+        boolean hasBindings = count > 0;
+        cardBind.setVisibility(hasBindings ? View.GONE : View.VISIBLE);
+        btnBindShortcut.setVisibility(hasBindings ? View.VISIBLE : View.GONE);
+    }
+
+    private void showBindEntryFallback() {
+        cardBind.setVisibility(View.VISIBLE);
+        btnBindShortcut.setVisibility(View.GONE);
+        tvBindHint.setText("查看绑定码 ›");
     }
 
     private void loadLatestMessage() {

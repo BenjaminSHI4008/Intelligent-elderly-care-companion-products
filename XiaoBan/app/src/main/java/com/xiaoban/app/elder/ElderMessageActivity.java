@@ -96,6 +96,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     }
 
     private void setupVoiceButton() {
+        voiceReplyButton.setRectangleIdleText("按住说话回复");
         voiceReplyButton.setVoiceCallback(new VoiceRecognizer.Callback() {
             @Override
             public void onResult(String text) {

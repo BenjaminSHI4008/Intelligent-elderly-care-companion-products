@@ -312,42 +312,31 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                app:cardCornerRadius="32dp"
-                app:cardElevation="12dp">
+            <FrameLayout
+                android:id="@+id/voice_button_card"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_voice_button_normal">
 
-                <FrameLayout
+                <TextView
+                    android:id="@+id/tv_voice_button_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="按住说话"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.xiaoban.app.widget.VoiceButton
+                    android:id="@+id/voice_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_voice_button_normal">
+                    android:background="@android:color/transparent" />
 
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="麦克风"
-                        android:src="@drawable/ic_microphone_small" />
-
-                    <com.xiaoban.app.widget.VoiceButton
-                        android:id="@+id/voice_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent" />
-
-                </FrameLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="6dp"
-                android:text="按住说话"
-                android:textColor="@color/text_secondary"
-                android:textSize="18sp" />
+            </FrameLayout>
 
         </LinearLayout>
 

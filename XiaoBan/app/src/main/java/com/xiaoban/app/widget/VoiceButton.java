@@ -23,8 +23,12 @@ public class VoiceButton extends View {
     private Paint textPaint;
 
     private boolean isRecording = false;
+    private boolean drawContent = true;
     private float rippleRadius = 0f;
-    private String displayText = "按住说话";
+    private String circleIdleText = "按住说话";
+    private String rectangleIdleText = "🎙️ 按住录音回复";
+    private String recordingText = "正在听...";
+    private String displayText = circleIdleText;
 
     private static final int COLOR_NORMAL = 0xFF3AAFA9;
     private static final int COLOR_PRESSED = 0xFF2B7A78;
@@ -71,9 +75,29 @@ public class VoiceButton extends View {
         this.voiceCallback = callback;
     }
 
+    public void setRectangleIdleText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        rectangleIdleText = text;
+        invalidate();
+    }
+
+    public void setDrawContent(boolean drawContent) {
+        this.drawContent = drawContent;
+        if (!drawContent) {
+            stopRippleAnimation();
+        }
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (!drawContent) {
+            return;
+        }
+
         float width = getWidth();
         float height = getHeight();
         float cx = width / 2f;
@@ -118,7 +142,7 @@ public class VoiceButton extends View {
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, circlePaint);
 
         textPaint.setTextSize(Math.min(height * 0.5f, 56f));
-        String text = isRecording ? "🎙️ 正在录音..." : "🎙️ 按住录音回复";
+        String text = isRecording ? recordingText : rectangleIdleText;
         canvas.drawText(text, width / 2f, height / 2f + textPaint.getTextSize() / 3, textPaint);
     }
 
@@ -138,11 +162,11 @@ public class VoiceButton extends View {
 
     private void startRecording() {
         isRecording = true;
-        displayText = "正在听...";
+        displayText = recordingText;
         animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
 
         boolean isRoundButton = Math.abs(getWidth() - getHeight()) < 20;
-        if (isRoundButton) {
+        if (drawContent && isRoundButton) {
             startRippleAnimation();
         }
 
@@ -152,7 +176,7 @@ public class VoiceButton extends View {
 
     private void stopRecording() {
         isRecording = false;
-        displayText = "按住说话";
+        displayText = circleIdleText;
         animate().scaleX(1f).scaleY(1f).setDuration(100).start();
         stopRippleAnimation();
         invalidate();

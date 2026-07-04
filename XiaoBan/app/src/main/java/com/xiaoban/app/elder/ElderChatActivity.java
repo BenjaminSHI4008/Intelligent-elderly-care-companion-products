@@ -49,6 +49,8 @@ public class ElderChatActivity extends BaseActivity {
     private RecyclerView rvChat;
     private ChatAdapter chatAdapter;
     private VoiceButton voiceButton;
+    private View voiceButtonCard;
+    private TextView tvVoiceButtonLabel;
     private View cardInputSwitch;
     private TextView tvInputSwitch;
     private View panelVoiceInput;
@@ -136,6 +138,9 @@ public class ElderChatActivity extends BaseActivity {
     private void initViews() {
         rvChat = findViewById(R.id.rv_chat);
         voiceButton = findViewById(R.id.voice_button);
+        voiceButton.setDrawContent(false);
+        voiceButtonCard = findViewById(R.id.voice_button_card);
+        tvVoiceButtonLabel = findViewById(R.id.tv_voice_button_label);
         cardInputSwitch = findViewById(R.id.card_input_switch);
         tvInputSwitch = findViewById(R.id.tv_input_switch);
         panelVoiceInput = findViewById(R.id.panel_voice_input);
@@ -178,6 +183,23 @@ public class ElderChatActivity extends BaseActivity {
     }
 
     private void setupVoiceButton() {
+        voiceButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    voiceButtonCard.animate().cancel();
+                    voiceButtonCard.setScaleX(0.95f);
+                    voiceButtonCard.setScaleY(0.95f);
+                    tvVoiceButtonLabel.setText("正在听...");
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    voiceButtonCard.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+                    tvVoiceButtonLabel.setText("按住说话");
+                    break;
+            }
+            return false;
+        });
+
         voiceButton.setVoiceCallback(new VoiceRecognizer.Callback() {
             @Override
             public void onResult(String text) {

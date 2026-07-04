@@ -69,31 +69,17 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="12dp">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_bubble_elder_gradient"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎙️ 按住录音回复"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                android:layout_height="56dp">
 
                 <com.xiaoban.app.widget.VoiceButton
                     android:id="@+id/voice_reply_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="-999dp"
                     android:background="@android:color/transparent" />
 
-            </LinearLayout>
+            </FrameLayout>
 
         </androidx.cardview.widget.CardView>
 
