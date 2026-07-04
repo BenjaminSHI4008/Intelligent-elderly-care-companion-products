@@ -156,6 +156,7 @@ public class ChildHomeActivity extends BaseActivity {
 
     private void setupClickListeners() {
         btnSettings.setOnClickListener(v -> showLogoutDialog());
+        tvDeviceStatus.setOnClickListener(v -> openDeviceManagement());
 
         cardPending.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildCorrectActivity.class)));
@@ -172,8 +173,7 @@ public class ChildHomeActivity extends BaseActivity {
         cardHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildDailyReportActivity.class)));
 
-        cardBind.setOnClickListener(v ->
-                startActivity(new Intent(this, ChildBindActivity.class)));
+        cardBind.setOnClickListener(v -> openDeviceManagement());
 
         navHome.setOnClickListener(v -> { });
 
@@ -185,6 +185,10 @@ public class ChildHomeActivity extends BaseActivity {
 
         navSettings.setOnClickListener(v ->
                 startActivity(new Intent(this, ElderProfileActivity.class)));
+    }
+
+    private void openDeviceManagement() {
+        startActivity(new Intent(this, ChildBindActivity.class));
     }
 
     private void showLogoutDialog() {

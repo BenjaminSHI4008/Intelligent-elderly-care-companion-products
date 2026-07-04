@@ -188,6 +188,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 android:visibility="visible"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
@@ -197,10 +200,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_child_warning_card"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -261,6 +261,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="@color/white">
@@ -269,10 +272,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -340,6 +340,9 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -349,10 +352,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
-                            android:gravity="center"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?attr/selectableItemBackground">
+                            android:gravity="center">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -387,6 +387,9 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -396,10 +399,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
-                            android:gravity="center"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?attr/selectableItemBackground">
+                            android:gravity="center">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -441,6 +441,9 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -450,10 +453,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
-                            android:gravity="center"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?attr/selectableItemBackground">
+                            android:gravity="center">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -488,6 +488,9 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -497,10 +500,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
-                            android:gravity="center"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?attr/selectableItemBackground">
+                            android:gravity="center">
 
                             <TextView
                                 android:layout_width="wrap_content"
