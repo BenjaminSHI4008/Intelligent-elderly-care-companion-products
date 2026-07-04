@@ -40,7 +40,7 @@ public class Message {
     private String senderName;
 
     private static final SimpleDateFormat DATE_FORMAT =
-        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 
     public static Message mock(long id, String senderName, String msgType, String content,
                                int duration, boolean isRead, String createdAt) {
@@ -64,12 +64,15 @@ public class Message {
     public int getDuration() { return duration; }
     public int getIsRead() { return isRead; }
     public String getCreatedAt() { return createdAt; }
+
     public String getSenderName() {
         return senderName != null ? senderName : "家人";
     }
 
     public String getType() {
-        if (msgType == null) return "text";
+        if (msgType == null) {
+            return "text";
+        }
         switch (msgType) {
             case "voice":
                 return "voice";
@@ -90,7 +93,9 @@ public class Message {
     }
 
     public Date getCreateTime() {
-        if (createdAt == null) return new Date();
+        if (createdAt == null) {
+            return new Date();
+        }
         try {
             return DATE_FORMAT.parse(createdAt);
         } catch (ParseException e) {

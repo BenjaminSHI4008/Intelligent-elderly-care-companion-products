@@ -55,8 +55,14 @@ public interface ApiService {
     @GET("api/messages/received")
     Call<ApiResponse<List<Message>>> getMessages(@Query("page") int page, @Query("size") int size);
 
+    @GET("api/messages/family-group")
+    Call<ApiResponse<List<Message>>> getFamilyGroupMessages(@Query("page") int page, @Query("size") int size);
+
     @POST("api/messages/send")
     Call<ApiResponse<Void>> sendMessage(@Body Map<String, Object> body);
+
+    @POST("api/messages/family-group/send")
+    Call<ApiResponse<Void>> sendFamilyGroupMessage(@Body Map<String, Object> body);
 
     @PUT("api/messages/{id}/read")
     Call<ApiResponse<Void>> markRead(@Path("id") long id);

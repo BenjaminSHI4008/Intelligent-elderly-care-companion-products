@@ -10,12 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.xiaoban.app.R;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.util.ImageUrlUtil;
 import com.xiaoban.app.util.TimeUtil;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Message> messages = new ArrayList<>();
     private OnMessageClickListener listener;
+    private long currentUserId = 0L;
 
     public interface OnMessageClickListener {
         void onMessageClick(Message message);
@@ -35,14 +35,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         this.listener = listener;
     }
 
+    public void setCurrentUserId(long currentUserId) {
+        this.currentUserId = currentUserId;
+    }
+
     public void setMessages(List<Message> messages) {
         this.messages = messages;
         notifyDataSetChanged();
-    }
-
-    public void addMessage(Message message) {
-        messages.add(0, message);
-        notifyItemInserted(0);
     }
 
     public Message getLatestMessage() {
@@ -59,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        holder.bind(messages.get(position), listener);
+        holder.bind(messages.get(position), listener, currentUserId);
     }
 
     @Override
@@ -83,36 +82,36 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             contentContainer = itemView.findViewById(R.id.message_content_container);
         }
 
-        void bind(Message message, OnMessageClickListener listener) {
-            tvSenderName.setText(message.getSenderName());
+        void bind(Message message, OnMessageClickListener listener, long currentUserId) {
+            boolean isMine = currentUserId > 0 && message.getSenderId() == currentUserId;
+            tvSenderName.setText(isMine ? "我" : message.getSenderName());
             tvTime.setText(TimeUtil.formatMessageTime(message.getCreateTime()));
-            unreadIndicator.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
-            unreadDot.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
+
+            boolean showUnread = !isMine && !message.isRead() && message.getReceiverId() == currentUserId;
+            unreadIndicator.setVisibility(showUnread ? View.VISIBLE : View.GONE);
+            unreadDot.setVisibility(showUnread ? View.VISIBLE : View.GONE);
+
             itemView.setOnClickListener(v -> {
-                if (listener != null) listener.onMessageClick(message);
+                if (listener != null) {
+                    listener.onMessageClick(message);
+                }
             });
 
             contentContainer.removeAllViews();
             LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
 
             switch (message.getType()) {
-                case "text":
-                    View textView = inflater.inflate(R.layout.message_content_text, contentContainer, false);
-                    TextView tvText = textView.findViewById(R.id.tv_text_content);
-                    tvText.setText(message.getContent());
-                    contentContainer.addView(textView);
-                    break;
-
                 case "voice":
                     View voiceView = inflater.inflate(R.layout.message_content_voice, contentContainer, false);
                     TextView tvDuration = voiceView.findViewById(R.id.tv_duration);
                     tvDuration.setText(formatDuration(message.getDuration()));
                     voiceView.setOnClickListener(v -> {
-                        if (listener != null) listener.onVoiceClick(message);
+                        if (listener != null) {
+                            listener.onVoiceClick(message);
+                        }
                     });
                     contentContainer.addView(voiceView);
                     break;
-
                 case "photo":
                     View photoView = inflater.inflate(R.layout.message_content_photo, contentContainer, false);
                     ImageView ivPhoto = photoView.findViewById(R.id.iv_photo_thumbnail);
@@ -125,9 +124,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         ivPhoto.setImageResource(R.drawable.bg_message_photo);
                     }
                     photoView.setOnClickListener(v -> {
-                        if (listener != null) listener.onPhotoClick(message);
+                        if (listener != null) {
+                            listener.onPhotoClick(message);
+                        }
                     });
                     contentContainer.addView(photoView);
+                    break;
+                case "text":
+                default:
+                    View textView = inflater.inflate(R.layout.message_content_text, contentContainer, false);
+                    TextView tvText = textView.findViewById(R.id.tv_text_content);
+                    tvText.setText(message.getContent());
+                    contentContainer.addView(textView);
                     break;
             }
         }

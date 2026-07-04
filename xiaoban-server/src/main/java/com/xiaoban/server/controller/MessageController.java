@@ -39,6 +39,24 @@ public class MessageController {
         return Result.success(familyMessageService.received(userId, page, size));
     }
 
+    @Operation(summary = "获取老人端家庭聊天群消息")
+    @GetMapping("/family-group")
+    public Result<List<FamilyMessageVO>> familyGroup(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "50") int size,
+            Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        return Result.success(familyMessageService.familyGroup(userId, page, size));
+    }
+
+    @Operation(summary = "老人端发送家庭聊天群消息")
+    @PostMapping("/family-group/send")
+    public Result<Void> sendFamilyGroup(@RequestBody MessageSendRequest req, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        familyMessageService.sendFamilyGroup(userId, req);
+        return Result.success();
+    }
+
     @Operation(summary = "标记已读")
     @PutMapping("/{id}/read")
     public Result<Void> markRead(@PathVariable Long id, Authentication auth) {
