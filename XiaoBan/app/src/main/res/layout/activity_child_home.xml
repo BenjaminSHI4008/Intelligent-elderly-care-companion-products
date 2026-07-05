@@ -370,10 +370,11 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_reminder_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="3个提醒已设置"
+                                android:text="—"
                                 android:textSize="13sp"
                                 android:textColor="@color/child_text_secondary" />
 

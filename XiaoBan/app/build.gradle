@@ -2,6 +2,18 @@ plugins {
     id 'com.android.application'
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+
+// 模拟器: http://10.0.2.2:8080/  真机: http://电脑WLAN的IP:8080/（见 local.properties 的 backend.url）
+def backendBaseUrl = localProperties.getProperty('backend.url', 'http://10.0.2.2:8080/')
+if (!backendBaseUrl.endsWith('/')) {
+    backendBaseUrl = backendBaseUrl + '/'
+}
+
 android {
     namespace 'com.xiaoban.app'
     compileSdk 34
@@ -30,13 +42,12 @@ android {
 
     buildTypes {
         debug {
-            // 真机调试：电脑局域网 IP；模拟器改为 http://10.0.2.2:8080/
-            buildConfigField "String", "BASE_URL", '"http://192.168.1.2:8080/"'
+            buildConfigField "String", "BASE_URL", "\"${backendBaseUrl}\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", '"http://192.168.1.2:8080/"'
+            buildConfigField "String", "BASE_URL", "\"${backendBaseUrl}\""
         }
     }
 

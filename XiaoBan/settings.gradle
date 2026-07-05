@@ -1,13 +1,49 @@
 pluginManagement {
     repositories {
+        // Android 专用 → google 镜像
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("com\\.google.*")
+            }
+        }
+        // 通用 Java 库 → central 镜像（排除 Android，避免 502）
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+            content {
+                excludeGroupByRegex("com\\.android.*")
+                excludeGroupByRegex("androidx.*")
+            }
+        }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("com\\.google.*")
+            }
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+            content {
+                excludeGroupByRegex("com\\.android.*")
+                excludeGroupByRegex("androidx.*")
+            }
+        }
+        maven { url 'https://maven.aliyun.com/repository/public' }
         google()
         mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }

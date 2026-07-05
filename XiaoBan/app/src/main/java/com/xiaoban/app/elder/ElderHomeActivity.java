@@ -25,6 +25,7 @@ import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.BindNotificationHelper;
 import com.xiaoban.app.util.FamilyMessageNotifier;
+import com.xiaoban.app.util.NetworkErrorUtil;
 import com.xiaoban.app.util.PermissionUtil;
 import com.xiaoban.app.util.SharedPrefUtil;
 import com.xiaoban.app.util.TimeUtil;
@@ -426,7 +427,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                 if (isFinishing()) return;
                 runOnUiThread(() -> {
                     tvVoiceHint.setText("按住说话");
-                    showToast("对话失败，请检查网络");
+                    showToast(NetworkErrorUtil.getChatFailureMessage());
                 });
             }
         });

@@ -4,6 +4,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.xiaoban.app.base.BaseApplication;
+import com.xiaoban.app.util.NetworkErrorUtil;
+import com.xiaoban.app.util.SessionHelper;
 import com.xiaoban.app.model.ApiResponse;
 
 import java.io.IOException;
@@ -21,14 +23,14 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
             if (body.isSuccess()) {
                 onSuccess(body.getData());
             } else {
-                onBusinessError(body.getCode(), body.getMessage());
+                handleBusinessError(body.getCode(), body.getMessage());
             }
         } else {
             ApiResponse<?> errorBody = parseErrorBody(response);
             if (errorBody != null) {
-                onBusinessError(errorBody.getCode(), errorBody.getMessage());
+                handleBusinessError(errorBody.getCode(), errorBody.getMessage());
             } else {
-                onBusinessError(response.code(), "请求失败");
+                handleBusinessError(response.code(), "请求失败");
             }
         }
     }
@@ -44,8 +46,17 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
         Toast.makeText(BaseApplication.getInstance(), message, Toast.LENGTH_SHORT).show();
     }
 
+    private void handleBusinessError(int code, String message) {
+        if (SessionHelper.isUnauthorized(code)) {
+            SessionHelper.forceRelogin(BaseApplication.getInstance(), message);
+            return;
+        }
+        onBusinessError(code, message);
+    }
+
     public void onNetworkError(String message) {
-        Toast.makeText(BaseApplication.getInstance(), "网络异常，请检查网络连接", Toast.LENGTH_SHORT).show();
+        Toast.makeText(BaseApplication.getInstance(),
+                NetworkErrorUtil.getGenericFailureMessage(), Toast.LENGTH_LONG).show();
     }
 
     private ApiResponse<?> parseErrorBody(Response<ApiResponse<T>> response) {

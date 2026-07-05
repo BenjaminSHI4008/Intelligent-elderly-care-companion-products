@@ -29,6 +29,7 @@ import com.xiaoban.app.model.ChatHistorySession;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.ChatHistoryStore;
+import com.xiaoban.app.util.NetworkErrorUtil;
 import com.xiaoban.app.util.SharedPrefUtil;
 import com.xiaoban.app.voice.VoiceManager;
 import com.xiaoban.app.voice.VoiceRecognizer;
@@ -448,7 +449,7 @@ public class ElderChatActivity extends BaseActivity {
                 runOnUiThread(() -> {
                     isWaitingForAiResponse = false;
                     showThinking(false);
-                    showToast("对话失败，请检查网络");
+                    showToast(NetworkErrorUtil.getChatFailureMessage());
                 });
             }
         });

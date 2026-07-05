@@ -23,6 +23,7 @@ import java.util.Map;
 public class ConversationController {
 
     private final ConversationService conversationService;
+    private final com.xiaoban.server.security.BindingGuard bindingGuard;
 
     @Operation(summary = "老人端发送对话")
     @PostMapping("/api/voice/chat")
@@ -42,7 +43,13 @@ public class ConversationController {
     @GetMapping("/api/conversations/history")
     public Result<List<ConversationVO>> history(
             @RequestParam Long elderId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        // Elder may read own history; a child must be actively bound to the elder.
+        if (!userId.equals(elderId)) {
+            bindingGuard.assertChildBoundToElder(userId, elderId);
+        }
         return Result.success(conversationService.getHistory(elderId, date));
     }
 

@@ -20,6 +20,7 @@ import com.xiaoban.app.model.Reminder;
 import com.xiaoban.app.model.ReminderItem;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.ElderSelectionStore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,12 +36,14 @@ public class ChildReminderActivity extends BaseActivity {
     private ImageView ivBack;
 
     private ReminderAdapter adapter;
+    private long elderId = ElderSelectionStore.NO_ELDER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_reminder);
 
+        elderId = ElderSelectionStore.getSelected(this);
         initViews();
         initAdapter();
         loadReminders();
@@ -80,7 +83,11 @@ public class ChildReminderActivity extends BaseActivity {
     }
 
     private void loadReminders() {
-        long elderId = 1L;
+        if (elderId == ElderSelectionStore.NO_ELDER) {
+            showToast("请先在首页绑定并选择老人");
+            updateEmptyView(true);
+            return;
+        }
         ApiClient.getInstance(this).getApi().getReminders(elderId)
             .enqueue(new ApiCallback<List<Reminder>>() {
                 @Override
@@ -89,6 +96,22 @@ public class ChildReminderActivity extends BaseActivity {
                         List<ReminderItem> reminders = convertReminders(data);
                         adapter.setReminders(reminders);
                         updateEmptyView(reminders.isEmpty());
+                    });
+                }
+
+                @Override
+                public void onNetworkError(String message) {
+                    runOnUiThread(() -> {
+                        showToast("提醒列表加载失败，请返回重试");
+                        updateEmptyView(true);
+                    });
+                }
+
+                @Override
+                public void onBusinessError(int code, String message) {
+                    runOnUiThread(() -> {
+                        showToast(message);
+                        updateEmptyView(true);
                     });
                 }
             });
@@ -259,11 +282,15 @@ public class ChildReminderActivity extends BaseActivity {
     }
 
     private void createReminder(String title, String content, String time, String repeatType) {
+        if (elderId == ElderSelectionStore.NO_ELDER) {
+            showToast("请先在首页绑定并选择老人");
+            return;
+        }
         Map<String, Object> body = new HashMap<>();
         body.put("content", title + "：" + content);
         body.put("remindTime", time);
         body.put("repeatType", repeatType);
-        body.put("elderId", 1L);
+        body.put("elderId", elderId);
 
         ApiClient.getInstance(this).getApi().createReminder(body)
             .enqueue(new ApiCallback<Void>() {

@@ -7,6 +7,7 @@ import com.xiaoban.app.model.ChatResponse;
 import com.xiaoban.app.model.Conversation;
 import com.xiaoban.app.model.ConversationSummary;
 import com.xiaoban.app.model.DailyReport;
+import com.xiaoban.app.model.DashboardData;
 import com.xiaoban.app.model.FamilyGroupMember;
 import com.xiaoban.app.model.GenerateCodeResponse;
 import com.xiaoban.app.model.Message;
@@ -121,6 +122,10 @@ public interface ApiService {
 
     @DELETE("api/bind/{relationId}")
     Call<ApiResponse<Void>> unbind(@Path("relationId") long relationId);
+
+    // === 子女端首页聚合 ===
+    @GET("api/child/dashboard")
+    Call<ApiResponse<DashboardData>> getChildDashboard(@Query("elderId") long elderId, @Query("date") String date);
 
     // === 日报 ===
     @GET("api/report/daily")

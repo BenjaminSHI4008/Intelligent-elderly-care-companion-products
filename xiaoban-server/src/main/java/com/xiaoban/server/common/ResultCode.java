@@ -5,6 +5,7 @@ public enum ResultCode {
     SUCCESS(200, "success"),
     BAD_REQUEST(400, "请求参数错误"),
     UNAUTHORIZED(401, "未登录或令牌已过期"),
+    ACCOUNT_NOT_FOUND(4010, "账号不存在，请重新登录"),
     FORBIDDEN(403, "无权限访问"),
     NOT_FOUND(404, "资源不存在"),
     PHONE_ALREADY_EXISTS(4001, "该手机号已注册，请直接登录"),

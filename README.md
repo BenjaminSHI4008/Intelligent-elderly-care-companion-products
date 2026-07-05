@@ -290,6 +290,36 @@ cp config.yaml.example config.yaml
 
 ---
 
+## 子女端真实数据链路（v1.2）
+
+子女端所有状态均来自真实后端接口与数据库，已移除全部 mock / 写死数据。
+
+### 新增后端接口
+- `GET /api/child/dashboard?elderId=&date=`：子女首页聚合（今日对话数、最后活跃、待确认数、日报摘要、情绪、活跃提醒数、未读消息数）。
+- 聚合仅统计 `isPrivate=0` 的对话，隐私对话不进入任何子女端可见统计。
+
+### 权限模型
+- 新增 `security/BindingGuard.assertChildBoundToElder(childId, elderId)`。
+- `dashboard`、`report/daily`、`reminder/list|create|toggle|delete`、`conversations/history` 均校验 active 绑定，未绑定返回 `403`。
+
+### 客户端 elderId 选择
+- `util/ElderSelectionStore`：持久化子女端选中老人；v1 默认第一个 active 绑定老人，支持后续多老人切换。
+- `network/ChildRepository`：集中封装 dashboard/pending/report/reminder 调用，`elderId` 始终显式入参，**禁止 `elderId = 1L`**。
+
+### 涉及页面
+- `ChildHomeActivity`：接入 dashboard，网络失败显示占位 `—` + 重试，无绑定引导绑定。
+- `ChildCorrectActivity`：接入 `/api/conversations/pending`，确认/纠正调真实接口。
+- `ChildDailyReportActivity`：接入 `/api/report/daily`，解析 `topicDistribution`/`healthFlags`。
+- `ChildReminderActivity`：改用选中 elderId，提醒增删启停与首页提醒数一致。
+
+### 验证步骤
+1. 后端：`curl "http://127.0.0.1:8080/api/child/dashboard?elderId=1"` 无 token 应返回 `401`。
+2. 老人端发送对话 → 子女首页对话数+1、最后活跃更新；命中 pending 时待确认页真实显示。
+3. 子女端新增提醒 → 首页"N个提醒已设置"与提醒页数量一致，老人端 `/api/reminder/today` 可查。
+4. 未绑定 child 请求上述接口 → `403`。
+
+---
+
 ## 开发规范
 
 - **配置**：后端外部 API 只改 `config.yaml`，不在代码中硬编码 Key
