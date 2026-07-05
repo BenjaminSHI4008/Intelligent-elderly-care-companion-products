@@ -4,6 +4,7 @@ import com.xiaoban.app.model.ApiResponse;
 import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.model.BindVerifyResult;
 import com.xiaoban.app.model.ChatResponse;
+import com.xiaoban.app.model.ChildDashboard;
 import com.xiaoban.app.model.Conversation;
 import com.xiaoban.app.model.DailyReport;
 import com.xiaoban.app.model.GenerateCodeResponse;
@@ -37,6 +38,11 @@ public interface ApiService {
     // === 对话 ===
     @POST("api/voice/chat")
     Call<ApiResponse<ChatResponse>> chat(@Body Map<String, String> body);
+
+    // === 子女端首页聚合 ===
+    @GET("api/child/dashboard")
+    Call<ApiResponse<ChildDashboard>> getChildDashboard(@Query("elderId") long elderId,
+                                                        @Query("date") String date);
 
     // === 子女端对话管理 ===
     @GET("api/conversations/pending")
@@ -106,6 +112,9 @@ public interface ApiService {
     // === 日报 ===
     @GET("api/report/daily")
     Call<ApiResponse<List<DailyReport>>> getDailyReport(@Query("elderId") long elderId, @Query("date") String date);
+
+    @POST("api/report/daily/generate")
+    Call<ApiResponse<DailyReport>> generateDailyReport(@Query("elderId") long elderId, @Query("date") String date);
 
     // === 天气 ===
     @GET("api/weather/current")

@@ -12,10 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xiaoban.app.R;
 import com.xiaoban.app.adapter.CorrectionAdapter;
 import com.xiaoban.app.base.BaseActivity;
+import com.xiaoban.app.model.Conversation;
 import com.xiaoban.app.model.Correction;
+import com.xiaoban.app.network.ApiCallback;
+import com.xiaoban.app.network.ApiClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChildCorrectActivity extends BaseActivity {
 
@@ -61,51 +66,86 @@ public class ChildCorrectActivity extends BaseActivity {
     }
 
     private void loadCorrections() {
-        loadTestData();
+        ApiClient.getInstance(this).getApi().getPending()
+                .enqueue(new ApiCallback<List<Conversation>>() {
+                    @Override
+                    public void onSuccess(List<Conversation> data) {
+                        runOnUiThread(() -> {
+                            List<Correction> corrections = convertConversations(data);
+                            adapter.setCorrections(corrections);
+                            updateEmptyView(corrections.isEmpty());
+                        });
+                    }
+
+                    @Override
+                    public void onNetworkError(String message) {
+                        runOnUiThread(() -> {
+                            showToast("待确认对话加载失败");
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+
+                    @Override
+                    public void onBusinessError(int code, String message) {
+                        runOnUiThread(() -> {
+                            showToast(message);
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+                });
     }
 
-    private void loadTestData() {
-        List<Correction> corrections = new ArrayList<>();
-
-        corrections.add(new Correction(
-                "1",
-                "我的降压药是早上吃还是晚上吃？",
-                "根据您的用药记录，降压药建议每天早上7点服用，饭后半小时效果最佳。",
-                "今天 14:32",
-                "pending"
-        ));
-
-        corrections.add(new Correction(
-                "2",
-                "今天天气适合出门散步吗？",
-                "今天天气晴朗，温度适宜，非常适合外出散步。建议您上午10点或下午4点左右出门，记得戴帽子防晒。",
-                "今天 10:15",
-                "pending"
-        ));
-
-        corrections.add(new Correction(
-                "3",
-                "晚饭吃什么比较好？",
-                "建议您晚餐可以准备一些清淡的食物，比如蒸鱼、炒青菜和小米粥，营养均衡又容易消化。",
-                "昨天 17:20",
-                "confirmed"
-        ));
-
-        adapter.setCorrections(corrections);
-        updateEmptyView(corrections.isEmpty());
+    private List<Correction> convertConversations(List<Conversation> conversations) {
+        List<Correction> result = new ArrayList<>();
+        if (conversations == null) {
+            return result;
+        }
+        for (Conversation conversation : conversations) {
+            Correction correction = new Correction(
+                    String.valueOf(conversation.getId()),
+                    conversation.getUserQuestion(),
+                    conversation.getAiAnswer(),
+                    formatTime(conversation.getCreatedAt()),
+                    conversation.getConfirmStatus());
+            correction.setCorrectedAnswer(conversation.getChildCorrection());
+            result.add(correction);
+        }
+        return result;
     }
 
     private void confirmCorrection(Correction correction) {
-        correction.setStatus("confirmed");
-        adapter.notifyDataSetChanged();
-        Toast.makeText(this, "已确认", Toast.LENGTH_SHORT).show();
+        Map<String, Object> body = new HashMap<>();
+        body.put("conversationId", Long.parseLong(correction.getId()));
+        ApiClient.getInstance(this).getApi().confirm(body)
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        runOnUiThread(() -> {
+                            correction.setStatus("confirmed");
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(ChildCorrectActivity.this, "已确认", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
     }
 
     private void correctAnswer(Correction correction, String correctedAnswer) {
-        correction.setStatus("corrected");
-        correction.setCorrectedAnswer(correctedAnswer);
-        adapter.notifyDataSetChanged();
-        Toast.makeText(this, "已提交纠正，将通知老人", Toast.LENGTH_SHORT).show();
+        Map<String, Object> body = new HashMap<>();
+        body.put("conversationId", Long.parseLong(correction.getId()));
+        body.put("correction", correctedAnswer);
+        ApiClient.getInstance(this).getApi().correct(body)
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        runOnUiThread(() -> {
+                            correction.setStatus("corrected");
+                            correction.setCorrectedAnswer(correctedAnswer);
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(ChildCorrectActivity.this,
+                                    "已提交纠正，将通知老人", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
     }
 
     private void updateEmptyView(boolean isEmpty) {
@@ -116,5 +156,16 @@ public class ChildCorrectActivity extends BaseActivity {
             rvCorrections.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }
+    }
+
+    private String formatTime(String isoTime) {
+        if (isoTime == null || isoTime.length() < 16) {
+            return "";
+        }
+        int tIndex = isoTime.indexOf('T');
+        if (tIndex >= 0 && isoTime.length() >= tIndex + 6) {
+            return isoTime.substring(0, 10) + " " + isoTime.substring(tIndex + 1, tIndex + 6);
+        }
+        return isoTime;
     }
 }

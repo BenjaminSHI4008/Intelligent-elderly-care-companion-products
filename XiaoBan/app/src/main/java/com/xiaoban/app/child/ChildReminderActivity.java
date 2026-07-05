@@ -20,6 +20,7 @@ import com.xiaoban.app.model.Reminder;
 import com.xiaoban.app.model.ReminderItem;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.ChildElderSelection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,17 +30,26 @@ import java.util.Map;
 
 public class ChildReminderActivity extends BaseActivity {
 
+    public static final String EXTRA_ELDER_ID = "extra_elder_id";
+    public static final String EXTRA_ELDER_NAME = "extra_elder_name";
+
     private RecyclerView rvReminders;
     private LinearLayout emptyView;
     private TextView btnAdd;
     private ImageView ivBack;
 
     private ReminderAdapter adapter;
+    private long elderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_reminder);
+
+        elderId = getIntent().getLongExtra(EXTRA_ELDER_ID, 0L);
+        if (elderId <= 0) {
+            elderId = ChildElderSelection.getSelectedElderId(this);
+        }
 
         initViews();
         initAdapter();
@@ -53,7 +63,13 @@ public class ChildReminderActivity extends BaseActivity {
         ivBack = findViewById(R.id.iv_back);
 
         ivBack.setOnClickListener(v -> finish());
-        btnAdd.setOnClickListener(v -> showAddReminderDialog());
+        btnAdd.setOnClickListener(v -> {
+            if (elderId <= 0) {
+                showToast("请先绑定老人");
+                return;
+            }
+            showAddReminderDialog();
+        });
     }
 
     private void initAdapter() {
@@ -80,32 +96,62 @@ public class ChildReminderActivity extends BaseActivity {
     }
 
     private void loadReminders() {
-        long elderId = 1L;
+        if (elderId <= 0) {
+            adapter.setReminders(new ArrayList<>());
+            updateEmptyView(true);
+            return;
+        }
         ApiClient.getInstance(this).getApi().getReminders(elderId)
-            .enqueue(new ApiCallback<List<Reminder>>() {
-                @Override
-                public void onSuccess(List<Reminder> data) {
-                    runOnUiThread(() -> {
-                        List<ReminderItem> reminders = convertReminders(data);
-                        adapter.setReminders(reminders);
-                        updateEmptyView(reminders.isEmpty());
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<List<Reminder>>() {
+                    @Override
+                    public void onSuccess(List<Reminder> data) {
+                        runOnUiThread(() -> {
+                            List<ReminderItem> reminders = convertReminders(data);
+                            adapter.setReminders(reminders);
+                            updateEmptyView(reminders.isEmpty());
+                        });
+                    }
+
+                    @Override
+                    public void onNetworkError(String message) {
+                        runOnUiThread(() -> {
+                            showToast("提醒加载失败");
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+
+                    @Override
+                    public void onBusinessError(int code, String message) {
+                        runOnUiThread(() -> {
+                            showToast(message);
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+                });
     }
 
     private List<ReminderItem> convertReminders(List<Reminder> apiReminders) {
         List<ReminderItem> result = new ArrayList<>();
         if (apiReminders == null) return result;
         for (Reminder r : apiReminders) {
+            String title = r.getContent();
+            String content = r.getContent();
+            int split = content != null ? content.indexOf("：") : -1;
+            if (split < 0 && content != null) {
+                split = content.indexOf(":");
+            }
+            if (split > 0) {
+                title = content.substring(0, split);
+                content = content.substring(split + 1).trim();
+            }
             ReminderItem item = new ReminderItem(
-                String.valueOf(r.getId()),
-                r.getContent(),
-                r.getContent(),
-                r.getRemindTime(),
-                r.getRepeatType(),
-                "",
-                r.getIsActive() == 1
+                    String.valueOf(r.getId()),
+                    title,
+                    content,
+                    r.getRemindTime(),
+                    r.getRepeatType(),
+                    "",
+                    r.getIsActive() == 1
             );
             result.add(item);
         }
@@ -115,18 +161,27 @@ public class ChildReminderActivity extends BaseActivity {
     private void updateReminderStatus(ReminderItem reminder, boolean enabled) {
         long id = Long.parseLong(reminder.getId());
         ApiClient.getInstance(this).getApi().toggleReminder(id)
-            .enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    runOnUiThread(() -> {
-                        reminder.setEnabled(enabled);
-                        adapter.updateReminder(reminder);
-                        Toast.makeText(ChildReminderActivity.this,
-                                enabled ? "已开启" : "已关闭",
-                                Toast.LENGTH_SHORT).show();
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        runOnUiThread(() -> {
+                            reminder.setEnabled(enabled);
+                            adapter.updateReminder(reminder);
+                            Toast.makeText(ChildReminderActivity.this,
+                                    enabled ? "已开启" : "已关闭",
+                                    Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    @Override
+                    public void onBusinessError(int code, String message) {
+                        runOnUiThread(() -> {
+                            reminder.setEnabled(!enabled);
+                            adapter.updateReminder(reminder);
+                            showToast(message);
+                        });
+                    }
+                });
     }
 
     private void showAddReminderDialog() {
@@ -144,16 +199,7 @@ public class ChildReminderActivity extends BaseActivity {
         final int[] selectedRepeat = {1};
 
         tvRepeat.setText(repeatTypes[selectedRepeat[0]]);
-        tvRepeat.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("选择重复方式")
-                    .setSingleChoiceItems(repeatTypes, selectedRepeat[0], (dialog, which) -> {
-                        selectedRepeat[0] = which;
-                        tvRepeat.setText(repeatTypes[which]);
-                        dialog.dismiss();
-                    })
-                    .show();
-        });
+        tvRepeat.setOnClickListener(v -> showRepeatPicker(tvRepeat, repeatTypes, selectedRepeat));
 
         new AlertDialog.Builder(this)
                 .setTitle("添加提醒")
@@ -198,17 +244,7 @@ public class ChildReminderActivity extends BaseActivity {
         }
         final int[] selectedRepeat = {currentIndex};
         tvRepeat.setText(repeatTypes[selectedRepeat[0]]);
-
-        tvRepeat.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("选择重复方式")
-                    .setSingleChoiceItems(repeatTypes, selectedRepeat[0], (dialog, which) -> {
-                        selectedRepeat[0] = which;
-                        tvRepeat.setText(repeatTypes[which]);
-                        dialog.dismiss();
-                    })
-                    .show();
-        });
+        tvRepeat.setOnClickListener(v -> showRepeatPicker(tvRepeat, repeatTypes, selectedRepeat));
 
         new AlertDialog.Builder(this)
                 .setTitle("编辑提醒")
@@ -226,21 +262,32 @@ public class ChildReminderActivity extends BaseActivity {
 
                     long id = Long.parseLong(reminder.getId());
                     ApiClient.getInstance(this).getApi().deleteReminder(id)
-                        .enqueue(new ApiCallback<Void>() {
-                            @Override
-                            public void onSuccess(Void data) {
-                                createReminder(title, content, time, repeatType);
-                            }
-                        });
+                            .enqueue(new ApiCallback<Void>() {
+                                @Override
+                                public void onSuccess(Void data) {
+                                    createReminder(title, content, time, repeatType);
+                                }
+                            });
                 })
                 .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void showRepeatPicker(TextView tvRepeat, String[] repeatTypes, int[] selectedRepeat) {
+        new AlertDialog.Builder(this)
+                .setTitle("选择重复方式")
+                .setSingleChoiceItems(repeatTypes, selectedRepeat[0], (dialog, which) -> {
+                    selectedRepeat[0] = which;
+                    tvRepeat.setText(repeatTypes[which]);
+                    dialog.dismiss();
+                })
                 .show();
     }
 
     private void showDeleteConfirmDialog(ReminderItem reminder) {
         new AlertDialog.Builder(this)
                 .setTitle("删除提醒")
-                .setMessage("确定要删除「" + reminder.getTitle() + "」吗？")
+                .setMessage("确定要删除“" + reminder.getTitle() + "”吗？")
                 .setPositiveButton("删除", (dialog, which) -> deleteReminder(reminder))
                 .setNegativeButton("取消", null)
                 .show();
@@ -260,38 +307,38 @@ public class ChildReminderActivity extends BaseActivity {
 
     private void createReminder(String title, String content, String time, String repeatType) {
         Map<String, Object> body = new HashMap<>();
-        body.put("content", title + "：" + content);
+        body.put("content", content.isEmpty() ? title : title + "：" + content);
         body.put("remindTime", time);
         body.put("repeatType", repeatType);
-        body.put("elderId", 1L);
+        body.put("elderId", elderId);
 
         ApiClient.getInstance(this).getApi().createReminder(body)
-            .enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(ChildReminderActivity.this,
-                                "添加成功", Toast.LENGTH_SHORT).show();
-                        loadReminders();
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(ChildReminderActivity.this,
+                                    "添加成功", Toast.LENGTH_SHORT).show();
+                            loadReminders();
+                        });
+                    }
+                });
     }
 
     private void deleteReminder(ReminderItem reminder) {
         long id = Long.parseLong(reminder.getId());
         ApiClient.getInstance(this).getApi().deleteReminder(id)
-            .enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onSuccess(Void data) {
-                    runOnUiThread(() -> {
-                        adapter.removeReminder(reminder.getId());
-                        Toast.makeText(ChildReminderActivity.this,
-                                "已删除", Toast.LENGTH_SHORT).show();
-                        updateEmptyView(adapter.getItemCount() == 0);
-                    });
-                }
-            });
+                .enqueue(new ApiCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        runOnUiThread(() -> {
+                            adapter.removeReminder(reminder.getId());
+                            Toast.makeText(ChildReminderActivity.this,
+                                    "已删除", Toast.LENGTH_SHORT).show();
+                            updateEmptyView(adapter.getItemCount() == 0);
+                        });
+                    }
+                });
     }
 
     private void updateEmptyView(boolean isEmpty) {

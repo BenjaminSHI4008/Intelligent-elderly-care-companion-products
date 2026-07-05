@@ -9,7 +9,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -30,8 +38,9 @@ public class ReminderController {
 
     @Operation(summary = "获取提醒列表")
     @GetMapping("/list")
-    public Result<List<Reminder>> list(@RequestParam Long elderId) {
-        return Result.success(reminderService.listByElder(elderId));
+    public Result<List<Reminder>> list(@RequestParam Long elderId, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        return Result.success(reminderService.listByElder(userId, elderId));
     }
 
     @Operation(summary = "获取今日提醒（老人端调用）")
@@ -41,17 +50,19 @@ public class ReminderController {
         return Result.success(reminderService.todayReminders(elderId));
     }
 
-    @Operation(summary = "启用/禁用提醒")
+    @Operation(summary = "启用/停用提醒")
     @PutMapping("/{id}/toggle")
-    public Result<Void> toggle(@PathVariable Long id) {
-        reminderService.toggle(id);
+    public Result<Void> toggle(@PathVariable Long id, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        reminderService.toggle(userId, id);
         return Result.success();
     }
 
     @Operation(summary = "删除提醒")
     @DeleteMapping("/{id}")
-    public Result<Void> delete(@PathVariable Long id) {
-        reminderService.delete(id);
+    public Result<Void> delete(@PathVariable Long id, Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        reminderService.delete(userId, id);
         return Result.success();
     }
 }

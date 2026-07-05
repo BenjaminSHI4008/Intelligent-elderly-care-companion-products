@@ -356,7 +356,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_message_card"
                 android:gravity="center_vertical|start"
-                android:hint="可以打字，也可以切到手写输入"
+                android:hint="输入消息"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|textCapSentences"
                 android:maxLines="3"

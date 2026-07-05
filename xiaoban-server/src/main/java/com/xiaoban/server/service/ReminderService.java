@@ -19,8 +19,10 @@ public class ReminderService {
 
     private final ReminderMapper reminderMapper;
     private final PushService pushService;
+    private final FamilyAccessService familyAccessService;
 
     public Reminder create(Long childId, ReminderCreateRequest req) {
+        familyAccessService.assertChildCanAccessElder(childId, req.getElderId());
         Reminder reminder = Reminder.builder()
                 .childId(childId)
                 .elderId(req.getElderId())
@@ -33,26 +35,32 @@ public class ReminderService {
         return reminder;
     }
 
-    public List<Reminder> listByElder(Long elderId) {
+    public List<Reminder> listByElder(Long userId, Long elderId) {
+        familyAccessService.assertCanAccessElder(userId, elderId);
         return reminderMapper.selectList(
                 new LambdaQueryWrapper<Reminder>().eq(Reminder::getElderId, elderId));
     }
 
     public List<Reminder> todayReminders(Long elderId) {
+        familyAccessService.requireElder(elderId);
         return reminderMapper.selectList(
                 new LambdaQueryWrapper<Reminder>()
                         .eq(Reminder::getElderId, elderId)
                         .eq(Reminder::getIsActive, 1));
     }
 
-    public void toggle(Long id) {
+    public void toggle(Long userId, Long id) {
         Reminder reminder = reminderMapper.selectById(id);
         if (reminder == null) throw new BusinessException(ResultCode.NOT_FOUND);
+        familyAccessService.assertCanAccessElder(userId, reminder.getElderId());
         reminder.setIsActive(reminder.getIsActive() == 1 ? 0 : 1);
         reminderMapper.updateById(reminder);
     }
 
-    public void delete(Long id) {
+    public void delete(Long userId, Long id) {
+        Reminder reminder = reminderMapper.selectById(id);
+        if (reminder == null) throw new BusinessException(ResultCode.NOT_FOUND);
+        familyAccessService.assertCanAccessElder(userId, reminder.getElderId());
         reminderMapper.deleteById(id);
     }
 
