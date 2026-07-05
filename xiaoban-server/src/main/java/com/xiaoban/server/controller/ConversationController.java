@@ -3,6 +3,7 @@ package com.xiaoban.server.controller;
 import com.xiaoban.server.common.Result;
 import com.xiaoban.server.dto.ChatRequest;
 import com.xiaoban.server.service.ConversationService;
+import com.xiaoban.server.service.FamilyAccessService;
 import com.xiaoban.server.vo.ChatResponse;
 import com.xiaoban.server.vo.ConversationVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +12,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +28,7 @@ import java.util.Map;
 public class ConversationController {
 
     private final ConversationService conversationService;
+    private final FamilyAccessService familyAccessService;
 
     @Operation(summary = "老人端发送对话")
     @PostMapping("/api/voice/chat")
@@ -42,7 +48,10 @@ public class ConversationController {
     @GetMapping("/api/conversations/history")
     public Result<List<ConversationVO>> history(
             @RequestParam Long elderId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Authentication auth) {
+        Long userId = (Long) auth.getPrincipal();
+        familyAccessService.assertCanAccessElder(userId, elderId);
         return Result.success(conversationService.getHistory(elderId, date));
     }
 

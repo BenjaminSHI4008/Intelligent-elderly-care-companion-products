@@ -15,6 +15,8 @@ public class Constants {
     public static final String SP_ROLE = "role";
     public static final String SP_NICKNAME = "nickname";
     public static final String SP_PHONE = "phone";
+    public static final String SP_SELECTED_ELDER_ID = "selected_elder_id";
+    public static final String SP_SELECTED_ELDER_NAME = "selected_elder_name";
     public static final String SP_GENDER = "gender";
     public static final String SP_BIRTHDAY = "birthday";
     public static final String SP_EMERGENCY_CONTACT = "emergency_contact";

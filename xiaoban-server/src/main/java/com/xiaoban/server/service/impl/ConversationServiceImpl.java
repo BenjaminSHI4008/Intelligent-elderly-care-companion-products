@@ -8,6 +8,7 @@ import com.xiaoban.server.entity.BindingRelation;
 import com.xiaoban.server.entity.Conversation;
 import com.xiaoban.server.mapper.BindingRelationMapper;
 import com.xiaoban.server.mapper.ConversationMapper;
+import com.xiaoban.server.mapper.UserMapper;
 import com.xiaoban.server.service.*;
 import com.xiaoban.server.vo.ChatResponse;
 import com.xiaoban.server.vo.ConversationVO;
@@ -25,6 +26,8 @@ public class ConversationServiceImpl implements ConversationService {
 
     private final ConversationMapper conversationMapper;
     private final BindingRelationMapper bindingRelationMapper;
+    private final UserMapper userMapper;
+    private final FamilyAccessService familyAccessService;
     private final KeywordDetectionService keywordDetectionService;
     private final PrivacyDetectionService privacyDetectionService;
     private final AiChatService aiChatService;
@@ -32,6 +35,10 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ChatResponse chat(Long elderId, ChatRequest request) {
+        if (elderId == null || userMapper.selectById(elderId) == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+
         String category = keywordDetectionService.detectCategory(request.getText());
         boolean isPrivate = privacyDetectionService.isPrivate(request.getText());
         String answer = aiChatService.chat(request.getText(), category);
@@ -65,6 +72,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public List<ConversationVO> getPendingConversations(Long childId) {
+        familyAccessService.requireChild(childId);
         List<Long> elderIds = bindingRelationMapper.selectList(
                 new LambdaQueryWrapper<BindingRelation>()
                         .eq(BindingRelation::getChildId, childId)
@@ -100,6 +108,7 @@ public class ConversationServiceImpl implements ConversationService {
         if (conversation == null) {
             throw new BusinessException(ResultCode.NOT_FOUND);
         }
+        familyAccessService.assertChildCanAccessElder(childId, conversation.getElderId());
         conversation.setConfirmStatus("confirmed");
         conversation.setCorrectedBy(childId);
         conversation.setCorrectedAt(LocalDateTime.now());
@@ -112,6 +121,7 @@ public class ConversationServiceImpl implements ConversationService {
         if (conversation == null) {
             throw new BusinessException(ResultCode.NOT_FOUND);
         }
+        familyAccessService.assertChildCanAccessElder(childId, conversation.getElderId());
         conversation.setConfirmStatus("corrected");
         conversation.setChildCorrection(correction);
         conversation.setCorrectedBy(childId);
