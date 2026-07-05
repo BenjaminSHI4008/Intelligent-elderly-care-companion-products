@@ -1,0 +1,41 @@
+server:
+  port: ${infrastructure.server.port:8080}
+  address: ${infrastructure.server.address:0.0.0.0}
+
+spring:
+  config:
+    import:
+      - optional:file:${XIAOBAN_CONFIG_PATH:../config.yaml}
+      - optional:file:./config.yaml
+      - optional:file:../config.yaml
+  datasource:
+    url: ${infrastructure.database.jdbc-url:jdbc:mysql://localhost:3306/xiaoban_mvp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${infrastructure.database.username:root}
+    password: ${infrastructure.database.password:${DB_PASSWORD:123456}}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+upload:
+  dir: ${infrastructure.upload.dir:uploads}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# 外部 API 统一在项目根目录 config.yaml 的 external-services 节点管理

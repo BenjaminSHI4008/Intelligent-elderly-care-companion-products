@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- 关注等级图标 -->
+    <TextView
+        android:id="@+id/tv_concern_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⚠️"
+        android:textSize="20sp"
+        android:layout_marginEnd="12dp" />
+
+    <!-- 关注内容 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_concern_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="多次提到头晕"
+            android:textSize="15sp"
+            android:textColor="@color/child_text_primary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_concern_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="今天上午和下午各提到1次，建议关注"
+            android:textSize="13sp"
+            android:textColor="@color/child_text_secondary"
+            android:layout_marginTop="2dp" />
+
+    </LinearLayout>
+
+    <!-- 关注标签 -->
+    <TextView
+        android:id="@+id/tv_concern_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="需关注"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/bg_tag_attention"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginStart="12dp" />
+
+</LinearLayout>

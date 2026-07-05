@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- 话题图标 -->
+    <TextView
+        android:id="@+id/tv_topic_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:text="💊"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:background="@drawable/bg_topic_icon"
+        android:layout_marginEnd="12dp" />
+
+    <!-- 话题名称和次数 -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_topic_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用药咨询"
+            android:textSize="15sp"
+            android:textColor="@color/child_text_primary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_topic_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="询问了降压药服用时间"
+            android:textSize="13sp"
+            android:textColor="@color/child_text_secondary"
+            android:layout_marginTop="2dp" />
+
+    </LinearLayout>
+
+    <!-- 对话次数 -->
+    <TextView
+        android:id="@+id/tv_topic_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3次"
+        android:textSize="14sp"
+        android:textColor="@color/child_primary"
+        android:textStyle="bold"
+        android:layout_marginStart="12dp" />
+
+</LinearLayout>

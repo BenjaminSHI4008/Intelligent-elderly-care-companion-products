@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 时间和状态 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/tv_correction_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="今天 14:32"
+                android:textSize="14sp"
+                android:textColor="#757575" />
+
+            <TextView
+                android:id="@+id/tv_correction_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="待确认"
+                android:textSize="13sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_tag_pending"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
+        </LinearLayout>
+
+        <!-- 老人提问区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_question_area"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👴 老人提问"
+                android:textSize="13sp"
+                android:textColor="#757575"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:id="@+id/tv_elder_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="我的降压药是早上吃还是晚上吃？"
+                android:textSize="16sp"
+                android:textColor="#212121"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- AI回答区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_answer_area"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🤖 AI回答"
+                android:textSize="13sp"
+                android:textColor="#2B7A78"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:id="@+id/tv_ai_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="根据您的用药记录，降压药建议每天早上7点服用，饭后半小时效果最佳。"
+                android:textSize="16sp"
+                android:textColor="#212121"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- 操作按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/btn_correct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="需要纠正"
+                android:textSize="15sp"
+                android:textColor="@color/child_primary"
+                android:background="@drawable/bg_child_button_outline"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:id="@+id/btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确认无误"
+                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_child_button_success"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

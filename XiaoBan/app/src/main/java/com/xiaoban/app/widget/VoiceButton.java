@@ -1,0 +1,210 @@
+package com.xiaoban.app.widget;
+
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+
+import androidx.annotation.Nullable;
+
+import com.xiaoban.app.voice.VoiceManager;
+import com.xiaoban.app.voice.VoiceRecognizer;
+
+public class VoiceButton extends View {
+
+    private Paint circlePaint;
+    private Paint ripplePaint;
+    private Paint textPaint;
+
+    private boolean isRecording = false;
+    private boolean drawContent = true;
+    private float rippleRadius = 0f;
+    private String circleIdleText = "按住说话";
+    private String rectangleIdleText = "🎙️ 按住录音回复";
+    private String recordingText = "正在听...";
+    private String displayText = circleIdleText;
+
+    private static final int COLOR_NORMAL = 0xFF3AAFA9;
+    private static final int COLOR_PRESSED = 0xFF2B7A78;
+    private static final int COLOR_RIPPLE = 0x4D3AAFA9;
+    private static final float LARGE_BUTTON_MIN_DP = 140f;
+    private static final float LARGE_BUTTON_TEXT_SP = 28f;
+    private static final float SMALL_BUTTON_TEXT_SP = 12f;
+
+    private VoiceRecognizer.Callback voiceCallback;
+    private AnimatorSet rippleAnimator;
+
+    public VoiceButton(Context context) {
+        super(context);
+        init();
+    }
+
+    public VoiceButton(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public VoiceButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circlePaint.setColor(COLOR_NORMAL);
+        circlePaint.setStyle(Paint.Style.FILL);
+
+        ripplePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        ripplePaint.setColor(COLOR_RIPPLE);
+        ripplePaint.setStyle(Paint.Style.FILL);
+
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(0xFFFFFFFF);
+        textPaint.setTextSize(spToPx(LARGE_BUTTON_TEXT_SP));
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+
+    public void setVoiceCallback(VoiceRecognizer.Callback callback) {
+        this.voiceCallback = callback;
+    }
+
+    public void setRectangleIdleText(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        rectangleIdleText = text;
+        invalidate();
+    }
+
+    public void setDrawContent(boolean drawContent) {
+        this.drawContent = drawContent;
+        if (!drawContent) {
+            stopRippleAnimation();
+        }
+        invalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (!drawContent) {
+            return;
+        }
+
+        float width = getWidth();
+        float height = getHeight();
+        float cx = width / 2f;
+        float cy = height / 2f;
+
+        boolean isRoundButton = Math.abs(width - height) < 20;
+
+        if (isRoundButton) {
+            drawCircleButton(canvas, cx, cy);
+        } else {
+            drawRectangleButton(canvas, width, height);
+        }
+    }
+
+    private void drawCircleButton(Canvas canvas, float cx, float cy) {
+        float radius = Math.min(cx, cy) * 0.85f;
+        float diameterDp = Math.min(getWidth(), getHeight()) / getResources().getDisplayMetrics().density;
+        textPaint.setTextSize(spToPx(diameterDp >= LARGE_BUTTON_MIN_DP
+                ? LARGE_BUTTON_TEXT_SP
+                : SMALL_BUTTON_TEXT_SP));
+
+        if (isRecording && rippleRadius > 0) {
+            ripplePaint.setAlpha((int) (77 * (1 - rippleRadius / (radius * 1.5f))));
+            canvas.drawCircle(cx, cy, rippleRadius, ripplePaint);
+        }
+
+        circlePaint.setColor(isRecording ? COLOR_PRESSED : COLOR_NORMAL);
+        canvas.drawCircle(cx, cy, radius, circlePaint);
+
+        canvas.drawText(displayText, cx, cy + textPaint.getTextSize() / 3, textPaint);
+    }
+
+    private float spToPx(float sp) {
+        return sp * getResources().getDisplayMetrics().scaledDensity;
+    }
+
+    private void drawRectangleButton(Canvas canvas, float width, float height) {
+        circlePaint.setColor(isRecording ? COLOR_PRESSED : COLOR_NORMAL);
+
+        float cornerRadius = Math.min(height / 2f, 28f);
+        RectF rect = new RectF(0, 0, width, height);
+        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, circlePaint);
+
+        textPaint.setTextSize(Math.min(height * 0.5f, 56f));
+        String text = isRecording ? recordingText : rectangleIdleText;
+        canvas.drawText(text, width / 2f, height / 2f + textPaint.getTextSize() / 3, textPaint);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startRecording();
+                return true;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                stopRecording();
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void startRecording() {
+        isRecording = true;
+        displayText = recordingText;
+        animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
+
+        boolean isRoundButton = Math.abs(getWidth() - getHeight()) < 20;
+        if (drawContent && isRoundButton) {
+            startRippleAnimation();
+        }
+
+        invalidate();
+        VoiceManager.getInstance().getRecognizer().startListening(voiceCallback);
+    }
+
+    private void stopRecording() {
+        isRecording = false;
+        displayText = circleIdleText;
+        animate().scaleX(1f).scaleY(1f).setDuration(100).start();
+        stopRippleAnimation();
+        invalidate();
+        VoiceManager.getInstance().getRecognizer().stopListening();
+    }
+
+    private void startRippleAnimation() {
+        float maxRadius = Math.min(getWidth(), getHeight()) / 2f * 1.3f;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "rippleRadius", 0f, maxRadius);
+        animator.setDuration(1000);
+        animator.setRepeatCount(ObjectAnimator.INFINITE);
+        animator.addUpdateListener(a -> {
+            rippleRadius = (float) a.getAnimatedValue();
+            invalidate();
+        });
+        animator.start();
+        rippleAnimator = new AnimatorSet();
+        rippleAnimator.play(animator);
+    }
+
+    private void stopRippleAnimation() {
+        if (rippleAnimator != null) {
+            rippleAnimator.cancel();
+        }
+        rippleRadius = 0;
+    }
+
+    public void setRippleRadius(float radius) {
+        this.rippleRadius = radius;
+    }
+}
