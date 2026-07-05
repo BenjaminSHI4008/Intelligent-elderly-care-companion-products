@@ -21,8 +21,12 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
+<<<<<<< HEAD
             android:src="@drawable/ic_back"
             android:tint="@color/primary_dark"
+=======
+            android:src="@android:drawable/ic_menu_revert"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             android:contentDescription="返回"
             android:clickable="true"
             android:focusable="true"

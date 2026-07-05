@@ -18,8 +18,11 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.CAMERA" />
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:name=".base.BaseApplication"
@@ -61,6 +64,7 @@
         <activity android:name=".child.ChildCorrectActivity" />
         <activity android:name=".child.ChildReminderActivity" />
         <activity android:name=".child.ChildBindActivity" />
+<<<<<<< HEAD
         <activity android:name=".child.ChildFamilyChatActivity" />
         <activity android:name=".child.ChildMessageListActivity" />
         <activity android:name=".child.ChildSendMessageActivity" />
@@ -75,6 +79,10 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+=======
+        <activity android:name=".child.ChildSendMessageActivity" />
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         <receiver
             android:name=".push.PushReceiver"
             android:exported="false">

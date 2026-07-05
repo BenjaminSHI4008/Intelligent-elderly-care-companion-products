@@ -5,7 +5,10 @@ public enum ResultCode {
     SUCCESS(200, "success"),
     BAD_REQUEST(400, "请求参数错误"),
     UNAUTHORIZED(401, "未登录或令牌已过期"),
+<<<<<<< HEAD
     ACCOUNT_NOT_FOUND(4010, "账号不存在，请重新登录"),
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     FORBIDDEN(403, "无权限访问"),
     NOT_FOUND(404, "资源不存在"),
     PHONE_ALREADY_EXISTS(4001, "该手机号已注册，请直接登录"),
@@ -13,7 +16,10 @@ public enum ResultCode {
     BIND_CODE_INVALID(4003, "绑定码无效或已过期"),
     BIND_CODE_USED(4004, "绑定码已被使用"),
     ALREADY_BOUND(4005, "已存在绑定关系"),
+<<<<<<< HEAD
     MESSAGE_RECALL_TIMEOUT(4007, "超过2分钟，无法撤回"),
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     SERVER_ERROR(500, "服务器内部错误");
 
     private final int code;

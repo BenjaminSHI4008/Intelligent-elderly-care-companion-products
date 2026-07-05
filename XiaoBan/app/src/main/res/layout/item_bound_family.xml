@@ -68,6 +68,7 @@
 
         </LinearLayout>
 
+<<<<<<< HEAD
         <TextView
             android:id="@+id/btn_unbind"
             android:layout_width="wrap_content"
@@ -81,6 +82,8 @@
             android:textColor="@color/child_text_secondary"
             android:textSize="15sp" />
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

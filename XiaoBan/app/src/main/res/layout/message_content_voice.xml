@@ -3,16 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_message_voice"
+<<<<<<< HEAD
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="16dp">
+=======
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:clickable="true"
+    android:focusable="true">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+<<<<<<< HEAD
+=======
+        android:drawableStart="@android:drawable/ic_lock_silent_mode_off"
+        android:drawablePadding="8dp"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         android:text="🔊 语音消息"
         android:textColor="@color/text_primary"
         android:textSize="20sp" />
@@ -21,10 +34,17 @@
         android:id="@+id/tv_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_marginEnd="8dp"
         android:text="0:12"
         android:textColor="@color/text_secondary"
         android:textSize="18sp" />
+=======
+        android:text="0:12"
+        android:textColor="@color/text_secondary"
+        android:textSize="18sp"
+        android:layout_marginEnd="8dp" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     <TextView
         android:layout_width="wrap_content"

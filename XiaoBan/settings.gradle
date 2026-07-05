@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+<<<<<<< HEAD
         // Android 专用 → google 镜像
         maven {
             url 'https://maven.aliyun.com/repository/google'
@@ -19,11 +20,14 @@ pluginManagement {
         }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://maven.aliyun.com/repository/public' }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
+<<<<<<< HEAD
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -44,6 +48,11 @@ dependencyResolutionManagement {
             }
         }
         maven { url 'https://maven.aliyun.com/repository/public' }
+=======
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         google()
         mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }

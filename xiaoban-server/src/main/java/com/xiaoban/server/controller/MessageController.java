@@ -1,8 +1,11 @@
 package com.xiaoban.server.controller;
 
 import com.xiaoban.server.common.Result;
+<<<<<<< HEAD
 import com.xiaoban.server.dto.ConversationSummaryVO;
 import com.xiaoban.server.dto.FamilyGroupMemberVO;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.server.dto.FamilyMessageVO;
 import com.xiaoban.server.dto.MessageSendRequest;
 import com.xiaoban.server.entity.FamilyMessage;
@@ -31,6 +34,7 @@ public class MessageController {
         return Result.success(familyMessageService.send(senderId, req));
     }
 
+<<<<<<< HEAD
     @Operation(summary = "子女端会话列表摘要")
     @GetMapping("/conversations")
     public Result<List<ConversationSummaryVO>> conversations(Authentication auth) {
@@ -38,6 +42,8 @@ public class MessageController {
         return Result.success(familyMessageService.listConversations(userId));
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Operation(summary = "获取收到的消息")
     @GetMapping("/received")
     public Result<List<FamilyMessageVO>> received(
@@ -48,6 +54,7 @@ public class MessageController {
         return Result.success(familyMessageService.received(userId, page, size));
     }
 
+<<<<<<< HEAD
     @Operation(summary = "获取家庭聊天群消息（老人端或子女端）")
     @GetMapping("/family-group")
     public Result<List<FamilyMessageVO>> familyGroup(
@@ -88,6 +95,8 @@ public class MessageController {
         return Result.success();
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Operation(summary = "标记已读")
     @PutMapping("/{id}/read")
     public Result<Void> markRead(@PathVariable Long id, Authentication auth) {
@@ -95,6 +104,7 @@ public class MessageController {
         familyMessageService.markRead(id, userId);
         return Result.success();
     }
+<<<<<<< HEAD
 
     @Operation(summary = "撤回消息（2分钟内）")
     @PostMapping("/{id}/recall")
@@ -103,4 +113,6 @@ public class MessageController {
         familyMessageService.recall(id, userId);
         return Result.success();
     }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 }

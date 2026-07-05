@@ -30,9 +30,14 @@ public class ReminderController {
 
     @Operation(summary = "获取提醒列表")
     @GetMapping("/list")
+<<<<<<< HEAD
     public Result<List<Reminder>> list(@RequestParam Long elderId, Authentication auth) {
         Long childId = (Long) auth.getPrincipal();
         return Result.success(reminderService.listByElder(childId, elderId));
+=======
+    public Result<List<Reminder>> list(@RequestParam Long elderId) {
+        return Result.success(reminderService.listByElder(elderId));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     @Operation(summary = "获取今日提醒（老人端调用）")
@@ -44,17 +49,27 @@ public class ReminderController {
 
     @Operation(summary = "启用/禁用提醒")
     @PutMapping("/{id}/toggle")
+<<<<<<< HEAD
     public Result<Void> toggle(@PathVariable Long id, Authentication auth) {
         Long childId = (Long) auth.getPrincipal();
         reminderService.toggle(childId, id);
+=======
+    public Result<Void> toggle(@PathVariable Long id) {
+        reminderService.toggle(id);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         return Result.success();
     }
 
     @Operation(summary = "删除提醒")
     @DeleteMapping("/{id}")
+<<<<<<< HEAD
     public Result<Void> delete(@PathVariable Long id, Authentication auth) {
         Long childId = (Long) auth.getPrincipal();
         reminderService.delete(childId, id);
+=======
+    public Result<Void> delete(@PathVariable Long id) {
+        reminderService.delete(id);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         return Result.success();
     }
 }

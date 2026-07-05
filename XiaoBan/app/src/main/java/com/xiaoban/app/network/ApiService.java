@@ -5,10 +5,14 @@ import com.xiaoban.app.model.BindingRelationItem;
 import com.xiaoban.app.model.BindVerifyResult;
 import com.xiaoban.app.model.ChatResponse;
 import com.xiaoban.app.model.Conversation;
+<<<<<<< HEAD
 import com.xiaoban.app.model.ConversationSummary;
 import com.xiaoban.app.model.DailyReport;
 import com.xiaoban.app.model.DashboardData;
 import com.xiaoban.app.model.FamilyGroupMember;
+=======
+import com.xiaoban.app.model.DailyReport;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.model.GenerateCodeResponse;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.model.Reminder;
@@ -58,6 +62,7 @@ public interface ApiService {
     @GET("api/messages/received")
     Call<ApiResponse<List<Message>>> getMessages(@Query("page") int page, @Query("size") int size);
 
+<<<<<<< HEAD
     @GET("api/messages/conversations")
     Call<ApiResponse<List<ConversationSummary>>> getConversations();
 
@@ -87,6 +92,14 @@ public interface ApiService {
     @POST("api/messages/{id}/recall")
     Call<ApiResponse<Void>> recallMessage(@Path("id") long messageId);
 
+=======
+    @POST("api/messages/send")
+    Call<ApiResponse<Void>> sendMessage(@Body Map<String, Object> body);
+
+    @PUT("api/messages/{id}/read")
+    Call<ApiResponse<Void>> markRead(@Path("id") long id);
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Multipart
     @POST("api/upload/image")
     Call<ApiResponse<String>> uploadImage(@Part MultipartBody.Part file);
@@ -109,7 +122,11 @@ public interface ApiService {
 
     // === 绑定 ===
     @POST("api/bind/generate-code")
+<<<<<<< HEAD
     Call<ApiResponse<GenerateCodeResponse>> generateCode(@Query("refresh") boolean refresh);
+=======
+    Call<ApiResponse<GenerateCodeResponse>> generateCode();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     @POST("api/bind/verify-code")
     Call<ApiResponse<BindVerifyResult>> verifyCode(@Body Map<String, String> body);
@@ -123,10 +140,13 @@ public interface ApiService {
     @DELETE("api/bind/{relationId}")
     Call<ApiResponse<Void>> unbind(@Path("relationId") long relationId);
 
+<<<<<<< HEAD
     // === 子女端首页聚合 ===
     @GET("api/child/dashboard")
     Call<ApiResponse<DashboardData>> getChildDashboard(@Query("elderId") long elderId, @Query("date") String date);
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     // === 日报 ===
     @GET("api/report/daily")
     Call<ApiResponse<List<DailyReport>>> getDailyReport(@Query("elderId") long elderId, @Query("date") String date);

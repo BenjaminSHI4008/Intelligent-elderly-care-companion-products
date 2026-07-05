@@ -1,11 +1,16 @@
 package com.xiaoban.app.elder;
 
+<<<<<<< HEAD
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+=======
+import android.os.Bundle;
+import android.view.View;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,23 +21,30 @@ import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.ImageUrlUtil;
 import com.xiaoban.app.voice.VoiceManager;
+<<<<<<< HEAD
 import com.xiaoban.app.voice.VoiceRecognizer;
 import com.xiaoban.app.widget.VoiceButton;
 
 import java.util.HashMap;
 import java.util.Map;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
 public class ElderMessageDetailActivity extends BaseActivity {
 
     private View btnBack;
+<<<<<<< HEAD
     private View cardInputSwitch;
     private TextView tvInputSwitch;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private TextView tvSenderInitial;
     private TextView tvSenderName;
     private TextView tvMessageTime;
     private TextView tvMessageType;
     private TextView tvMessageContent;
     private TextView tvPlayHint;
+<<<<<<< HEAD
     private TextView tvReplyTarget;
     private View panelVoiceReply;
     private View panelTextReply;
@@ -43,6 +55,9 @@ public class ElderMessageDetailActivity extends BaseActivity {
     private long senderId = -1L;
     private String senderName = "家人";
     private boolean textMode = false;
+=======
+    private ImageView ivPhoto;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,34 +66,47 @@ public class ElderMessageDetailActivity extends BaseActivity {
 
         initViews();
         bindMessage();
+<<<<<<< HEAD
         setupReplyControls();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         markMessageReadIfNeeded();
     }
 
     private void initViews() {
         btnBack = findViewById(R.id.btn_back);
+<<<<<<< HEAD
         cardInputSwitch = findViewById(R.id.card_input_switch);
         tvInputSwitch = findViewById(R.id.tv_input_switch);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         tvSenderInitial = findViewById(R.id.tv_sender_initial);
         tvSenderName = findViewById(R.id.tv_sender_name);
         tvMessageTime = findViewById(R.id.tv_message_time);
         tvMessageType = findViewById(R.id.tv_message_type);
         tvMessageContent = findViewById(R.id.tv_message_content);
         tvPlayHint = findViewById(R.id.tv_play_hint);
+<<<<<<< HEAD
         tvReplyTarget = findViewById(R.id.tv_reply_target);
         panelVoiceReply = findViewById(R.id.panel_voice_reply);
         panelTextReply = findViewById(R.id.panel_text_reply);
         voiceReplyButton = findViewById(R.id.voice_reply_button);
         etTextReply = findViewById(R.id.et_text_reply);
         btnSendTextReply = findViewById(R.id.btn_send_text_reply);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         ivPhoto = findViewById(R.id.iv_photo);
 
         btnBack.setOnClickListener(v -> finish());
     }
 
     private void bindMessage() {
+<<<<<<< HEAD
         senderId = getIntent().getLongExtra("senderId", -1L);
         senderName = getIntent().getStringExtra("senderName");
+=======
+        String senderName = getIntent().getStringExtra("senderName");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         String messageType = getIntent().getStringExtra("messageType");
         String content = getIntent().getStringExtra("content");
         String mediaUrl = getIntent().getStringExtra("mediaUrl");
@@ -95,7 +123,10 @@ public class ElderMessageDetailActivity extends BaseActivity {
         tvSenderName.setText(senderName);
         tvSenderInitial.setText(senderName.substring(0, 1));
         tvMessageTime.setText(time == null ? "" : time);
+<<<<<<< HEAD
         tvReplyTarget.setText("回复 " + senderName);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         switch (messageType == null ? "text" : messageType) {
             case "voice":
@@ -126,6 +157,7 @@ public class ElderMessageDetailActivity extends BaseActivity {
         }
     }
 
+<<<<<<< HEAD
     private void setupReplyControls() {
         voiceReplyButton.setRectangleIdleText("按住说话回复");
         voiceReplyButton.setVoiceCallback(new VoiceRecognizer.Callback() {
@@ -227,6 +259,8 @@ public class ElderMessageDetailActivity extends BaseActivity {
         }
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void markMessageReadIfNeeded() {
         long messageId = getIntent().getLongExtra("messageId", -1);
         if (messageId <= 0) {

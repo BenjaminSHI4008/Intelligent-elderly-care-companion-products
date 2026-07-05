@@ -1,6 +1,7 @@
 package com.xiaoban.app.elder;
 
 import android.animation.ValueAnimator;
+<<<<<<< HEAD
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,11 +17,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
+=======
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.widget.TextView;
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xiaoban.app.R;
 import com.xiaoban.app.base.BaseActivity;
+<<<<<<< HEAD
 import com.xiaoban.app.base.Constants;
 import com.xiaoban.app.elder.adapter.ChatAdapter;
 import com.xiaoban.app.elder.adapter.ChatHistoryAdapter;
@@ -31,11 +41,18 @@ import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.ChatHistoryStore;
 import com.xiaoban.app.util.NetworkErrorUtil;
 import com.xiaoban.app.util.SharedPrefUtil;
+=======
+import com.xiaoban.app.elder.adapter.ChatAdapter;
+import com.xiaoban.app.model.ChatResponse;
+import com.xiaoban.app.network.ApiCallback;
+import com.xiaoban.app.network.ApiClient;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.voice.VoiceManager;
 import com.xiaoban.app.voice.VoiceRecognizer;
 import com.xiaoban.app.widget.VoiceButton;
 
 import java.util.HashMap;
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -96,6 +113,21 @@ public class ElderChatActivity extends BaseActivity {
             handler.postDelayed(this, EMPTY_STATE_CAROUSEL_INTERVAL_MS);
         }
     };
+=======
+import java.util.Map;
+
+public class ElderChatActivity extends BaseActivity {
+
+    private RecyclerView rvChat;
+    private ChatAdapter chatAdapter;
+    private VoiceButton voiceButton;
+    private View thinkingIndicator;
+    private TextView tvThinkingDots;
+    private View btnBack;
+
+    private String sessionId;
+    private Handler handler = new Handler(Looper.getMainLooper());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private ValueAnimator thinkingAnimator;
 
     @Override
@@ -104,6 +136,7 @@ public class ElderChatActivity extends BaseActivity {
         setContentView(R.layout.activity_elder_chat);
 
         sessionId = getIntent().getStringExtra("sessionId");
+<<<<<<< HEAD
         if (sessionId == null || sessionId.isEmpty()) {
             sessionId = UUID.randomUUID().toString();
         }
@@ -111,34 +144,49 @@ public class ElderChatActivity extends BaseActivity {
         String aiAnswer = getIntent().getStringExtra("aiAnswer");
         String category = getIntent().getStringExtra("category");
         boolean openHistoryPanel = getIntent().getBooleanExtra("openHistoryPanel", false);
+=======
+        String userQuestion = getIntent().getStringExtra("userQuestion");
+        String aiAnswer = getIntent().getStringExtra("aiAnswer");
+        String category = getIntent().getStringExtra("category");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         initViews();
         setupRecyclerView();
         setupVoiceButton();
+<<<<<<< HEAD
         setupInputMode(openHistoryPanel);
         setupHistoryPanel();
         setupBackHandler();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         if (userQuestion != null && aiAnswer != null) {
             chatAdapter.addElderMessage(userQuestion);
             chatAdapter.addAiMessage(aiAnswer, category);
+<<<<<<< HEAD
             ChatHistoryStore.addExchange(this, sessionId, userQuestion, aiAnswer, category);
             refreshHistorySessions();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             handler.postDelayed(() -> {
                 VoiceManager.getInstance().getSynthesizer().speak(aiAnswer, null);
             }, 500);
         }
+<<<<<<< HEAD
 
         updateEmptyState();
 
         if (openHistoryPanel) {
             handler.postDelayed(this::showHistoryPanel, 200);
         }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private void initViews() {
         rvChat = findViewById(R.id.rv_chat);
         voiceButton = findViewById(R.id.voice_button);
+<<<<<<< HEAD
         voiceButton.setDrawContent(false);
         voiceButtonCard = findViewById(R.id.voice_button_card);
         tvVoiceButtonLabel = findViewById(R.id.tv_voice_button_label);
@@ -169,6 +217,13 @@ public class ElderChatActivity extends BaseActivity {
         btnBack.setOnClickListener(v -> finish());
         btnNewChat.setOnClickListener(v -> startNewChat());
         setupEmptyStateDrag();
+=======
+        thinkingIndicator = findViewById(R.id.thinking_indicator);
+        tvThinkingDots = findViewById(R.id.tv_thinking_dots);
+        btnBack = findViewById(R.id.btn_back);
+
+        btnBack.setOnClickListener(v -> finish());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private void setupRecyclerView() {
@@ -184,6 +239,7 @@ public class ElderChatActivity extends BaseActivity {
     }
 
     private void setupVoiceButton() {
+<<<<<<< HEAD
         voiceButton.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -201,10 +257,13 @@ public class ElderChatActivity extends BaseActivity {
             return false;
         });
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         voiceButton.setVoiceCallback(new VoiceRecognizer.Callback() {
             @Override
             public void onResult(String text) {
                 runOnUiThread(() -> {
+<<<<<<< HEAD
                     if (isWaitingForAiResponse) {
                         showToast("小伴正在回复，请稍等");
                         return;
@@ -218,6 +277,11 @@ public class ElderChatActivity extends BaseActivity {
                     updateEmptyState();
                     scrollToBottom();
                     sendChat(question);
+=======
+                    chatAdapter.addElderMessage(text);
+                    scrollToBottom();
+                    sendChat(text);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 });
             }
 
@@ -232,6 +296,7 @@ public class ElderChatActivity extends BaseActivity {
         });
     }
 
+<<<<<<< HEAD
     private void setupInputMode(boolean suppressKeyboard) {
         cardInputSwitch.setOnClickListener(v -> {
             String nextMode = INPUT_MODE_TEXT.equals(inputMode) ? INPUT_MODE_VOICE : INPUT_MODE_TEXT;
@@ -415,12 +480,20 @@ public class ElderChatActivity extends BaseActivity {
 
         Map<String, String> body = new HashMap<>();
         body.put("text", question);
+=======
+    private void sendChat(String text) {
+        showThinking(true);
+
+        Map<String, String> body = new HashMap<>();
+        body.put("text", text);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         body.put("sessionId", sessionId);
 
         ApiClient.getInstance(this).getApi().chat(body).enqueue(new ApiCallback<ChatResponse>() {
             @Override
             public void onSuccess(ChatResponse data) {
                 runOnUiThread(() -> {
+<<<<<<< HEAD
                     isWaitingForAiResponse = false;
                     showThinking(false);
                     chatAdapter.addAiMessage(data.getAnswer(), data.getCategory());
@@ -428,6 +501,10 @@ public class ElderChatActivity extends BaseActivity {
                             question, data.getAnswer(), data.getCategory());
                     refreshHistorySessions();
                     updateEmptyState();
+=======
+                    showThinking(false);
+                    chatAdapter.addAiMessage(data.getAnswer(), data.getCategory());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                     scrollToBottom();
                     handler.postDelayed(() -> {
                         VoiceManager.getInstance().getSynthesizer().speak(data.getAnswer(), null);
@@ -435,6 +512,7 @@ public class ElderChatActivity extends BaseActivity {
                 });
             }
 
+<<<<<<< HEAD
             @Override
             public void onBusinessError(int code, String message) {
                 runOnUiThread(() -> {
@@ -450,11 +528,18 @@ public class ElderChatActivity extends BaseActivity {
                     isWaitingForAiResponse = false;
                     showThinking(false);
                     showToast(NetworkErrorUtil.getChatFailureMessage());
+=======
+            public void onNetworkError(String errorMsg) {
+                runOnUiThread(() -> {
+                    showThinking(false);
+                    showToast("对话失败：" + errorMsg);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 });
             }
         });
     }
 
+<<<<<<< HEAD
     private void refreshHistorySessions() {
         if (historyAdapter == null) {
             return;
@@ -739,6 +824,8 @@ public class ElderChatActivity extends BaseActivity {
         return false;
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void showThinking(boolean show) {
         if (show) {
             thinkingIndicator.setVisibility(View.VISIBLE);
@@ -786,7 +873,10 @@ public class ElderChatActivity extends BaseActivity {
     public void handleCorrectionPush(String senderName, String correctionText) {
         runOnUiThread(() -> {
             chatAdapter.addCorrectionMessage(senderName, correctionText);
+<<<<<<< HEAD
             updateEmptyState();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             scrollToBottom();
             VoiceManager.getInstance().getSynthesizer().speak(
                 "您" + senderName + "说，" + correctionText, null
@@ -797,7 +887,10 @@ public class ElderChatActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+<<<<<<< HEAD
         stopEmptyStateCarousel();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         stopThinkingAnimation();
         VoiceManager.getInstance().getSynthesizer().stop();
     }

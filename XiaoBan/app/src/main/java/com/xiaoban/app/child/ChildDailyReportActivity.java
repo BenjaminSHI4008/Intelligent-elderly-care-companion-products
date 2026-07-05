@@ -7,26 +7,35 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+<<<<<<< HEAD
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.R;
 import com.xiaoban.app.adapter.HealthConcernAdapter;
 import com.xiaoban.app.adapter.TopicAdapter;
 import com.xiaoban.app.base.BaseActivity;
+<<<<<<< HEAD
 import com.xiaoban.app.model.DailyReport;
 import com.xiaoban.app.model.HealthConcern;
 import com.xiaoban.app.model.Topic;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ChildRepository;
 import com.xiaoban.app.util.ElderSelectionStore;
+=======
+import com.xiaoban.app.model.HealthConcern;
+import com.xiaoban.app.model.Topic;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+<<<<<<< HEAD
 import java.util.Map;
 
 /**
@@ -43,6 +52,11 @@ public class ChildDailyReportActivity extends BaseActivity {
             "情感", "😊",
             "其他", "📺");
 
+=======
+
+public class ChildDailyReportActivity extends BaseActivity {
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private TextView tvReportDate;
     private TextView tvTotalConversations;
     private RecyclerView rvTopics;
@@ -52,18 +66,26 @@ public class ChildDailyReportActivity extends BaseActivity {
     private TopicAdapter topicAdapter;
     private HealthConcernAdapter healthConcernAdapter;
 
+<<<<<<< HEAD
     private ChildRepository repository;
     private long elderId = ElderSelectionStore.NO_ELDER;
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_daily_report);
 
+<<<<<<< HEAD
         repository = ChildRepository.from(this);
         initViews();
         setupRecyclerViews();
         elderId = ElderSelectionStore.getSelected(this);
+=======
+        initViews();
+        setupRecyclerViews();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         loadReportData();
     }
 
@@ -92,6 +114,7 @@ public class ChildDailyReportActivity extends BaseActivity {
     }
 
     private void loadReportData() {
+<<<<<<< HEAD
         if (elderId == ElderSelectionStore.NO_ELDER) {
             tvTotalConversations.setText("请先在首页绑定并选择老人");
             return;
@@ -175,5 +198,35 @@ public class ChildDailyReportActivity extends BaseActivity {
             // Malformed AI JSON: show nothing rather than fake concerns.
         }
         return concerns;
+=======
+        loadTestData();
+    }
+
+    private void loadTestData() {
+        tvTotalConversations.setText("今日共 12 次对话");
+
+        List<Topic> topics = new ArrayList<>();
+        topics.add(new Topic("💊", "用药咨询", "询问降压药服用时间", 3));
+        topics.add(new Topic("🏥", "健康状况", "提及腰部疼痛", 2));
+        topics.add(new Topic("🍽️", "饮食记录", "询问晚餐建议", 2));
+        topics.add(new Topic("😊", "情感交流", "分享邻居趣事", 3));
+        topics.add(new Topic("📺", "娱乐活动", "讨论电视节目", 2));
+        topicAdapter.setTopics(topics);
+
+        List<HealthConcern> concerns = new ArrayList<>();
+        concerns.add(new HealthConcern(
+                "high",
+                "连续3天提及腰痛",
+                "建议：尽快带父亲就医检查，可能需要拍片确认"));
+        concerns.add(new HealthConcern(
+                "medium",
+                "降压药服用时间混乱",
+                "建议：设置定时提醒，确保按时服药"));
+        concerns.add(new HealthConcern(
+                "low",
+                "睡眠时间略有减少",
+                "建议：关注后续变化，必要时调整作息"));
+        healthConcernAdapter.setConcerns(concerns);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 }

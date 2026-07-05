@@ -25,8 +25,12 @@
             android:contentDescription="返回"
             android:focusable="true"
             android:padding="12dp"
+<<<<<<< HEAD
             android:src="@drawable/ic_back"
             android:tint="@color/primary_dark" />
+=======
+            android:src="@android:drawable/ic_menu_revert" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         <LinearLayout
             android:layout_width="44dp"
@@ -39,7 +43,11 @@
                 android:id="@+id/tv_sender_initial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
                 android:text="家"
+=======
+                android:text="女"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -47,17 +55,27 @@
         </LinearLayout>
 
         <LinearLayout
+<<<<<<< HEAD
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
+=======
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_sender_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
                 android:text="家人"
+=======
+                android:text="女儿"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 android:textColor="#1A3C5E"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -74,6 +92,7 @@
 
     </LinearLayout>
 
+<<<<<<< HEAD
     <androidx.cardview.widget.CardView
         android:id="@+id/card_input_switch"
         android:layout_width="match_parent"
@@ -128,6 +147,14 @@
         android:paddingTop="12dp"
         android:paddingEnd="20dp"
         android:paddingBottom="20dp">
+=======
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_bar"
+        android:fillViewport="true"
+        android:padding="20dp">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -137,6 +164,10 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
+=======
+                android:layout_marginTop="24dp"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 app:cardCornerRadius="22dp"
                 app:cardElevation="6dp">
 
@@ -150,7 +181,11 @@
                         android:id="@+id/tv_message_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+<<<<<<< HEAD
                         android:text="消息"
+=======
+                        android:text="语音消息"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         android:textColor="@color/primary_dark"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -163,7 +198,11 @@
                         android:background="@drawable/bg_message_text"
                         android:lineSpacingExtra="4dp"
                         android:padding="18dp"
+<<<<<<< HEAD
                         android:text="收到一条家人消息"
+=======
+                        android:text="女儿发来一条语音消息"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         android:textColor="@color/text_primary"
                         android:textSize="22sp" />
 
@@ -199,6 +238,7 @@
 
     </ScrollView>
 
+<<<<<<< HEAD
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
@@ -290,4 +330,6 @@
 
     </LinearLayout>
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 </RelativeLayout>

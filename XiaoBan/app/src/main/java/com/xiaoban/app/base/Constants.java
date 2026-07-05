@@ -4,8 +4,13 @@ import com.xiaoban.app.BuildConfig;
 
 public class Constants {
 
+<<<<<<< HEAD
     // 后端 API 地址在 XiaoBan/local.properties 的 backend.url 中配置（改后需 Rebuild App）
     // 模拟器：http://10.0.2.2:8080/  |  真机：电脑 WLAN IP，如 http://192.168.x.x:8080/
+=======
+    // 后端 API 地址在 app/build.gradle 的 buildConfigField 中配置
+    // 模拟器：http://10.0.2.2:8080/  |  真机：改为电脑 WLAN IP
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     public static final String BASE_URL = BuildConfig.BASE_URL;
 
     // SharedPreferences keys
@@ -18,6 +23,7 @@ public class Constants {
     public static final String SP_GENDER = "gender";
     public static final String SP_BIRTHDAY = "birthday";
     public static final String SP_EMERGENCY_CONTACT = "emergency_contact";
+<<<<<<< HEAD
     public static final String SP_ELDER_CHAT_INPUT_MODE = "elder_chat_input_mode";
     // 子女端当前选中的绑定老人 elderId（支持多老人切换，持久化）
     public static final String SP_SELECTED_ELDER_ID = "selected_elder_id";
@@ -25,6 +31,12 @@ public class Constants {
     // 外部 SDK 配置对照项目根目录 config.yaml -> client-sdk-reference
     // 科大讯飞 AppID — 见 config.yaml client-sdk-reference.iflytek-voice
     public static final String IFLYTEK_APP_ID = "ff9c84ad";
+=======
+
+# 外部 SDK 配置对照项目根目录 config.yaml -> client-sdk-reference
+    // 科大讯飞 AppID — 见 config.yaml client-sdk-reference.iflytek-voice
+    public static final String IFLYTEK_APP_ID = "0a9e1284";
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     // 极光推送 AppKey — 须与 config.yaml external-services.jpush.app-key 一致
     public static final String JPUSH_APP_KEY = "8bc0c3218b934e9a4f38b32a";

@@ -188,9 +188,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+<<<<<<< HEAD
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 android:visibility="visible"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
@@ -200,7 +203,14 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_child_warning_card"
                     android:orientation="vertical"
+<<<<<<< HEAD
                     android:padding="16dp">
+=======
+                    android:padding="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -261,9 +271,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+<<<<<<< HEAD
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="@color/white">
@@ -272,7 +285,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+<<<<<<< HEAD
                     android:padding="16dp">
+=======
+                    android:padding="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -340,9 +360,12 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+<<<<<<< HEAD
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -352,7 +375,14 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
+<<<<<<< HEAD
                             android:gravity="center">
+=======
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -370,11 +400,18 @@
                                 android:textStyle="bold" />
 
                             <TextView
+<<<<<<< HEAD
                                 android:id="@+id/tv_reminder_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="—"
+=======
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="3个提醒已设置"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                                 android:textSize="13sp"
                                 android:textColor="@color/child_text_secondary" />
 
@@ -388,9 +425,12 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
+<<<<<<< HEAD
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -400,7 +440,14 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
+<<<<<<< HEAD
                             android:gravity="center">
+=======
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -442,9 +489,12 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+<<<<<<< HEAD
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -454,7 +504,14 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
+<<<<<<< HEAD
                             android:gravity="center">
+=======
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -489,9 +546,12 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
+<<<<<<< HEAD
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:cardBackgroundColor="@color/white">
@@ -501,7 +561,14 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp"
+<<<<<<< HEAD
                             android:gravity="center">
+=======
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                             <TextView
                                 android:layout_width="wrap_content"

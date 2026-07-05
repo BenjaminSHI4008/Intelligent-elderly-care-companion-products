@@ -39,6 +39,7 @@ public class Message {
     @SerializedName("senderName")
     private String senderName;
 
+<<<<<<< HEAD
     @SerializedName("status")
     private int status;
 
@@ -48,6 +49,10 @@ public class Message {
     private static final long RECALL_WINDOW_MS = 2 * 60 * 1000L;
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+=======
+    private static final SimpleDateFormat DATE_FORMAT =
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     public static Message mock(long id, String senderName, String msgType, String content,
                                int duration, boolean isRead, String createdAt) {
@@ -71,15 +76,22 @@ public class Message {
     public int getDuration() { return duration; }
     public int getIsRead() { return isRead; }
     public String getCreatedAt() { return createdAt; }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     public String getSenderName() {
         return senderName != null ? senderName : "家人";
     }
 
     public String getType() {
+<<<<<<< HEAD
         if (msgType == null) {
             return "text";
         }
+=======
+        if (msgType == null) return "text";
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         switch (msgType) {
             case "voice":
                 return "voice";
@@ -100,6 +112,7 @@ public class Message {
     }
 
     public Date getCreateTime() {
+<<<<<<< HEAD
         if (createdAt == null) {
             return new Date();
         }
@@ -115,11 +128,20 @@ public class Message {
         } catch (ParseException ignored) {
         }
         return new Date();
+=======
+        if (createdAt == null) return new Date();
+        try {
+            return DATE_FORMAT.parse(createdAt);
+        } catch (ParseException e) {
+            return new Date();
+        }
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     public void setSenderName(String name) {
         this.senderName = name;
     }
+<<<<<<< HEAD
 
     public int getStatus() { return status; }
 
@@ -137,4 +159,6 @@ public class Message {
     public String getRecallDisplayText(boolean isMine) {
         return isMine ? "你撤回了一条消息" : "对方撤回了一条消息";
     }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 }

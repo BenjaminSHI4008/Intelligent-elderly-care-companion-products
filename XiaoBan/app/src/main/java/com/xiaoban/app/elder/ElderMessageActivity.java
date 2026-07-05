@@ -1,5 +1,6 @@
 package com.xiaoban.app.elder;
 
+<<<<<<< HEAD
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,11 +13,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+=======
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+<<<<<<< HEAD
 import com.bumptech.glide.Glide;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.R;
 import com.xiaoban.app.base.BaseActivity;
 import com.xiaoban.app.elder.adapter.MessageAdapter;
@@ -25,12 +34,19 @@ import com.xiaoban.app.model.Message;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.FamilyMessageNotifier;
+<<<<<<< HEAD
 import com.xiaoban.app.util.ImageUrlUtil;
+=======
+import com.xiaoban.app.util.TimeUtil;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.voice.VoiceManager;
 import com.xiaoban.app.voice.VoiceRecognizer;
 import com.xiaoban.app.widget.VoiceButton;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +56,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     private RecyclerView recyclerView;
     private MessageAdapter messageAdapter;
     private VoiceButton voiceReplyButton;
+<<<<<<< HEAD
     private View cardInputSwitch;
     private TextView tvInputSwitch;
     private TextView tvMemberCount;
@@ -58,6 +75,10 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     private static final String SEND_ORIGIN_TEXT = "text";
     /** 本次发送来源：语音识别填框后待发送，或键盘直接输入 */
     private String pendingSendOrigin;
+=======
+    private View btnBack;
+    private boolean announceUnreadOnLoad = true;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +93,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     private void initViews() {
         recyclerView = findViewById(R.id.rv_messages);
         voiceReplyButton = findViewById(R.id.voice_reply_button);
+<<<<<<< HEAD
         cardInputSwitch = findViewById(R.id.card_input_switch);
         tvInputSwitch = findViewById(R.id.tv_input_switch);
         tvMemberCount = findViewById(R.id.tv_member_count);
@@ -98,12 +120,20 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
             }
             return false;
         });
+=======
+        btnBack = findViewById(R.id.btn_back);
+
+        btnBack.setOnClickListener(v -> finish());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+<<<<<<< HEAD
         loadFamilyMembers();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         loadMessages(announceUnreadOnLoad);
         announceUnreadOnLoad = false;
         FamilyMessageNotifier.addListener(this);
@@ -120,32 +150,50 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
         if (isFinishing()) {
             return;
         }
+<<<<<<< HEAD
         loadFamilyMembers();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         loadMessages(false);
     }
 
     private void setupRecyclerView() {
         messageAdapter = new MessageAdapter();
+<<<<<<< HEAD
         messageAdapter.setCurrentUserId(getCurrentUserId());
         messageAdapter.setOnMessageClickListener(new MessageAdapter.OnMessageClickListener() {
             @Override
             public void onMessageClick(Message message) {
                 markAsRead(message);
+=======
+        messageAdapter.setOnMessageClickListener(new MessageAdapter.OnMessageClickListener() {
+            @Override
+            public void onMessageClick(Message message) {
+                openMessageDetail(message);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
 
             @Override
             public void onVoiceClick(Message message) {
+<<<<<<< HEAD
                 playVoiceMessage(message);
+=======
+                openMessageDetail(message);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
 
             @Override
             public void onPhotoClick(Message message) {
+<<<<<<< HEAD
                 showPhotoPreview(message);
             }
 
             @Override
             public void onRecallMessage(Message message) {
                 confirmRecallMessage(message);
+=======
+                openMessageDetail(message);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         });
 
@@ -154,11 +202,18 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     }
 
     private void setupVoiceButton() {
+<<<<<<< HEAD
         voiceReplyButton.setRectangleIdleText("按住说话回复");
         voiceReplyButton.setVoiceCallback(new VoiceRecognizer.Callback() {
             @Override
             public void onResult(String text) {
                 runOnUiThread(() -> onVoiceRecognitionResult(text));
+=======
+        voiceReplyButton.setVoiceCallback(new VoiceRecognizer.Callback() {
+            @Override
+            public void onResult(String text) {
+                runOnUiThread(() -> sendReply(text));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
 
             @Override
@@ -172,6 +227,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
         });
     }
 
+<<<<<<< HEAD
     private void onVoiceRecognitionResult(String text) {
         String reply = normalizeReplyText(text);
         if (reply.isEmpty()) {
@@ -250,10 +306,22 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
                         Message unread = findLatestUnreadIncoming(messages);
                         if (unread != null) {
                             playNewMessageNotification(unread);
+=======
+    private void loadMessages(boolean announceUnread) {
+        ApiClient.getInstance(this).getApi().getMessages(1, 20).enqueue(new ApiCallback<List<Message>>() {
+            @Override
+            public void onSuccess(List<Message> data) {
+                runOnUiThread(() -> {
+                    if (data != null) {
+                        messageAdapter.setMessages(data);
+                        if (announceUnread && !data.isEmpty() && !data.get(0).isRead()) {
+                            playNewMessageNotification(data.get(0));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         }
                     }
                 });
             }
+<<<<<<< HEAD
 
             @Override
             public void onNetworkError(String message) {
@@ -339,10 +407,61 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
             @Override
             public void onNetworkError(String errorMsg) {
                 runOnUiThread(() -> showToast("发送失败：" + errorMsg));
+=======
+        });
+    }
+
+    private void openMessageDetail(Message message) {
+        markAsRead(message);
+        Intent intent = new Intent(this, ElderMessageDetailActivity.class);
+        intent.putExtra("messageId", message.getId());
+        intent.putExtra("senderName", message.getSenderName());
+        intent.putExtra("messageType", message.getType());
+        intent.putExtra("content", message.getContent());
+        intent.putExtra("mediaUrl", message.getMediaUrl());
+        intent.putExtra("duration", message.getDuration());
+        intent.putExtra("time", TimeUtil.formatMessageTime(message.getCreateTime()));
+        startActivity(intent);
+    }
+
+    private void sendReply(String text) {
+        ApiClient.getInstance(this).getApi().getBindRelations().enqueue(new ApiCallback<List<BindingRelationItem>>() {
+            @Override
+            public void onSuccess(List<BindingRelationItem> data) {
+                Long receiverId = resolveReplyReceiverId(data);
+                if (receiverId == null) {
+                    runOnUiThread(() -> showToast("暂未绑定家人，无法回复"));
+                    return;
+                }
+
+                Map<String, Object> body = new HashMap<>();
+                body.put("receiverId", receiverId);
+                body.put("msgType", "text");
+                body.put("content", text);
+
+                ApiClient.getInstance(ElderMessageActivity.this).getApi().sendMessage(body)
+                        .enqueue(new ApiCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void data) {
+                                runOnUiThread(() -> showToast("已发送回复"));
+                            }
+
+                            @Override
+                            public void onNetworkError(String errorMsg) {
+                                runOnUiThread(() -> showToast("发送失败：" + errorMsg));
+                            }
+                        });
+            }
+
+            @Override
+            public void onNetworkError(String message) {
+                runOnUiThread(() -> showToast("发送失败：无法获取绑定关系"));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         });
     }
 
+<<<<<<< HEAD
     private void restoreInputModeAfterSend() {
         if (SEND_ORIGIN_VOICE.equals(pendingSendOrigin)) {
             applyInputMode(false, false);
@@ -405,13 +524,30 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
         for (Message message : messages) {
             if (!message.isRead() && message.getReceiverId() == currentUserId) {
                 return message;
+=======
+    private Long resolveReplyReceiverId(List<BindingRelationItem> relations) {
+        Message latest = messageAdapter.getLatestMessage();
+        if (latest != null && latest.getSenderId() > 0) {
+            return latest.getSenderId();
+        }
+        if (relations == null) {
+            return null;
+        }
+        for (BindingRelationItem relation : relations) {
+            if ("active".equals(relation.getStatus()) && relation.getChildId() > 0) {
+                return relation.getChildId();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         }
         return null;
     }
 
     private void markAsRead(Message message) {
+<<<<<<< HEAD
         if (!message.isRead() && message.getReceiverId() == getCurrentUserId()) {
+=======
+        if (!message.isRead()) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             message.setRead(true);
             messageAdapter.notifyDataSetChanged();
             ApiClient.getInstance(this).getApi().markRead(message.getId()).enqueue(new ApiCallback<Void>() {
@@ -422,6 +558,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
         }
     }
 
+<<<<<<< HEAD
     private void confirmRecallMessage(Message message) {
         new AlertDialog.Builder(this)
                 .setTitle("撤回消息")
@@ -454,6 +591,8 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
                 });
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void playNewMessageNotification(Message message) {
         String notification = message.getSenderName();
         switch (message.getType()) {
@@ -471,6 +610,7 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
     }
 
     public void handleNewMessagePush(Message message) {
+<<<<<<< HEAD
         loadFamilyMembers();
         loadMessages(false);
     }
@@ -495,6 +635,11 @@ public class ElderMessageActivity extends BaseActivity implements FamilyMessageN
         }
     }
 
+=======
+        loadMessages(false);
+    }
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     protected void onDestroy() {
         super.onDestroy();

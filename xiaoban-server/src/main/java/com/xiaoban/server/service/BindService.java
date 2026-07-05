@@ -33,15 +33,19 @@ public class BindService {
     private final PushService pushService;
 
     public GenerateCodeVO generateCode(Long elderId) {
+<<<<<<< HEAD
         return generateCode(elderId, false);
     }
 
     public GenerateCodeVO generateCode(Long elderId, boolean refresh) {
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         User user = userMapper.selectById(elderId);
         if (user == null || !"elder".equals(user.getRole())) {
             throw new BusinessException(ResultCode.FORBIDDEN);
         }
 
+<<<<<<< HEAD
         LocalDateTime now = LocalDateTime.now();
         if (!refresh) {
             BindCodeTemp existing = bindCodeTempMapper.selectOne(
@@ -56,13 +60,19 @@ public class BindService {
             }
         }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         bindCodeTempMapper.delete(
                 new LambdaQueryWrapper<BindCodeTemp>()
                         .eq(BindCodeTemp::getElderId, elderId)
                         .eq(BindCodeTemp::getIsUsed, 0));
 
         String code = RandomUtil.randomNumbers(6);
+<<<<<<< HEAD
         LocalDateTime expireAt = now.plusMinutes(CODE_VALID_MINUTES);
+=======
+        LocalDateTime expireAt = LocalDateTime.now().plusMinutes(CODE_VALID_MINUTES);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         BindCodeTemp temp = BindCodeTemp.builder()
                 .elderId(elderId)
                 .code(code)
@@ -71,25 +81,40 @@ public class BindService {
                 .build();
         bindCodeTempMapper.insert(temp);
 
+<<<<<<< HEAD
         return toGenerateCodeVO(temp, now);
     }
 
     public BindResultVO verifyCode(Long childId, String rawCode) {
+=======
+        return GenerateCodeVO.builder()
+                .code(code)
+                .expireAt(expireAt)
+                .expiresInSeconds(CODE_VALID_MINUTES * 60)
+                .build();
+    }
+
+    public BindResultVO verifyCode(Long childId, String code) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         User child = userMapper.selectById(childId);
         if (child == null || !"child".equals(child.getRole())) {
             throw new BusinessException(ResultCode.FORBIDDEN);
         }
 
+<<<<<<< HEAD
         String code = normalizeBindCode(rawCode);
         if (code.length() != 6) {
             throw new BusinessException(ResultCode.BAD_REQUEST.getCode(), "绑定码必须为6位数字");
         }
 
         LocalDateTime now = LocalDateTime.now();
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         BindCodeTemp temp = bindCodeTempMapper.selectOne(
                 new LambdaQueryWrapper<BindCodeTemp>()
                         .eq(BindCodeTemp::getCode, code)
                         .eq(BindCodeTemp::getIsUsed, 0)
+<<<<<<< HEAD
                         .gt(BindCodeTemp::getExpireAt, now)
                         .orderByDesc(BindCodeTemp::getId)
                         .last("LIMIT 1"));
@@ -104,6 +129,11 @@ public class BindService {
             if (used != null) {
                 throw new BusinessException(ResultCode.BIND_CODE_USED);
             }
+=======
+                        .gt(BindCodeTemp::getExpireAt, LocalDateTime.now()));
+
+        if (temp == null) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             throw new BusinessException(ResultCode.BIND_CODE_INVALID);
         }
 
@@ -153,6 +183,7 @@ public class BindService {
     }
 
     public List<BindingRelation> getRelations(Long userId, String role) {
+<<<<<<< HEAD
         if (userId == null || role == null) {
             throw new BusinessException(ResultCode.UNAUTHORIZED);
         }
@@ -164,6 +195,13 @@ public class BindService {
             query.eq(BindingRelation::getChildId, userId);
         } else {
             throw new BusinessException(ResultCode.FORBIDDEN);
+=======
+        LambdaQueryWrapper<BindingRelation> query = new LambdaQueryWrapper<>();
+        if ("elder".equals(role)) {
+            query.eq(BindingRelation::getElderId, userId);
+        } else {
+            query.eq(BindingRelation::getChildId, userId);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         }
         query.orderByDesc(BindingRelation::getBindTime);
         return bindingRelationMapper.selectList(query);
@@ -236,6 +274,7 @@ public class BindService {
         }
         return PhoneMaskUtil.mask(user.getPhone());
     }
+<<<<<<< HEAD
 
     private GenerateCodeVO toGenerateCodeVO(BindCodeTemp temp, LocalDateTime now) {
         long remainingSeconds = java.time.Duration.between(now, temp.getExpireAt()).getSeconds();
@@ -266,4 +305,6 @@ public class BindService {
         }
         return normalized.toString();
     }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 }

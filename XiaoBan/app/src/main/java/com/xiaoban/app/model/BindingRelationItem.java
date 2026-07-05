@@ -48,11 +48,31 @@ public class BindingRelationItem {
     public void setBindTime(String bindTime) { this.bindTime = bindTime; }
 
     public String getDisplayNameForElder() {
+<<<<<<< HEAD
         return childNickname;
     }
 
     public String getDisplayNameForChild() {
         return elderNickname;
+=======
+        if (childNickname != null && !childNickname.isEmpty()) {
+            return childNickname;
+        }
+        if (childPhoneMasked != null && !childPhoneMasked.isEmpty()) {
+            return childPhoneMasked;
+        }
+        return "家人";
+    }
+
+    public String getDisplayNameForChild() {
+        if (elderNickname != null && !elderNickname.isEmpty()) {
+            return elderNickname;
+        }
+        if (elderPhoneMasked != null && !elderPhoneMasked.isEmpty()) {
+            return elderPhoneMasked;
+        }
+        return "老人账户";
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     public String getFormattedBindTime() {

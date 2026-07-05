@@ -15,16 +15,23 @@ import com.xiaoban.app.auth.LoginActivity;
 import com.xiaoban.app.base.BaseActivity;
 import com.xiaoban.app.elder.ElderProfileActivity;
 import com.xiaoban.app.model.BindingRelationItem;
+<<<<<<< HEAD
 import com.xiaoban.app.model.DashboardData;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.network.ChildRepository;
 import com.xiaoban.app.util.BindNotificationHelper;
 import com.xiaoban.app.util.ElderSelectionStore;
+=======
+import com.xiaoban.app.network.ApiCallback;
+import com.xiaoban.app.network.ApiClient;
+import com.xiaoban.app.util.BindNotificationHelper;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.util.SharedPrefUtil;
 
 import java.util.Calendar;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Locale;
 
 /**
@@ -35,6 +42,14 @@ public class ChildHomeActivity extends BaseActivity {
 
     private static final String PLACEHOLDER = "—";
 
+=======
+
+/**
+ * 子女端首页
+ */
+public class ChildHomeActivity extends BaseActivity {
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private TextView tvDeviceStatus;
     private TextView tvBindCount;
     private ImageView btnSettings;
@@ -42,7 +57,10 @@ public class ChildHomeActivity extends BaseActivity {
     private TextView tvChatCount;
     private TextView tvMood;
     private TextView tvLastActive;
+<<<<<<< HEAD
     private TextView tvReminderCount;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     private CardView cardPending;
     private TextView tvPendingTime;
@@ -62,14 +80,18 @@ public class ChildHomeActivity extends BaseActivity {
     private LinearLayout navRemind;
     private LinearLayout navSettings;
 
+<<<<<<< HEAD
     private ChildRepository repository;
     private long selectedElderId = ElderSelectionStore.NO_ELDER;
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_home);
 
+<<<<<<< HEAD
         repository = ChildRepository.from(this);
         initViews();
         setupClickListeners();
@@ -80,6 +102,14 @@ public class ChildHomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         loadBoundEldersThenDashboard();
+=======
+        initViews();
+        loadBoundElders();
+        loadTodayStats();
+        loadPendingConfirm();
+        loadDailySummary();
+        setupClickListeners();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private void initViews() {
@@ -90,7 +120,10 @@ public class ChildHomeActivity extends BaseActivity {
         tvChatCount = findViewById(R.id.tv_chat_count);
         tvMood = findViewById(R.id.tv_mood);
         tvLastActive = findViewById(R.id.tv_last_active);
+<<<<<<< HEAD
         tvReminderCount = findViewById(R.id.tv_reminder_count);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         cardPending = findViewById(R.id.card_pending);
         tvPendingTime = findViewById(R.id.tv_pending_time);
@@ -111,12 +144,17 @@ public class ChildHomeActivity extends BaseActivity {
         navSettings = findViewById(R.id.nav_settings);
     }
 
+<<<<<<< HEAD
     private void loadBoundEldersThenDashboard() {
+=======
+    private void loadBoundElders() {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         ApiClient.getInstance(this).getApi().getBindRelations()
                 .enqueue(new ApiCallback<List<BindingRelationItem>>() {
                     @Override
                     public void onSuccess(List<BindingRelationItem> data) {
                         if (isFinishing()) return;
+<<<<<<< HEAD
                         runOnUiThread(() -> {
                             updateBoundElderUi(data);
                             selectedElderId = ElderSelectionStore.resolve(ChildHomeActivity.this, data);
@@ -126,15 +164,23 @@ public class ChildHomeActivity extends BaseActivity {
                                 loadDashboard(selectedElderId);
                             }
                         });
+=======
+                        runOnUiThread(() -> updateBoundElderUi(data));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                     }
 
                     @Override
                     public void onNetworkError(String message) {
                         if (isFinishing()) return;
                         runOnUiThread(() -> {
+<<<<<<< HEAD
                             tvDeviceStatus.setText("网络异常 · 点击重试");
                             tvBindCount.setText("重试");
                             showErrorState();
+=======
+                            tvDeviceStatus.setText("暂未绑定老人 · 点击添加");
+                            tvBindCount.setText("去绑定");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                         });
                     }
                 });
@@ -158,6 +204,7 @@ public class ChildHomeActivity extends BaseActivity {
         tvBindCount.setText("已绑定 " + count + " 位");
     }
 
+<<<<<<< HEAD
     private void loadDashboard(long elderId) {
         repository.loadDashboard(elderId, null, new ApiCallback<DashboardData>() {
             @Override
@@ -273,15 +320,40 @@ public class ChildHomeActivity extends BaseActivity {
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         tvReportDate.setText(String.format(Locale.CHINA, "%d月%d日", month, day));
+=======
+    private void loadTodayStats() {
+        // TODO: 接入日报/对话统计 API
+        tvChatCount.setText("-");
+        tvMood.setText("-");
+        tvLastActive.setText("-");
+    }
+
+    private void loadPendingConfirm() {
+        // TODO: 接入待确认对话 API
+        cardPending.setVisibility(View.GONE);
+    }
+
+    private void loadDailySummary() {
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        tvReportDate.setText(month + "月" + day + "日");
+        tvDailySummary.setText("绑定老人后，可在此查看智能日报摘要");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private void setupClickListeners() {
         btnSettings.setOnClickListener(v -> showLogoutDialog());
+<<<<<<< HEAD
         tvDeviceStatus.setOnClickListener(v -> openDeviceManagement());
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         cardPending.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildCorrectActivity.class)));
 
+<<<<<<< HEAD
         // Daily summary card doubles as retry trigger when data failed to load.
         cardDaily.setOnClickListener(v -> {
             if (selectedElderId != ElderSelectionStore.NO_ELDER) {
@@ -290,19 +362,34 @@ public class ChildHomeActivity extends BaseActivity {
                 openDeviceManagement();
             }
         });
+=======
+        cardDaily.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildDailyReportActivity.class)));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         cardReminder.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildReminderActivity.class)));
 
         cardMessage.setOnClickListener(v ->
+<<<<<<< HEAD
                 startActivity(new Intent(this, ChildMessageListActivity.class)));
+=======
+                startActivity(new Intent(this, ChildSendMessageActivity.class)));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         cardHistory.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildDailyReportActivity.class)));
 
+<<<<<<< HEAD
         cardBind.setOnClickListener(v -> openDeviceManagement());
 
         navHome.setOnClickListener(v -> loadBoundEldersThenDashboard());
+=======
+        cardBind.setOnClickListener(v ->
+                startActivity(new Intent(this, ChildBindActivity.class)));
+
+        navHome.setOnClickListener(v -> { });
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         navChat.setOnClickListener(v ->
                 startActivity(new Intent(this, ChildCorrectActivity.class)));
@@ -314,10 +401,13 @@ public class ChildHomeActivity extends BaseActivity {
                 startActivity(new Intent(this, ElderProfileActivity.class)));
     }
 
+<<<<<<< HEAD
     private void openDeviceManagement() {
         startActivity(new Intent(this, ChildBindActivity.class));
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void showLogoutDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("设置")
@@ -333,4 +423,13 @@ public class ChildHomeActivity extends BaseActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadBoundElders();
+    }
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 }

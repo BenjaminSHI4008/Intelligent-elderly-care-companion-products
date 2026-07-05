@@ -22,8 +22,12 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
+<<<<<<< HEAD
             android:src="@drawable/ic_back"
             android:tint="@color/primary_dark"
+=======
+            android:src="@android:drawable/ic_menu_revert"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             android:contentDescription="返回"
             android:clickable="true"
             android:focusable="true"
@@ -47,10 +51,16 @@
         </LinearLayout>
 
         <LinearLayout
+<<<<<<< HEAD
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
+=======
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             android:orientation="vertical">
 
             <TextView
@@ -70,6 +80,7 @@
 
         </LinearLayout>
 
+<<<<<<< HEAD
         <ImageView
             android:id="@+id/btn_new_chat"
             android:layout_width="56dp"
@@ -129,19 +140,67 @@
                 android:textColor="@color/primary_dark"
                 android:textSize="22sp"
                 android:textStyle="bold" />
+=======
+    </LinearLayout>
+
+    <!-- 对话列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/top_bar"
+        android:layout_above="@id/bottom_bar"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+    <!-- 正在思考动画 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thinking_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_bar"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
                 android:text="›"
                 android:textColor="@color/text_secondary"
                 android:textSize="28sp"
                 android:textStyle="bold" />
+=======
+                android:text="正在思考"
+                android:textSize="20sp"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tv_thinking_dots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="..."
+                android:textSize="20sp"
+                android:textColor="@color/text_secondary" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
+<<<<<<< HEAD
     <!-- 对话内容区 -->
     <FrameLayout
         android:id="@+id/chat_area"
@@ -294,6 +353,9 @@
     </FrameLayout>
 
     <!-- 底部输入区 -->
+=======
+    <!-- 底部语音按钮 -->
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
@@ -304,6 +366,7 @@
         android:background="@color/background"
         android:elevation="4dp">
 
+<<<<<<< HEAD
         <LinearLayout
             android:id="@+id/panel_voice_input"
             android:layout_width="match_parent"
@@ -329,6 +392,26 @@
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+=======
+        <androidx.cardview.widget.CardView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="12dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_voice_button_normal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_microphone_small"
+                    android:contentDescription="麦克风" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
                 <com.xiaoban.app.widget.VoiceButton
                     android:id="@+id/voice_button"
@@ -338,6 +421,7 @@
 
             </FrameLayout>
 
+<<<<<<< HEAD
         </LinearLayout>
 
         <LinearLayout
@@ -453,6 +537,18 @@
             android:clipToPadding="false"
             android:paddingTop="4dp"
             android:paddingBottom="16dp" />
+=======
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:text="按住说话"
+            android:textSize="18sp"
+            android:textColor="@color/text_secondary" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     </LinearLayout>
 

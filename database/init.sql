@@ -87,8 +87,11 @@ CREATE TABLE `family_message` (
   `media_url` VARCHAR(255) DEFAULT NULL COMMENT '语音/照片文件URL',
   `duration` INT DEFAULT NULL COMMENT '语音时长（秒）',
   `is_read` TINYINT(1) DEFAULT 0 COMMENT '是否已读',
+<<<<<<< HEAD
   `status` TINYINT NOT NULL DEFAULT 0 COMMENT '0=正常 1=已撤回',
   `recalled_at` DATETIME NULL COMMENT '撤回时间',
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`sender_id`) REFERENCES `user`(`user_id`),
   FOREIGN KEY (`receiver_id`) REFERENCES `user`(`user_id`),

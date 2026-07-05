@@ -1,6 +1,9 @@
 package com.xiaoban.app.elder;
 
+<<<<<<< HEAD
 import android.app.AlertDialog;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -59,7 +62,11 @@ public class ElderBindActivity extends BaseActivity {
 
         pollHandler = new Handler(Looper.getMainLooper());
         initViews();
+<<<<<<< HEAD
         generateBindCode(false);
+=======
+        generateBindCode();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         loadBoundRelations(false);
     }
 
@@ -75,26 +82,43 @@ public class ElderBindActivity extends BaseActivity {
         rvBoundFamily = findViewById(R.id.rv_bound_family);
 
         boundFamilyAdapter = new BoundFamilyAdapter();
+<<<<<<< HEAD
         boundFamilyAdapter.setOnUnbindClickListener(this::showUnbindConfirmDialog);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         rvBoundFamily.setLayoutManager(new LinearLayoutManager(this));
         rvBoundFamily.setAdapter(boundFamilyAdapter);
 
         ImageView btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
+<<<<<<< HEAD
         btnRefreshCode.setOnClickListener(v -> generateBindCode(true));
+=======
+        btnRefreshCode.setOnClickListener(v -> generateBindCode());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         btnReplayCode.setOnClickListener(v -> replayCode());
         swipeRefresh.setColorSchemeResources(R.color.primary);
         swipeRefresh.setOnRefreshListener(() -> {
             loadBoundRelations(true);
             if (currentCode.isEmpty()) {
+<<<<<<< HEAD
                 generateBindCode(false);
+=======
+                generateBindCode();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         });
     }
 
+<<<<<<< HEAD
     private void generateBindCode(boolean refresh) {
         setCodeLoading(true);
         ApiClient.getInstance(this).getApi().generateCode(refresh)
+=======
+    private void generateBindCode() {
+        setCodeLoading(true);
+        ApiClient.getInstance(this).getApi().generateCode()
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 .enqueue(new ApiCallback<GenerateCodeResponse>() {
                     @Override
                     public void onSuccess(GenerateCodeResponse data) {
@@ -235,6 +259,7 @@ public class ElderBindActivity extends BaseActivity {
         }
     }
 
+<<<<<<< HEAD
     private void showUnbindConfirmDialog(BindingRelationItem item) {
         String name = item.getChildNickname() != null ? item.getChildNickname() : "家人";
         new AlertDialog.Builder(this)
@@ -272,6 +297,8 @@ public class ElderBindActivity extends BaseActivity {
                 });
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void startBindPolling() {
         stopBindPolling();
         pollRunnable = () -> {

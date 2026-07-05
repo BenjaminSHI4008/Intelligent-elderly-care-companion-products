@@ -25,7 +25,10 @@ import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ApiClient;
 import com.xiaoban.app.util.BindNotificationHelper;
 import com.xiaoban.app.util.FamilyMessageNotifier;
+<<<<<<< HEAD
 import com.xiaoban.app.util.NetworkErrorUtil;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.util.PermissionUtil;
 import com.xiaoban.app.util.SharedPrefUtil;
 import com.xiaoban.app.util.TimeUtil;
@@ -52,7 +55,10 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
     private TextView tvVoiceHint;
     private VoiceButton voiceButton;
     private View btnEmergency;
+<<<<<<< HEAD
     private View btnBindShortcut;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private View btnProfile;
     private TextView tvProfileInitial;
     private View welcomeBubble;
@@ -93,9 +99,13 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         voiceButtonCard = findViewById(R.id.voice_button_card);
         tvVoiceHint = findViewById(R.id.tv_voice_hint);
         voiceButton = findViewById(R.id.voice_button);
+<<<<<<< HEAD
         voiceButton.setDrawContent(false);
         btnEmergency = findViewById(R.id.btn_emergency);
         btnBindShortcut = findViewById(R.id.btn_bind_shortcut);
+=======
+        btnEmergency = findViewById(R.id.btn_emergency);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         btnProfile = findViewById(R.id.btn_profile);
         tvProfileInitial = findViewById(R.id.tv_profile_initial);
         welcomeBubble = findViewById(R.id.welcome_bubble);
@@ -108,9 +118,14 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         cardMessage.setOnClickListener(v ->
                 startActivity(new Intent(this, ElderMessageActivity.class)));
 
+<<<<<<< HEAD
         cardBind.setOnClickListener(v -> openBindPage());
 
         btnBindShortcut.setOnClickListener(v -> openBindPage());
+=======
+        cardBind.setOnClickListener(v ->
+                startActivity(new Intent(this, ElderBindActivity.class)));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         cardAiChatHistory.setOnClickListener(v -> openAiChatHistory());
 
@@ -149,10 +164,13 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         btnEmergency.setOnClickListener(v -> makeEmergencyCall());
     }
 
+<<<<<<< HEAD
     private void openBindPage() {
         startActivity(new Intent(this, ElderBindActivity.class));
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void updateProfileInitial() {
         String nickname = SharedPrefUtil.getString(this, Constants.SP_NICKNAME, "");
         String displayName = nickname == null || nickname.isEmpty() ? "伴" : nickname;
@@ -270,7 +288,10 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                             }
 
                             int count = BindNotificationHelper.countActiveRelations(data);
+<<<<<<< HEAD
                             updateBindEntryState(count);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                             tvBindHint.setText(count > 0
                                     ? "已绑定 " + count + " 位家人 ›"
                                     : "查看绑定码 ›");
@@ -278,6 +299,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                     }
 
                     @Override
+<<<<<<< HEAD
                     public void onBusinessError(int code, String message) {
                         if (isFinishing()) return;
                         runOnUiThread(() -> {
@@ -294,10 +316,15 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                         // 首页静默失败，避免启动时反复弹 Toast
                         if (isFinishing()) return;
                         runOnUiThread(ElderHomeActivity.this::showBindEntryFallback);
+=======
+                    public void onNetworkError(String message) {
+                        // 首页静默失败，避免启动时反复弹 Toast
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                     }
                 });
     }
 
+<<<<<<< HEAD
     private void updateBindEntryState(int count) {
         boolean hasBindings = count > 0;
         cardBind.setVisibility(hasBindings ? View.GONE : View.VISIBLE);
@@ -310,6 +337,8 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         tvBindHint.setText("查看绑定码 ›");
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void loadLatestMessage() {
         ApiClient.getInstance(this).getApi().getMessages(1, 1).enqueue(new ApiCallback<List<Message>>() {
             @Override
@@ -331,6 +360,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
             public void onNetworkError(String message) {
                 // 首页静默失败，保留默认文案
             }
+<<<<<<< HEAD
 
             @Override
             public void onBusinessError(int code, String message) {
@@ -340,6 +370,8 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                     unreadDot.setVisibility(View.GONE);
                 });
             }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         });
     }
 
@@ -361,6 +393,13 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
 
     private void openAiChatHistory() {
         Intent intent = new Intent(this, ElderChatActivity.class);
+<<<<<<< HEAD
+=======
+        intent.putExtra("sessionId", "mock-ai-history");
+        intent.putExtra("userQuestion", "小伴，我降压药什么时候吃？");
+        intent.putExtra("aiAnswer", "降压药一般建议每天早上起床后服用，饭前饭后都可以，但最好固定时间。不过每个人的情况不一样，最好问问医生哦。");
+        intent.putExtra("category", "health");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         startActivity(intent);
     }
 
@@ -384,6 +423,7 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
     }
 
     private void sendVoiceChat(String text) {
+<<<<<<< HEAD
         String question = text == null ? "" : text.trim();
         if (!hasMeaningfulText(question)) {
             tvVoiceHint.setText("按住说话");
@@ -394,6 +434,11 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         String sessionId = UUID.randomUUID().toString();
         Map<String, String> body = new HashMap<>();
         body.put("text", question);
+=======
+        String sessionId = UUID.randomUUID().toString();
+        Map<String, String> body = new HashMap<>();
+        body.put("text", text);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         body.put("sessionId", sessionId);
 
         tvVoiceHint.setText("小伴思考中...");
@@ -404,11 +449,18 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                 runOnUiThread(() -> {
                     tvVoiceHint.setText("按住说话");
                     Intent intent = new Intent(ElderHomeActivity.this, ElderChatActivity.class);
+<<<<<<< HEAD
                     intent.putExtra("userQuestion", question);
                     intent.putExtra("aiAnswer", data.getAnswer());
                     intent.putExtra("category", data.getCategory());
                     intent.putExtra("sessionId", sessionId);
                     intent.putExtra("openHistoryPanel", false);
+=======
+                    intent.putExtra("userQuestion", text);
+                    intent.putExtra("aiAnswer", data.getAnswer());
+                    intent.putExtra("category", data.getCategory());
+                    intent.putExtra("sessionId", sessionId);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                     startActivity(intent);
                 });
             }
@@ -427,12 +479,17 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
                 if (isFinishing()) return;
                 runOnUiThread(() -> {
                     tvVoiceHint.setText("按住说话");
+<<<<<<< HEAD
                     showToast(NetworkErrorUtil.getChatFailureMessage());
+=======
+                    showToast("对话失败，请检查网络");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 });
             }
         });
     }
 
+<<<<<<< HEAD
     private boolean hasMeaningfulText(String text) {
         if (text == null || text.trim().isEmpty()) {
             return false;
@@ -449,6 +506,8 @@ public class ElderHomeActivity extends BaseActivity implements FamilyMessageNoti
         return false;
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void makeEmergencyCall() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {

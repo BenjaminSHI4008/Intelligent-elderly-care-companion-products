@@ -137,6 +137,7 @@ export XIAOBAN_CONFIG_PATH=/path/to/config.yaml
 
 ## 版本变更日志 (CHANGELOG)
 
+<<<<<<< HEAD
 ### 微小改动 — 2026-07-04（绑定入口与语音按钮体验修补）
 
 **子女端设备管理入口**
@@ -204,6 +205,8 @@ export XIAOBAN_CONFIG_PATH=/path/to/config.yaml
 
 ---
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 ### v1.1.0 — 2026-06-30（配置标准化 & 功能融合）
 
 **配置架构**
@@ -290,6 +293,7 @@ cp config.yaml.example config.yaml
 
 ---
 
+<<<<<<< HEAD
 ## 子女端真实数据链路（v1.2）
 
 子女端所有状态均来自真实后端接口与数据库，已移除全部 mock / 写死数据。
@@ -320,6 +324,8 @@ cp config.yaml.example config.yaml
 
 ---
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 ## 开发规范
 
 - **配置**：后端外部 API 只改 `config.yaml`，不在代码中硬编码 Key

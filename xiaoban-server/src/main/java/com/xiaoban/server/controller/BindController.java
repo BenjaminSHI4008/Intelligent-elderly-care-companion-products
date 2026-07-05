@@ -1,8 +1,11 @@
 package com.xiaoban.server.controller;
 
 import com.xiaoban.server.common.Result;
+<<<<<<< HEAD
 import com.xiaoban.server.common.BusinessException;
 import com.xiaoban.server.common.ResultCode;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.server.dto.VerifyCodeRequest;
 import com.xiaoban.server.entity.User;
 import com.xiaoban.server.mapper.UserMapper;
@@ -30,10 +33,16 @@ public class BindController {
 
     @Operation(summary = "生成绑定码（老人端调用）")
     @PostMapping("/generate-code")
+<<<<<<< HEAD
     public Result<GenerateCodeVO> generateCode(Authentication auth,
                                                  @RequestParam(defaultValue = "false") boolean refresh) {
         Long elderId = (Long) auth.getPrincipal();
         return Result.success(bindService.generateCode(elderId, refresh));
+=======
+    public Result<GenerateCodeVO> generateCode(Authentication auth) {
+        Long elderId = (Long) auth.getPrincipal();
+        return Result.success(bindService.generateCode(elderId));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     @Operation(summary = "使用绑定码绑定（子女端调用）")
@@ -60,9 +69,12 @@ public class BindController {
     public Result<List<BindingRelationVO>> relations(Authentication auth) {
         Long userId = (Long) auth.getPrincipal();
         User user = userMapper.selectById(userId);
+<<<<<<< HEAD
         if (user == null) {
             throw new BusinessException(ResultCode.UNAUTHORIZED);
         }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         return Result.success(bindService.getRelationDetails(userId, user.getRole()));
     }
 

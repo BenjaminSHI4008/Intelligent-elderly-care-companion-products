@@ -10,12 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+<<<<<<< HEAD
 import com.bumptech.glide.Glide;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.R;
 import com.xiaoban.app.model.Message;
 import com.xiaoban.app.util.ImageUrlUtil;
 import com.xiaoban.app.util.TimeUtil;
 
+<<<<<<< HEAD
+=======
+import com.bumptech.glide.Glide;
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,28 +31,45 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Message> messages = new ArrayList<>();
     private OnMessageClickListener listener;
+<<<<<<< HEAD
     private long currentUserId = 0L;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     public interface OnMessageClickListener {
         void onMessageClick(Message message);
         void onVoiceClick(Message message);
         void onPhotoClick(Message message);
+<<<<<<< HEAD
         void onRecallMessage(Message message);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     public void setOnMessageClickListener(OnMessageClickListener listener) {
         this.listener = listener;
     }
 
+<<<<<<< HEAD
     public void setCurrentUserId(long currentUserId) {
         this.currentUserId = currentUserId;
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     public void setMessages(List<Message> messages) {
         this.messages = messages;
         notifyDataSetChanged();
     }
 
+<<<<<<< HEAD
+=======
+    public void addMessage(Message message) {
+        messages.add(0, message);
+        notifyItemInserted(0);
+    }
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     public Message getLatestMessage() {
         return messages.isEmpty() ? null : messages.get(0);
     }
@@ -59,7 +84,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+<<<<<<< HEAD
         holder.bind(messages.get(position), listener, currentUserId);
+=======
+        holder.bind(messages.get(position), listener);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     @Override
@@ -83,6 +112,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             contentContainer = itemView.findViewById(R.id.message_content_container);
         }
 
+<<<<<<< HEAD
         void bind(Message message, OnMessageClickListener listener, long currentUserId) {
             boolean isMine = currentUserId > 0 && message.getSenderId() == currentUserId;
             tvSenderName.setText(isMine ? "我" : message.getSenderName());
@@ -104,11 +134,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     return true;
                 }
                 return false;
+=======
+        void bind(Message message, OnMessageClickListener listener) {
+            tvSenderName.setText(message.getSenderName());
+            tvTime.setText(TimeUtil.formatMessageTime(message.getCreateTime()));
+            unreadIndicator.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
+            unreadDot.setVisibility(message.isRead() ? View.GONE : View.VISIBLE);
+            itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onMessageClick(message);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             });
 
             contentContainer.removeAllViews();
             LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
 
+<<<<<<< HEAD
             if (message.isRecalled()) {
                 View textView = inflater.inflate(R.layout.message_content_text, contentContainer, false);
                 TextView tvText = textView.findViewById(R.id.tv_text_content);
@@ -119,17 +159,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
 
             switch (message.getType()) {
+=======
+            switch (message.getType()) {
+                case "text":
+                    View textView = inflater.inflate(R.layout.message_content_text, contentContainer, false);
+                    TextView tvText = textView.findViewById(R.id.tv_text_content);
+                    tvText.setText(message.getContent());
+                    contentContainer.addView(textView);
+                    break;
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 case "voice":
                     View voiceView = inflater.inflate(R.layout.message_content_voice, contentContainer, false);
                     TextView tvDuration = voiceView.findViewById(R.id.tv_duration);
                     tvDuration.setText(formatDuration(message.getDuration()));
                     voiceView.setOnClickListener(v -> {
+<<<<<<< HEAD
                         if (listener != null) {
                             listener.onVoiceClick(message);
                         }
                     });
                     contentContainer.addView(voiceView);
                     break;
+=======
+                        if (listener != null) listener.onVoiceClick(message);
+                    });
+                    contentContainer.addView(voiceView);
+                    break;
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                 case "photo":
                     View photoView = inflater.inflate(R.layout.message_content_photo, contentContainer, false);
                     ImageView ivPhoto = photoView.findViewById(R.id.iv_photo_thumbnail);
@@ -142,6 +200,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         ivPhoto.setImageResource(R.drawable.bg_message_photo);
                     }
                     photoView.setOnClickListener(v -> {
+<<<<<<< HEAD
                         if (listener != null) {
                             listener.onPhotoClick(message);
                         }
@@ -155,6 +214,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     tvText.setText(message.getContent());
                     contentContainer.addView(textView);
                     break;
+=======
+                        if (listener != null) listener.onPhotoClick(message);
+                    });
+                    contentContainer.addView(photoView);
+                    break;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         }
 

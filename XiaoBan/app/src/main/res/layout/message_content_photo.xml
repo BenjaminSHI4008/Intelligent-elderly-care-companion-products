@@ -3,24 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_message_photo"
+<<<<<<< HEAD
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
+=======
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:clickable="true"
+    android:focusable="true">
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     <ImageView
         android:id="@+id/iv_photo_thumbnail"
         android:layout_width="match_parent"
+<<<<<<< HEAD
         android:layout_height="220dp"
         android:contentDescription="照片缩略图"
         android:scaleType="centerCrop" />
+=======
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="照片缩略图" />
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+<<<<<<< HEAD
         android:text="🖼 点击查看大图"
+=======
+        android:text="🖼️ 点击查看大图"
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         android:textColor="@color/text_primary"
         android:textSize="18sp" />
 

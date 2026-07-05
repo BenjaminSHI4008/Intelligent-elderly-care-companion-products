@@ -12,18 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xiaoban.app.R;
 import com.xiaoban.app.adapter.CorrectionAdapter;
 import com.xiaoban.app.base.BaseActivity;
+<<<<<<< HEAD
 import com.xiaoban.app.model.Conversation;
 import com.xiaoban.app.model.Correction;
 import com.xiaoban.app.network.ApiCallback;
 import com.xiaoban.app.network.ChildRepository;
+=======
+import com.xiaoban.app.model.Correction;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 /**
  * 子女端待确认对话。数据来自真实 /api/conversations/pending（后端已按 active 绑定 +
  * 隐私 + pending 过滤），确认/纠正调真实接口。禁止本地 mock 列表。
  */
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 public class ChildCorrectActivity extends BaseActivity {
 
     private ImageView ivBack;
@@ -31,25 +38,34 @@ public class ChildCorrectActivity extends BaseActivity {
     private LinearLayout emptyView;
     private CorrectionAdapter adapter;
 
+<<<<<<< HEAD
     private ChildRepository repository;
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_correct);
 
+<<<<<<< HEAD
         repository = ChildRepository.from(this);
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         initViews();
         setupRecyclerView();
         loadCorrections();
     }
 
+<<<<<<< HEAD
     @Override
     protected void onResume() {
         super.onResume();
         loadCorrections();
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private void initViews() {
         ivBack = findViewById(R.id.iv_back);
         rvCorrections = findViewById(R.id.rv_corrections);
@@ -77,6 +93,7 @@ public class ChildCorrectActivity extends BaseActivity {
     }
 
     private void loadCorrections() {
+<<<<<<< HEAD
         repository.loadPending(new ApiCallback<List<Conversation>>() {
             @Override
             public void onSuccess(List<Conversation> data) {
@@ -116,11 +133,44 @@ public class ChildCorrectActivity extends BaseActivity {
                         c.getConfirmStatus() != null ? c.getConfirmStatus() : "pending"));
             }
         }
+=======
+        loadTestData();
+    }
+
+    private void loadTestData() {
+        List<Correction> corrections = new ArrayList<>();
+
+        corrections.add(new Correction(
+                "1",
+                "我的降压药是早上吃还是晚上吃？",
+                "根据您的用药记录，降压药建议每天早上7点服用，饭后半小时效果最佳。",
+                "今天 14:32",
+                "pending"
+        ));
+
+        corrections.add(new Correction(
+                "2",
+                "今天天气适合出门散步吗？",
+                "今天天气晴朗，温度适宜，非常适合外出散步。建议您上午10点或下午4点左右出门，记得戴帽子防晒。",
+                "今天 10:15",
+                "pending"
+        ));
+
+        corrections.add(new Correction(
+                "3",
+                "晚饭吃什么比较好？",
+                "建议您晚餐可以准备一些清淡的食物，比如蒸鱼、炒青菜和小米粥，营养均衡又容易消化。",
+                "昨天 17:20",
+                "confirmed"
+        ));
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         adapter.setCorrections(corrections);
         updateEmptyView(corrections.isEmpty());
     }
 
     private void confirmCorrection(Correction correction) {
+<<<<<<< HEAD
         long conversationId = parseId(correction.getId());
         if (conversationId <= 0) {
             return;
@@ -200,6 +250,18 @@ public class ChildCorrectActivity extends BaseActivity {
                     : parts[1].substring(0, 5);
         }
         return createdAt;
+=======
+        correction.setStatus("confirmed");
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已确认", Toast.LENGTH_SHORT).show();
+    }
+
+    private void correctAnswer(Correction correction, String correctedAnswer) {
+        correction.setStatus("corrected");
+        correction.setCorrectedAnswer(correctedAnswer);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "已提交纠正，将通知老人", Toast.LENGTH_SHORT).show();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private void updateEmptyView(boolean isEmpty) {

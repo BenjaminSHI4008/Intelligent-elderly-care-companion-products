@@ -146,7 +146,11 @@ public class ChildBindActivity extends BaseActivity {
                 .setMessage("请老人在「绑定家人」页面查看绑定码")
                 .setView(etCode)
                 .setPositiveButton("绑定", (dialog, which) -> {
+<<<<<<< HEAD
                     String code = normalizeBindCode(etCode.getText().toString());
+=======
+                    String code = etCode.getText().toString().trim();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
                     if (code.length() != 6) {
                         Toast.makeText(this, "请输入6位绑定码", Toast.LENGTH_SHORT).show();
                         return;
@@ -244,6 +248,7 @@ public class ChildBindActivity extends BaseActivity {
         }
     }
 
+<<<<<<< HEAD
     /** 去除空格/分隔符，全角数字转半角，保留前导零。 */
     private static String normalizeBindCode(String rawCode) {
         if (rawCode == null) {
@@ -260,6 +265,8 @@ public class ChildBindActivity extends BaseActivity {
         return normalized.toString();
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     protected void onResume() {
         super.onResume();

@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+<<<<<<< HEAD
 import android.widget.ImageView;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import android.widget.RadioGroup;
 
 import com.xiaoban.app.R;
@@ -39,10 +42,15 @@ public class RegisterActivity extends BaseActivity {
         etPassword = findViewById(R.id.et_password);
         etNickname = findViewById(R.id.et_nickname);
         rgRole = findViewById(R.id.rg_role);
+<<<<<<< HEAD
         ImageView btnBack = findViewById(R.id.btn_back);
         Button btnRegister = findViewById(R.id.btn_register);
 
         btnBack.setOnClickListener(v -> finish());
+=======
+        Button btnRegister = findViewById(R.id.btn_register);
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         btnRegister.setOnClickListener(v -> doRegister());
     }
 

@@ -1,5 +1,9 @@
 plugins {
+<<<<<<< HEAD
     id 'com.android.application' version '8.6.1' apply false
     // 新版 Android Studio Sync 会调用 prepareKotlinBuildScriptModel，需注册 Kotlin 插件
     id 'org.jetbrains.kotlin.android' version '1.9.24' apply false
+=======
+    id 'com.android.application' version '8.2.2' apply false
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 }

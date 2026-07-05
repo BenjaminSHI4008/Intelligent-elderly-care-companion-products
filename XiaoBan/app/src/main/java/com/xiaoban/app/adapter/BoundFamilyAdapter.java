@@ -16,6 +16,7 @@ import java.util.List;
 
 public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.ViewHolder> {
 
+<<<<<<< HEAD
     public interface OnUnbindClickListener {
         void onUnbind(BindingRelationItem item);
     }
@@ -26,12 +27,16 @@ public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.
     public void setOnUnbindClickListener(OnUnbindClickListener listener) {
         this.unbindListener = listener;
     }
+=======
+    private List<BindingRelationItem> items = new ArrayList<>();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     public void setItems(List<BindingRelationItem> items) {
         this.items = items != null ? items : new ArrayList<>();
         notifyDataSetChanged();
     }
 
+<<<<<<< HEAD
     public void removeItem(long relationId) {
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getId() == relationId) {
@@ -42,6 +47,8 @@ public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.
         }
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,12 +67,19 @@ public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.
         return items.size();
     }
 
+<<<<<<< HEAD
     class ViewHolder extends RecyclerView.ViewHolder {
+=======
+    static class ViewHolder extends RecyclerView.ViewHolder {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         private final TextView tvAvatar;
         private final TextView tvName;
         private final TextView tvPhone;
         private final TextView tvBindInfo;
+<<<<<<< HEAD
         private final TextView btnUnbind;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +87,7 @@ public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.
             tvName = itemView.findViewById(R.id.tv_name);
             tvPhone = itemView.findViewById(R.id.tv_phone);
             tvBindInfo = itemView.findViewById(R.id.tv_bind_info);
+<<<<<<< HEAD
             btnUnbind = itemView.findViewById(R.id.btn_unbind);
         }
 
@@ -81,17 +96,32 @@ public class BoundFamilyAdapter extends RecyclerView.Adapter<BoundFamilyAdapter.
             tvName.setText(name);
             tvAvatar.setText(name.isEmpty() ? "家" : name.substring(0, 1));
             tvPhone.setVisibility(View.GONE);
+=======
+        }
+
+        void bind(BindingRelationItem item) {
+            String name = item.getDisplayNameForElder();
+            tvName.setText(name);
+            tvAvatar.setText(name.isEmpty() ? "家" : name.substring(0, 1));
+            tvPhone.setText(item.getChildPhoneMasked() != null ? item.getChildPhoneMasked() : "");
+            tvPhone.setVisibility(
+                    item.getChildPhoneMasked() != null && !item.getChildPhoneMasked().isEmpty()
+                            ? View.VISIBLE : View.GONE);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
             String bindLabel = item.getBindTypeLabel() != null ? item.getBindTypeLabel() : "设备码绑定";
             String bindTime = item.getBindTime() != null && item.getBindTime().length() >= 10
                     ? item.getBindTime().substring(0, 10) : "";
             tvBindInfo.setText(bindLabel + (bindTime.isEmpty() ? "" : " · " + bindTime));
+<<<<<<< HEAD
 
             btnUnbind.setOnClickListener(v -> {
                 if (unbindListener != null) {
                     unbindListener.onUnbind(item);
                 }
             });
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         }
     }
 }

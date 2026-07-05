@@ -6,7 +6,10 @@ import com.xiaoban.server.common.ResultCode;
 import com.xiaoban.server.dto.ReminderCreateRequest;
 import com.xiaoban.server.entity.Reminder;
 import com.xiaoban.server.mapper.ReminderMapper;
+<<<<<<< HEAD
 import com.xiaoban.server.security.BindingGuard;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,11 +23,16 @@ public class ReminderService {
 
     private final ReminderMapper reminderMapper;
     private final PushService pushService;
+<<<<<<< HEAD
     private final BindingGuard bindingGuard;
 
     public Reminder create(Long childId, ReminderCreateRequest req) {
         // A child may only create reminders for elders they are actively bound to.
         bindingGuard.assertChildBoundToElder(childId, req.getElderId());
+=======
+
+    public Reminder create(Long childId, ReminderCreateRequest req) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         Reminder reminder = Reminder.builder()
                 .childId(childId)
                 .elderId(req.getElderId())
@@ -37,8 +45,12 @@ public class ReminderService {
         return reminder;
     }
 
+<<<<<<< HEAD
     public List<Reminder> listByElder(Long childId, Long elderId) {
         bindingGuard.assertChildBoundToElder(childId, elderId);
+=======
+    public List<Reminder> listByElder(Long elderId) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         return reminderMapper.selectList(
                 new LambdaQueryWrapper<Reminder>().eq(Reminder::getElderId, elderId));
     }
@@ -50,19 +62,29 @@ public class ReminderService {
                         .eq(Reminder::getIsActive, 1));
     }
 
+<<<<<<< HEAD
     public void toggle(Long childId, Long id) {
         Reminder reminder = reminderMapper.selectById(id);
         if (reminder == null) throw new BusinessException(ResultCode.NOT_FOUND);
         // Ensure the caller owns (is bound to) the elder this reminder targets.
         bindingGuard.assertChildBoundToElder(childId, reminder.getElderId());
+=======
+    public void toggle(Long id) {
+        Reminder reminder = reminderMapper.selectById(id);
+        if (reminder == null) throw new BusinessException(ResultCode.NOT_FOUND);
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         reminder.setIsActive(reminder.getIsActive() == 1 ? 0 : 1);
         reminderMapper.updateById(reminder);
     }
 
+<<<<<<< HEAD
     public void delete(Long childId, Long id) {
         Reminder reminder = reminderMapper.selectById(id);
         if (reminder == null) throw new BusinessException(ResultCode.NOT_FOUND);
         bindingGuard.assertChildBoundToElder(childId, reminder.getElderId());
+=======
+    public void delete(Long id) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         reminderMapper.deleteById(id);
     }
 

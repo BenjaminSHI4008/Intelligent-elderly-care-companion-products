@@ -31,6 +31,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.replayListener = listener;
     }
 
+<<<<<<< HEAD
     public void clearMessages() {
         items.clear();
         notifyDataSetChanged();
@@ -41,14 +42,22 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return;
         }
         items.add(new ChatItem(TYPE_ELDER, text.trim(), null));
+=======
+    public void addElderMessage(String text) {
+        items.add(new ChatItem(TYPE_ELDER, text, null));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         notifyItemInserted(items.size() - 1);
     }
 
     public void addAiMessage(String text, String category) {
+<<<<<<< HEAD
         if (!hasMeaningfulText(text)) {
             return;
         }
         items.add(new ChatItem(TYPE_AI, text.trim(), category));
+=======
+        items.add(new ChatItem(TYPE_AI, text, category));
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         notifyItemInserted(items.size() - 1);
 
         if ("health".equals(category)) {
@@ -61,6 +70,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addCorrectionMessage(String senderName, String text) {
+<<<<<<< HEAD
         if (!hasMeaningfulText(text)) {
             return;
         }
@@ -84,6 +94,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return false;
     }
 
+=======
+        items.add(new ChatItem(TYPE_CORRECTION, "您" + senderName + "说，" + text, null));
+        notifyItemInserted(items.size() - 1);
+    }
+
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     @Override
     public int getItemViewType(int position) {
         return items.get(position).type;

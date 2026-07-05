@@ -52,6 +52,7 @@ public class TimeUtil {
         }
     }
 
+<<<<<<< HEAD
     public static String formatChatListTime(Date date) {
         if (date == null) {
             return "";
@@ -71,6 +72,8 @@ public class TimeUtil {
         return DATE_FORMAT.format(date);
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private static boolean isSameDay(Calendar cal1, Calendar cal2) {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);

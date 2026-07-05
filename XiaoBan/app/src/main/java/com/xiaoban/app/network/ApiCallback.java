@@ -4,8 +4,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.xiaoban.app.base.BaseApplication;
+<<<<<<< HEAD
 import com.xiaoban.app.util.NetworkErrorUtil;
 import com.xiaoban.app.util.SessionHelper;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.app.model.ApiResponse;
 
 import java.io.IOException;
@@ -23,14 +26,24 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
             if (body.isSuccess()) {
                 onSuccess(body.getData());
             } else {
+<<<<<<< HEAD
                 handleBusinessError(body.getCode(), body.getMessage());
+=======
+                onBusinessError(body.getCode(), body.getMessage());
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         } else {
             ApiResponse<?> errorBody = parseErrorBody(response);
             if (errorBody != null) {
+<<<<<<< HEAD
                 handleBusinessError(errorBody.getCode(), errorBody.getMessage());
             } else {
                 handleBusinessError(response.code(), "请求失败");
+=======
+                onBusinessError(errorBody.getCode(), errorBody.getMessage());
+            } else {
+                onBusinessError(response.code(), "请求失败");
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
             }
         }
     }
@@ -46,6 +59,7 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
         Toast.makeText(BaseApplication.getInstance(), message, Toast.LENGTH_SHORT).show();
     }
 
+<<<<<<< HEAD
     private void handleBusinessError(int code, String message) {
         if (SessionHelper.isUnauthorized(code)) {
             SessionHelper.forceRelogin(BaseApplication.getInstance(), message);
@@ -57,6 +71,10 @@ public abstract class ApiCallback<T> implements Callback<ApiResponse<T>> {
     public void onNetworkError(String message) {
         Toast.makeText(BaseApplication.getInstance(),
                 NetworkErrorUtil.getGenericFailureMessage(), Toast.LENGTH_LONG).show();
+=======
+    public void onNetworkError(String message) {
+        Toast.makeText(BaseApplication.getInstance(), "网络异常，请检查网络连接", Toast.LENGTH_SHORT).show();
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private ApiResponse<?> parseErrorBody(Response<ApiResponse<T>> response) {

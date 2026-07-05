@@ -23,7 +23,10 @@ import java.util.Map;
 public class ConversationController {
 
     private final ConversationService conversationService;
+<<<<<<< HEAD
     private final com.xiaoban.server.security.BindingGuard bindingGuard;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 
     @Operation(summary = "老人端发送对话")
     @PostMapping("/api/voice/chat")
@@ -43,6 +46,7 @@ public class ConversationController {
     @GetMapping("/api/conversations/history")
     public Result<List<ConversationVO>> history(
             @RequestParam Long elderId,
+<<<<<<< HEAD
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Authentication auth) {
         Long userId = (Long) auth.getPrincipal();
@@ -50,6 +54,9 @@ public class ConversationController {
         if (!userId.equals(elderId)) {
             bindingGuard.assertChildBoundToElder(userId, elderId);
         }
+=======
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         return Result.success(conversationService.getHistory(elderId, date));
     }
 

@@ -45,6 +45,7 @@
     <color name="tag_confirmed">#E8F5E9</color>
     <color name="tag_confirmed_text">#2E7D32</color>
     <color name="tag_attention">#FFEBEE</color>
+<<<<<<< HEAD
     <!-- 微信风格单聊 -->
     <color name="chat_background">#EDEDED</color>
     <color name="chat_bubble_outgoing">#95EC69</color>
@@ -55,4 +56,7 @@
     <color name="chat_list_header_bg">#EDEDED</color>
     <color name="chat_list_divider">#E5E5E5</color>
     <color name="chat_list_preview">#B2B2B2</color>
+=======
+    <color name="tag_attention_text">#C62828</color>
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 </resources>

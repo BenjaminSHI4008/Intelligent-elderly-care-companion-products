@@ -2,6 +2,7 @@ package com.xiaoban.server.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+<<<<<<< HEAD
 import com.xiaoban.server.common.BusinessException;
 import com.xiaoban.server.common.ResultCode;
 import com.xiaoban.server.dto.ConversationSummaryVO;
@@ -12,18 +13,27 @@ import com.xiaoban.server.entity.BindingRelation;
 import com.xiaoban.server.entity.FamilyMessage;
 import com.xiaoban.server.entity.User;
 import com.xiaoban.server.mapper.BindingRelationMapper;
+=======
+import com.xiaoban.server.dto.FamilyMessageVO;
+import com.xiaoban.server.dto.MessageSendRequest;
+import com.xiaoban.server.entity.FamilyMessage;
+import com.xiaoban.server.entity.User;
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import com.xiaoban.server.mapper.FamilyMessageMapper;
 import com.xiaoban.server.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+<<<<<<< HEAD
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,15 +46,21 @@ public class FamilyMessageService {
 
     private final FamilyMessageMapper familyMessageMapper;
     private final UserMapper userMapper;
+<<<<<<< HEAD
     private final BindingRelationMapper bindingRelationMapper;
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private final PushService pushService;
 
     public FamilyMessage send(Long senderId, MessageSendRequest req) {
         if (!StringUtils.hasText(req.getMsgType())) {
             req.setMsgType("text");
         }
+<<<<<<< HEAD
         assertCanMessagePeer(senderId, req.getReceiverId());
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         FamilyMessage msg = FamilyMessage.builder()
                 .senderId(senderId)
                 .receiverId(req.getReceiverId())
@@ -63,6 +79,7 @@ public class FamilyMessageService {
         return msg;
     }
 
+<<<<<<< HEAD
     public List<FamilyMessageVO> familyGroup(Long userId, Long elderId, int page, int size, boolean ascending) {
         Long resolvedElderId = resolveElderIdForFamilyGroup(userId, elderId);
         return getFamilyGroupMessages(resolvedElderId, page, size, ascending);
@@ -200,6 +217,8 @@ public class FamilyMessageService {
         broadcastToFamily(elderId, senderId, req);
     }
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     public List<FamilyMessageVO> received(Long userId, int page, int size) {
         List<FamilyMessage> records = familyMessageMapper.selectPage(
                 new Page<>(page, size),
@@ -208,6 +227,7 @@ public class FamilyMessageService {
                         .orderByDesc(FamilyMessage::getCreatedAt)
         ).getRecords();
 
+<<<<<<< HEAD
         return toVoList(records);
     }
 
@@ -426,6 +446,8 @@ public class FamilyMessageService {
         if (records == null || records.isEmpty()) {
             return Collections.emptyList();
         }
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
         Set<Long> senderIds = records.stream()
                 .map(FamilyMessage::getSenderId)
                 .filter(Objects::nonNull)
@@ -441,6 +463,7 @@ public class FamilyMessageService {
                 .toList();
     }
 
+<<<<<<< HEAD
     private List<BindingRelation> activeFamilyRelations(Long elderId) {
         return bindingRelationMapper.selectList(
                 new LambdaQueryWrapper<BindingRelation>()
@@ -468,6 +491,14 @@ public class FamilyMessageService {
             }
         }
         return result;
+=======
+    public void markRead(Long id, Long userId) {
+        FamilyMessage msg = familyMessageMapper.selectById(id);
+        if (msg != null && userId.equals(msg.getReceiverId())) {
+            msg.setIsRead(1);
+            familyMessageMapper.updateById(msg);
+        }
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     }
 
     private String resolveDisplayName(User user) {

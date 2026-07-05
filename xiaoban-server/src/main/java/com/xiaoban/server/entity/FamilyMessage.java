@@ -34,10 +34,13 @@ public class FamilyMessage {
 
     private Integer isRead;
 
+<<<<<<< HEAD
     /** 0=正常 1=已撤回 */
     private Integer status;
 
     private LocalDateTime recalledAt;
 
+=======
+>>>>>>> ae5245dd4789e2f7f705836e323616db126ae8e9
     private LocalDateTime createdAt;
 }
